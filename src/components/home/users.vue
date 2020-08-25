@@ -108,7 +108,7 @@
 					<el-dialog title="修改用户" :visible.sync="dialogFormVisible2" :width="dialogWidht" center>
 						<el-form :model="updateUserFrom">
 							<el-form-item label="用户名" :label-width="formLabelWidth">
-								<el-input v-model="updateUserFrom.username" autocomplete="off" :disabled="true" :placeholder="userDetailsShow.username" :class="textForm2"></el-input>
+								<el-input autocomplete="off" :disabled="true" :placeholder="userDetailsShow.username" :class="textForm2"></el-input>
 							</el-form-item>
 							<el-form-item label="联系地址" :label-width="formLabelWidth">
 								<el-input v-model="updateUserFrom.userDetailsAddr" autocomplete="off" :placeholder="userDetailsShow.userDetailsAddr" :class="textForm2"></el-input>
@@ -333,33 +333,39 @@
 			},
 			updateUser() {
 				console.log(this.form)
-				// axios({
-				// 	method: "delete",
-				// 	url: "/api/user/start/" + value,
-				// 	headers: {
-				// 		"Authorization": this.userDetails.token
-				// 	}
-				// }).then(res => {
-				// 	console.log(res)
-				// 	this.getUserList()
-				// }).catch(err => {
-				// 	this.$message.error('服务器连接超时 请重试！');
-				// })
+				let formData = new FormData();
+				for (var key in this.updateUserFrom) {
+					formData.append(key, this.updateUserFrom[key])
+				}
+				axios({
+					method: "put",
+					url: "/api/user/",
+					headers: {
+						"Authorization": this.userDetails.token,
+						"Content-Type": "multipart/form-data"
+					},
+					data: formData
+				}).then(res => {
+					console.log(res)
+					// this.getUserList()
+				}).catch(err => {
+					this.$message.error('服务器连接超时 请重试！');
+				})
 			},
 			deleteUser(value) {
 				console.log(value)
-				// axios({
-				// 	method: "delete",
-				// 	url: "/api/user/start/" + value,
-				// 	headers: {
-				// 		"Authorization": this.userDetails.token
-				// 	}
-				// }).then(res => {
-				// 	console.log(res)
-				// 	this.getUserList()
-				// }).catch(err => {
-				// 	this.$message.error('服务器连接超时 请重试！');
-				// })
+				axios({
+					method: "delete",
+					url: "/api/user/" + value,
+					headers: {
+						"Authorization": this.userDetails.token
+					}
+				}).then(res => {
+					console.log(res)
+					// this.getUserList()
+				}).catch(err => {
+					this.$message.error('服务器连接超时 请重试！');
+				})
 			},
 			insertUser() {
 				console.log(this.form)
