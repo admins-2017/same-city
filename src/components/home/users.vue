@@ -337,6 +337,7 @@
 				for (var key in this.updateUserFrom) {
 					formData.append(key, this.updateUserFrom[key])
 				}
+				formData.append("userId",this.userDetailsShow.userId);
 				axios({
 					method: "put",
 					url: "/api/user/",
