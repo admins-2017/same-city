@@ -89,12 +89,12 @@
 							</el-form-item>
 							<el-form-item label="所属商铺" :label-width="formLabelWidth">
 								<el-select v-model="form.shopId" placeholder="请选择">
-									<el-option :label="shop.shopName" :value="shop.shopId" v-for="shop in allShop"></el-option>
+									<el-option :label="shop.shopName" :value="shop.shopId" v-for="shop in allShop" :key="shop"></el-option>
 								</el-select>
 							</el-form-item>
 							<el-form-item label="分配角色" :label-width="formLabelWidth">
 								<el-select v-model="form.roleId" placeholder="请选择">
-									<el-option :label="role.roleName" :value="role.roleId" v-for="role in roles"></el-option>
+									<el-option :label="role.roleName" :value="role.roleId" v-for="role in roles" :key="role"></el-option>
 								</el-select>
 							</el-form-item>
 						</el-form>
@@ -124,12 +124,12 @@
 							</el-form-item>
 							<el-form-item label="所属商铺" :label-width="formLabelWidth">
 								<el-select v-model="updateUserFrom.shopId" :placeholder="userDetailsShow.shopName">
-									<el-option :label="shop.shopName" :value="shop.shopId" v-for="shop in allShop" :disabled="shop.shopId==userDetailsShow.shopId ? true:false"></el-option>
+									<el-option :label="shop.shopName" :value="shop.shopId" v-for="shop in allShop" :key="shop" :disabled="shop.shopId==userDetailsShow.shopId ? true:false"></el-option>
 								</el-select>
 							</el-form-item>
 							<el-form-item label="分配角色" :label-width="formLabelWidth">
 								<el-select v-model="updateUserFrom.roleId" :placeholder="userDetailsShow.roleName">
-									<el-option :label="role.roleName" :value="role.roleId" v-for="role in roles" :disabled="role.roleId==userDetailsShow.roleId ? true:false"></el-option>
+									<el-option :label="role.roleName" :value="role.roleId" v-for="role in roles" :key="role" :disabled="role.roleId==userDetailsShow.roleId ? true:false"></el-option>
 								</el-select>
 							</el-form-item>
 						</el-form>
