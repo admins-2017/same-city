@@ -3,10 +3,11 @@
     <div>
       <div class="users-left">
         <div>
-          <el-input placeholder="根据商铺名查询" prefix-icon="el-icon-search" v-model="input"></el-input>
+          <el-input placeholder="根据商铺名查询" prefix-icon="el-icon-search" v-model="input" 
+				:clearable="true" @change="findShop"></el-input>
         </div>
         <div>
-          <el-tree :props="shops" :data="shopList" @node-click="handleCheckChange"></el-tree>
+          <el-tree :props="shops" :data="allShop" @node-click="handleCheckChange"></el-tree>
         </div>
       </div>
       <div class="users-right">
@@ -225,7 +226,8 @@ export default {
   data() {
     return {
       shops: {
-        label: "name",
+        label: "shopName",
+		id: 'shopId'
       },
       count: 1,
       input: "",
@@ -235,18 +237,6 @@ export default {
       normal: "正常",
       stop: "停用",
       shopList: [
-        {
-          name: "学府康都店",
-          id: "1",
-        },
-        {
-          name: "包头九原店",
-          id: "2",
-        },
-        {
-          name: "上海虹桥店",
-          id: "3",
-        },
       ],
       tableData: [],
       userDetails: {},
@@ -288,8 +278,47 @@ export default {
     };
   },
   methods: {
+	findShop(){
+		axios({
+		  method: "get",
+		  url: "/api/shop/" + this.input,
+		  headers: {
+		    Authorization: this.userDetails.token,
+		  },
+		})
+		  .then((res) => {
+		    console.log(res);
+			if(res.data.status==200){
+				this.allShop = res.data.data
+			}else{
+				this.$message.error("查询超时 请重试！");
+			}
+		    // this.total = res.data.data.total;
+		    // this.tableData = res.data.data.records;
+		  })
+		  .catch((err) => {
+		    console.log(err);
+		    this.$message.error("服务器连接超时 请重试！");
+		  });
+	},
     handleCheckChange(data) {
-      console.log(data.id);
+      console.log(data.shopId);
+	  axios({
+	    method: "get",
+	    url: "/api/user/shop/"+data.shopId +"/"+ this.page + "/" + this.size,
+	    headers: {
+	      Authorization: this.userDetails.token,
+	    },
+	  })
+	    .then((res) => {
+	     console.log(res);
+	     this.total = res.data.data.total;
+	     this.tableData = res.data.data.records;
+	    })
+	    .catch((err) => {
+	      console.log(err);
+	      this.$message.error("服务器连接超时 请重试！");
+	    });
     },
     handleNodeClick(data) {
       console.log(data);
