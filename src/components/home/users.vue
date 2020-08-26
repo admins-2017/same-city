@@ -327,6 +327,7 @@ export default {
           this.tableData = res.data.data.records;
         })
         .catch((err) => {
+          console.log(err);
           this.$message.error("服务器连接超时 请重试！");
         });
     },
@@ -343,6 +344,7 @@ export default {
           this.tableData = res.data.data.records;
         })
         .catch((err) => {
+          console.log(err);
           this.$message.error("服务器连接超时 请重试！");
         });
     },
@@ -362,6 +364,7 @@ export default {
           this.roles = res.data.data;
         })
         .catch((err) => {
+          console.log(err);
           this.$message.error("服务器连接超时 请重试！");
         });
     },
@@ -377,6 +380,7 @@ export default {
           this.allShop = res.data.data;
         })
         .catch((err) => {
+          console.log(err);
           this.$message.error("服务器连接超时 请重试！");
         });
     },
@@ -401,6 +405,7 @@ export default {
           }
         })
         .catch((err) => {
+          console.log(err);
           this.$message.error("服务器连接超时 请重试！");
         });
     },
@@ -424,6 +429,7 @@ export default {
           }
         })
         .catch((err) => {
+          console.log(err);
           this.$message.error("服务器连接超时 请重试！");
         });
     },
@@ -463,6 +469,7 @@ export default {
           }
         })
         .catch((err) => {
+          console.log(err);
           this.$message.error("服务器连接超时 请重试！");
         });
     },
@@ -487,6 +494,7 @@ export default {
           }
         })
         .catch((err) => {
+          console.log(err);
           this.$message.error("服务器连接超时 请重试！");
         });
     },
@@ -517,6 +525,7 @@ export default {
           }
         })
         .catch((err) => {
+          console.log(err);
           this.$message.error("服务器连接超时 请重试！");
         });
     },
