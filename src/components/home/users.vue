@@ -3,8 +3,13 @@
     <div>
       <div class="users-left">
         <div>
-          <el-input placeholder="根据商铺名查询" prefix-icon="el-icon-search" v-model="input" 
-				:clearable="true" @change="findShop"></el-input>
+          <el-input
+            placeholder="根据商铺名查询"
+            prefix-icon="el-icon-search"
+            v-model="input"
+            :clearable="true"
+            @change="findShop"
+          ></el-input>
         </div>
         <div>
           <el-tree :props="shops" :data="allShop" @node-click="handleCheckChange"></el-tree>
@@ -20,7 +25,7 @@
           <el-button type="primary" plain @click="dialogFormVisible = true">新增用户</el-button>
         </div>
         <div>
-          <el-table :data="tableData" border :height="'600'">
+          <el-table :data="tableData" border :height="'500'">
             <el-table-column prop="userId" sortable label="用户id" width="175"></el-table-column>
             <el-table-column prop="username" label="姓名" width="85"></el-table-column>
             <el-table-column
@@ -227,7 +232,7 @@ export default {
     return {
       shops: {
         label: "shopName",
-		id: 'shopId'
+        id: "shopId",
       },
       count: 1,
       input: "",
@@ -236,8 +241,7 @@ export default {
       testTag: "NORMAL",
       normal: "正常",
       stop: "停用",
-      shopList: [
-      ],
+      shopList: [],
       tableData: [],
       userDetails: {},
       total: 0,
@@ -278,47 +282,48 @@ export default {
     };
   },
   methods: {
-	findShop(){
-		axios({
-		  method: "get",
-		  url: "/api/shop/" + this.input,
-		  headers: {
-		    Authorization: this.userDetails.token,
-		  },
-		})
-		  .then((res) => {
-		    console.log(res);
-			if(res.data.status==200){
-				this.allShop = res.data.data
-			}else{
-				this.$message.error("查询超时 请重试！");
-			}
-		    // this.total = res.data.data.total;
-		    // this.tableData = res.data.data.records;
-		  })
-		  .catch((err) => {
-		    console.log(err);
-		    this.$message.error("服务器连接超时 请重试！");
-		  });
-	},
+    findShop() {
+      axios({
+        method: "get",
+        url: "/api/shop/" + this.input,
+        headers: {
+          Authorization: this.userDetails.token,
+        },
+      })
+        .then((res) => {
+          console.log(res);
+          if (res.data.status == 200) {
+            this.allShop = res.data.data;
+          } else {
+            this.$message.error("查询超时 请重试！");
+          }
+          // this.total = res.data.data.total;
+          // this.tableData = res.data.data.records;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$message.error("服务器连接超时 请重试！");
+        });
+    },
     handleCheckChange(data) {
       console.log(data.shopId);
-	  axios({
-	    method: "get",
-	    url: "/api/user/shop/"+data.shopId +"/"+ this.page + "/" + this.size,
-	    headers: {
-	      Authorization: this.userDetails.token,
-	    },
-	  })
-	    .then((res) => {
-	     console.log(res);
-	     this.total = res.data.data.total;
-	     this.tableData = res.data.data.records;
-	    })
-	    .catch((err) => {
-	      console.log(err);
-	      this.$message.error("服务器连接超时 请重试！");
-	    });
+      axios({
+        method: "get",
+        url:
+          "/api/user/shop/" + data.shopId + "/" + this.page + "/" + this.size,
+        headers: {
+          Authorization: this.userDetails.token,
+        },
+      })
+        .then((res) => {
+          console.log(res);
+          this.total = res.data.data.total;
+          this.tableData = res.data.data.records;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$message.error("服务器连接超时 请重试！");
+        });
     },
     handleNodeClick(data) {
       console.log(data);
