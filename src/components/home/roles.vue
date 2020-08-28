@@ -2,102 +2,143 @@
   <div id="roles">
     <div>
       <div>
-        <el-table :data="tableData" style="width: 80%">
-          <el-table-column type="expand">
-            <template slot-scope="props">
-              <el-form label-position="left" inline class="demo-table-expand">
-                <el-form-item label="商品名称">
-                  <span>{{ props.row.name }}</span>
-                </el-form-item>
-                <el-form-item label="所属店铺">
-                  <span>{{ props.row.shop }}</span>
-                </el-form-item>
-                <el-form-item label="商品 ID">
-                  <span>{{ props.row.id }}</span>
-                </el-form-item>
-                <el-form-item label="店铺 ID">
-                  <span>{{ props.row.shopId }}</span>
-                </el-form-item>
-                <el-form-item label="商品分类">
-                  <span>{{ props.row.category }}</span>
-                </el-form-item>
-                <el-form-item label="店铺地址">
-                  <span>{{ props.row.address }}</span>
-                </el-form-item>
-                <el-form-item :class="buttonClass">
-                  <el-button type="primary" icon="el-icon-edit" circle></el-button>
-                  <el-button type="primary" icon="el-icon-edit" circle></el-button>
-                </el-form-item>
-              </el-form>
+          <div>
+            <el-input placeholder="请输入角色名" prefix-icon="el-icon-search" v-model="queryName"></el-input>
+            <el-button type="primary" plain @click="getRoleByName">查询</el-button>
+            <el-button type="primary" plain @click="clearQuery">取消</el-button>
+          </div>
+          <el-button type="primary" plain @click="insertDialogFormVisible = true">新增用户</el-button>
+        </div>
+      <div>
+        <el-table :data="tableData" border style="width: 100%">
+          <el-table-column fixed prop="roleId" label="角色id" width="170"></el-table-column>
+          <el-table-column prop="roleName" label="角色名称" width="170"></el-table-column>
+          <el-table-column prop="roleDescription" label="角色简介"></el-table-column>
+          <el-table-column prop="roleCode" label="角色编码" width="180"></el-table-column>
+          <el-table-column label="默认角色"  width="100" prop="defaultRole">
+            <template slot-scope="scope">
+              <el-tag type="success" v-if="scope.row.defaultRole">默认角色</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="角色 ID" prop="id"></el-table-column>
-          <el-table-column label="角色名称" prop="name"></el-table-column>
-          <el-table-column label="角色标识" prop="desc"></el-table-column>
+          <el-table-column fixed="right" label="操作" width="150">
+            <template slot-scope="scope">
+              <el-button @click="updateRole(scope.row)" type="text" size="small">编辑</el-button>
+              <el-button type="text" size="small" @click="delRoleById(scope.row.roleId)">删除</el-button>
+              <el-button @click="updateDefaultRole(scope.row.roleId)" type="text" size="small" v-if="!scope.row.defaultRole">设为默认</el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
       <div>
         <el-pagination
           @current-change="handleCurrentChange"
-          :page-size="10"
+          :page-size="size"
           layout="prev, pager, next, jumper"
-          :total="1000"
+          :total="total"
         ></el-pagination>
+      </div>
+      <div>
+        <el-dialog title="新增角色" :visible.sync="insertDialogFormVisible" :width="dialogWidht" center>
+            <el-form :model="insertForm">
+              <el-form-item label="用户名" :label-width="formLabelWidth">
+                <el-input v-model="insertForm.username" autocomplete="off"></el-input>
+              </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="updateDialogFormVisible = false">取 消</el-button>
+              <el-button type="primary">确 定</el-button>
+            </div>
+          </el-dialog>
+      </div>
+      <div>
+        <el-dialog title="角色详情" :visible.sync="updateDialogFormVisible" :class="roleDetailsClass" :width="dialogWidht" center>
+            <el-form :model="updateForm">
+              <el-form-item label="用户名" :label-width="formLabelWidth">
+                <el-input v-model="updateForm.username" autocomplete="off" ></el-input>
+              </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="insertDialogFormVisible = false">取 消</el-button>
+              <el-button type="primary">确 定</el-button>
+            </div>
+          </el-dialog>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: "roles",
   data() {
     return {
-      tableData: [
-        {
-          id: "12987122",
-          name: "好滋好味鸡蛋仔",
-          category: "江浙小吃、小吃零食",
-          desc: "荷兰优质淡奶，奶香浓而不腻",
-          address: "上海市普陀区真北路",
-          shop: "王小虎夫妻店",
-          shopId: "10333",
-        },
-        {
-          id: "12987123",
-          name: "好滋好味鸡蛋仔",
-          category: "江浙小吃、小吃零食",
-          desc: "荷兰优质淡奶，奶香浓而不腻",
-          address: "上海市普陀区真北路",
-          shop: "王小虎夫妻店",
-          shopId: "10333",
-        },
-        {
-          id: "12987125",
-          name: "好滋好味鸡蛋仔",
-          category: "江浙小吃、小吃零食",
-          desc: "荷兰优质淡奶，奶香浓而不腻",
-          address: "上海市普陀区真北路",
-          shop: "王小虎夫妻店",
-          shopId: "10333",
-        },
-        {
-          id: "12987126",
-          name: "好滋好味鸡蛋仔",
-          category: "江浙小吃、小吃零食",
-          desc: "荷兰优质淡奶，奶香浓而不腻",
-          address: "上海市普陀区真北路",
-          shop: "王小虎夫妻店",
-          shopId: "10333",
-        },
-      ],
-      buttonClass: 'operating-class'
+      tableData: [],
+      userDetails: {},
+      buttonClass: "operating-class",
+      page: 1,
+      size: 10,
+      total: 0,
+      queryName: '',
+      updateDialogFormVisible: false,
+      insertDialogFormVisible: false,
+      dialogWidht: '50%',
+      formLabelWidth: "100px",
+      insertForm: {
+        username: "",
+        
+      },
+      updateForm: {
+        username: "",
+      },
+      roleDetailsClass: 'role-details-class'
     };
   },
   methods: {
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
     },
+    getAllRole() {
+      axios({
+        method: "get",
+        url: "/api/role/" + this.page + "/" + this.size,
+        headers: {
+          Authorization: this.userDetails.token,
+        },
+      })
+        .then((res) => {
+          console.log(res);
+          this.total = res.data.data.total;
+          this.tableData = res.data.data.records;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$message.error("服务器连接超时 请重试！");
+        });
+    },
+    getRoleByName(){
+
+    },
+    clearQuery(){
+
+    },
+    delRoleById(value){
+      console.log(value)
+    },
+    handleClick(value){
+      console.log(value)
+    },
+    updateRole(value){
+      this.updateDialogFormVisible = true
+      console.log(value)
+    },
+    updateDefaultRole(value){
+      console.log(value)
+    }
+  },
+  created() {
+    this.userDetails = JSON.parse(localStorage.getItem("user-information"));
+    this.getAllRole();
   },
 };
 </script>
@@ -124,33 +165,34 @@ body {
     flex-direction: column;
     align-items: center;
     > div:nth-of-type(1) {
+      width: 94%;
       margin-top: 20px;
+      padding: 0px 20px;
       display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 95%;
-      .demo-table-expand {
-        font-size: 0;
-      }
-      .demo-table-expand label {
-        width: 90px;
-        color: #99a9bf;
-      }
-      .demo-table-expand .el-form-item {
-        margin-right: 0;
-        margin-bottom: 0;
-        width: 33%;
-      }
-      .operating-class{
+      justify-content: space-between;
+      >div:nth-of-type(1){
         display: flex;
-        justify-content: space-between;
-        margin-top: 10px;
-        width: 100%;
+        justify-content: center;
+        align-items: center;
       }
     }
     > div:nth-of-type(2) {
       margin-top: 20px;
-      width: 100%;
+      width: 94%;
+    }
+    > div:nth-of-type(3) {
+      margin-top: 30px;
+      width: 94%;
+    }
+    > div:nth-of-type(4) {
+      background-color: whitesmoke;
+    }
+    > div:nth-of-type(5) {
+      .role-details-class{
+        .el-dialog{
+          background-color: red
+        }
+      }
     }
   }
 }
