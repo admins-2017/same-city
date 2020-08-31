@@ -37,6 +37,7 @@
 					}
 					
 				}).catch(err => {
+					console.log(err)
 					this.$message.error('服务器连接超时 请重试！');
 				})
 			}

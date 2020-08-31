@@ -15,7 +15,8 @@ export default new Vuex.Store({
 			name: '主页',
 			type: 'closable',
 			path: '/detail'
-		}]
+		}],
+		menuTree: []
 	},
 	mutations: {
 		// 保存当前菜单栏的路径
@@ -44,6 +45,9 @@ export default new Vuex.Store({
 		},
 		saveHomeTags(state, homeTags) {
 			state.homeTags.push(homeTags);
+		},
+		saveMenuTree(state, menuTree) {
+			state.menuTree=menuTree;
 		}
 	}
 })
