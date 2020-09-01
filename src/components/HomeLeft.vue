@@ -9,17 +9,18 @@
           class="el-menu-vertical-demo"
           @open="handleOpen"
           @close="handleClose"
+		  router
         >
           <div v-for="(menu) in userMenu" :key="menu.name">
             <el-submenu :index="menu.menuId+''" v-if="menu.type==0">
               <template slot="title">
                 <i :class="menu.icon"></i>
-                <span :slot="title" v-if="isCollapse">{{menu.name}}</span>
+                <span slot="title" v-if="isCollapse">{{menu.name}}</span>
               </template>
               <el-menu-item-group v-if="menu.children.length!=0">
                 <span slot="title" v-if="!isCollapse">{{menu.name}}</span>
                 <el-menu-item
-                  :index="child.menuId+''"
+                  :index="child.path"
                   v-for="(child) in menu.children"
                   :key="child.name"
                 >
@@ -31,14 +32,9 @@
                 </el-menu-item>
               </el-menu-item-group>
             </el-submenu>
-            <el-menu-item v-if="menu.type==1" :class="onItem" :route="menu.path">
+            <el-menu-item v-if="menu.type==1" :class="onItem" :index="menu.path" @click.native="doSomething(menu.path,menu.name)">
               <i :class="menu.icon"></i>
-              <span slot="title" v-if="!isCollapse">{{menu.name}}</span>
-              <span slot="title" v-if="isCollapse">
-                <router-link
-                  :to="'/'+menu.path"
-                  @click.native="doSomething(menu.path,menu.name)"
-                >{{menu.name}}</router-link>
+              <span slot="title">{{menu.name}}</span>
               </span>
             </el-menu-item>
           </div>
@@ -115,12 +111,14 @@ body {
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    background-color: white;
+    background-color: #bbe6d6;
 
     > .el-row {
       > .el-menu {
+		border: 0px !important;
         > div {
           > .el-submenu {
+			  background-color: #bbe6d6 !important;
             .el-menu-item-group__title {
               padding: 0px !important;
             }
@@ -131,9 +129,13 @@ body {
 
             .el-menu-item {
               padding-left: 40px !important;
+			  background-color: #bbe6d6 !important;
               // text-align: center;
             }
           }
+		  > .el-menu-item{
+			  background-color: #bbe6d6 !important;
+		  }
         }
       }
     }

@@ -193,7 +193,7 @@ body {
     justify-content: center;
 
     .el-tabs--border-card {
-      opacity: 0.7;
+      opacity: 1;
       width: 30%;
       position: relative;
       top: -30px;

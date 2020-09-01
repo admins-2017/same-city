@@ -237,9 +237,6 @@
 		width: 100%;
 		height: 100%;
 		background-color: white;
-		border-top: 2px solid red;
-		border-left: 2px solid lawngreen;
-
 		.detail-nav {
 			width: 100%;
 			padding: 20px 40px;

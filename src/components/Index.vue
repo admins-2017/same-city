@@ -76,7 +76,6 @@
 		width: 100%;
 		height: 100%;
 		background-color: white;
-		border-top: 2px solid red;
 		border-left: 2px solid lawngreen;
 
 		.index-nav {
