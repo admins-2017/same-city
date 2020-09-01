@@ -30,6 +30,7 @@
 						"Authorization":this.testVuex.token
 					}
 				}).then(res => {
+					console.log(res)
 					if(res.data.status){
 						this.userMenu = res.data.data
 					}else{

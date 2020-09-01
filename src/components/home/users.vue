@@ -101,7 +101,7 @@
                 <el-input v-model="form.username" autocomplete="off" :class="textForm"></el-input>
               </el-form-item>
               <el-form-item label="初始密码" :label-width="formLabelWidth">
-                <el-input :placeholder="'123456'" autocomplete="off" :class="textForm"></el-input>
+                <el-input :placeholder="'123456'" autocomplete="off" :class="textForm" disabled></el-input>
               </el-form-item>
               <el-form-item label="联系方式" :label-width="formLabelWidth">
                 <el-input v-model="form.userDetailsTel" autocomplete="off" :class="textForm"></el-input>
@@ -553,6 +553,13 @@ export default {
               type: "success",
             });
             this.dialogFormVisible = false;
+            this.form.username = "";
+            this.form.userDetailsSex = "";
+            this.form.userDetailsAddr = "";
+            this.form.userDetailsMail = "";
+            this.form.userDetailsTel = "";
+            this.form.shopId = "";
+            this.form.roleId = "";
             this.getUserList();
           } else {
             this.$message.error("新增用户错误：" + res.data.msg + ",请重试");
