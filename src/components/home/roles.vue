@@ -10,7 +10,7 @@
         <el-button type="primary" plain @click="insertDialogFormVisible = true">新增用户</el-button>
       </div>
       <div>
-        <el-table :data="tableData" border style="width: 100%">
+        <el-table :data="tableData" border style="width: 100%" height="500">
           <el-table-column fixed prop="roleId" label="角色id" width="170"></el-table-column>
           <el-table-column prop="roleName" label="角色名称" width="170"></el-table-column>
           <el-table-column prop="roleDescription" label="角色简介"></el-table-column>
@@ -70,17 +70,16 @@
             <div>
               <span>权限列表</span>
               <el-tree
-                :data="treeData"
+                :data="insertTreeData"
                 show-checkbox
                 node-key="menuId"
-                ref="tree"
+                ref="insertTree"
                 :props="defaultProps"
               ></el-tree>
-              <!-- <el-button @click="getCheckedKeys">通过 key 获取</el-button> -->
             </div>
           </div>
           <div slot="footer" class="dialog-footer">
-            <el-button @click="insertDialogFormVisible = false">取 消</el-button>
+            <el-button @click="cancelInsertDialog">取 消</el-button>
             <el-button type="primary" @click="insertNewRole">确 定</el-button>
           </div>
         </el-dialog>
@@ -89,7 +88,6 @@
         <el-dialog title="角色详情" :visible.sync="updateDialogFormVisible" :width="dialogWidht" center>
           <div class="update-role-from">
             <div>
-              <!-- <el-input v-model="updateForm.roleId" :placeholder="'角色id: ' +roleDetails.roleId" disabled></el-input> -->
               <el-input
                 v-model="updateForm.roleName"
                 prefix-icon="el-icon-user-solid"
@@ -109,7 +107,7 @@
             <div>
               <span>权限列表</span>
               <el-tree
-                :data="treeData"
+                :data="updateTreeData"
                 show-checkbox
                 node-key="menuId"
                 ref="tree"
@@ -157,7 +155,8 @@ export default {
         roleCode: "",
       },
       roleDetailsClass: "role-details-class",
-      treeData: [],
+      insertTreeData: [],
+      updateTreeData: [],
       defaultProps: {
         children: "children",
         label: "name",
@@ -290,7 +289,8 @@ export default {
         .then((res) => {
           console.log(res);
           if (res.data.status == 200) {
-            this.treeData = res.data.data;
+            this.insertTreeData = res.data.data;
+            this.updateTreeData = res.data.data;
           } else {
             this.$message.error("获取权限列表失败 请重试！");
           }
@@ -330,8 +330,8 @@ export default {
       for (var key in this.insertForm) {
         formData.append(key, this.insertForm[key]);
       }
-      console.log(this.$refs.tree.getCheckedKeys());
-      formData.append("menuList", this.$refs.tree.getCheckedKeys());
+      console.log(this.$refs.insertTree.getCheckedKeys());
+      formData.append("menuList", this.$refs.insertTree.getCheckedKeys());
       axios({
         method: "post",
         url: "/api/role/",
@@ -353,7 +353,7 @@ export default {
               roleDescription: "",
             };
             this.insertDialogFormVisible = false;
-            this.$refs.tree.setCheckedKeys([]);
+            this.$refs.insertTree.setCheckedKeys([]);
             this.getAllRole();
           } else {
             this.$message.error("删除失败 请重试！");
@@ -372,8 +372,6 @@ export default {
       for (var key in this.updateForm) {
         formData.append(key, this.updateForm[key]);
       }
-      console.log();
-      console.log(this.$refs.tree.getCheckedKeys());
       if (this.$refs.tree.getCheckedKeys().length != 0) {
         formData.append("menuList", this.$refs.tree.getCheckedKeys());
       }
@@ -387,7 +385,6 @@ export default {
         data: formData,
       })
         .then((res) => {
-          console.log(res);
           if (res.data.status == 200) {
             this.$message({
               message: res.data.data,
@@ -412,6 +409,12 @@ export default {
     },
     cancelUpdateDialog() {
       this.updateDialogFormVisible = false;
+      // this.roleMenuList = []
+      this.$refs.tree.setCheckedKeys([]);
+      console.log(this.roleMenuList);
+    },
+    cancelInsertDialog() {
+      this.insertDialogFormVisible = false;
       // this.roleMenuList = []
       this.$refs.tree.setCheckedKeys([]);
       console.log(this.roleMenuList);
