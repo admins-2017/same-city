@@ -9,7 +9,7 @@
           class="el-menu-vertical-demo"
           @open="handleOpen"
           @close="handleClose"
-		  router
+          router
         >
           <div v-for="(menu) in userMenu" :key="menu.name">
             <el-submenu :index="menu.menuId+''" v-if="menu.type==0">
@@ -32,10 +32,14 @@
                 </el-menu-item>
               </el-menu-item-group>
             </el-submenu>
-            <el-menu-item v-if="menu.type==1" :class="onItem" :index="menu.path" @click.native="doSomething(menu.path,menu.name)">
+            <el-menu-item
+              v-if="menu.type==1"
+              :class="onItem"
+              :index="menu.path"
+              @click.native="doSomething(menu.path,menu.name)"
+            >
               <i :class="menu.icon"></i>
               <span slot="title">{{menu.name}}</span>
-              </span>
             </el-menu-item>
           </div>
         </el-menu>
@@ -115,10 +119,10 @@ body {
 
     > .el-row {
       > .el-menu {
-		border: 0px !important;
+        border: 0px !important;
         > div {
           > .el-submenu {
-			  background-color: #bbe6d6 !important;
+            background-color: #bbe6d6 !important;
             .el-menu-item-group__title {
               padding: 0px !important;
             }
@@ -129,13 +133,13 @@ body {
 
             .el-menu-item {
               padding-left: 40px !important;
-			  background-color: #bbe6d6 !important;
+              background-color: #bbe6d6 !important;
               // text-align: center;
             }
           }
-		  > .el-menu-item{
-			  background-color: #bbe6d6 !important;
-		  }
+          > .el-menu-item {
+            background-color: #bbe6d6 !important;
+          }
         }
       }
     }
