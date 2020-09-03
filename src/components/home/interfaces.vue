@@ -1,6 +1,15 @@
 <template>
   <div id="interfaces">
-    <div v-html="html"></div>
+    <!-- 卡片 -->
+    <el-card class="box-card">
+      <OBJECT
+        style="border: 0px"
+        type="text/x-scriptlet"
+        data="http://localhost:8082/swagger-ui.html"
+        width="100%"
+        height="490px"
+      ></OBJECT>
+    </el-card>
   </div>
 </template>
 
@@ -34,7 +43,7 @@ export default {
   },
   created() {
     this.userDetails = JSON.parse(localStorage.getItem("user-information"));
-    this.getSwagger();
+    // this.getSwagger();
   },
 };
 </script>
