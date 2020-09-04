@@ -196,11 +196,11 @@ export default {
     },
     cancelDialog() {
       this.insertDialogFormVisible = false;
-      this.insertFrom.name = '';
-      this.insertFrom.path = '';
-      this.insertFrom.permission = '';
-      this.insertFrom.type = '';
-      this.insertFrom.iCon = '';
+      this.insertFrom.name = "";
+      this.insertFrom.path = "";
+      this.insertFrom.permission = "";
+      this.insertFrom.type = "";
+      this.insertFrom.iCon = "";
       this.insertFrom.parentId = 0;
     },
     insertMenu() {
@@ -209,38 +209,38 @@ export default {
       for (var key in this.insertFrom) {
         formData.append(key, this.insertFrom[key]);
       }
-        axios({
-          method: "post",
-          url: "/api/menu/",
-          headers: {
-            Authorization: this.userDetails.token,
-            "Content-Type": "multipart/form-data",
-          },
-          data: formData,
+      axios({
+        method: "post",
+        url: "/api/menu/",
+        headers: {
+          Authorization: this.userDetails.token,
+          "Content-Type": "multipart/form-data",
+        },
+        data: formData,
+      })
+        .then((res) => {
+          if (res.data.status == 200) {
+            this.$message({
+              message: res.data.data,
+              type: "success",
+            });
+            this.insertFrom.name = "";
+            this.insertFrom.path = "";
+            this.insertFrom.permission = "";
+            this.insertFrom.type = "";
+            this.insertFrom.iCon = "";
+            this.insertFrom.parentId = 0;
+            this.insertDialogFormVisible = false;
+            this.getAllMenu();
+          } else {
+            this.$message.error("删除失败 请重试！");
+          }
+          console.log(res);
         })
-          .then((res) => {
-            // if (res.data.status == 200) {
-            //   this.$message({
-            //     message: res.data.data,
-            //     type: "success",
-            //   });
-            //   this.insertForm = {
-            //     roleName: "",
-            //     roleCode: "",
-            //     roleDescription: "",
-            //   };
-            //   this.insertDialogFormVisible = false;
-            //   this.$refs.insertTree.setCheckedKeys([]);
-            //   this.getAllRole();
-            // } else {
-            //   this.$message.error("删除失败 请重试！");
-            // }
-            console.log(res);
-          })
-          .catch((err) => {
-            console.log(err);
-            this.$message.error("服务器连接超时 请重试！");
-          });
+        .catch((err) => {
+          console.log(err);
+          this.$message.error("服务器连接超时 请重试！");
+        });
     },
   },
   watch: {

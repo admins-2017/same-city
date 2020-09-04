@@ -1,15 +1,15 @@
 <template>
   <div id="interfaces">
+    <div>
     <!-- 卡片 -->
-    <el-card class="box-card">
-      <OBJECT
-        style="border: 0px"
-        type="text/x-scriptlet"
-        data="http://localhost:8082/swagger-ui.html"
-        width="100%"
-        height="490px"
-      ></OBJECT>
-    </el-card>
+        <OBJECT
+          style="border: 0px"
+          type="text/x-scriptlet"
+          data="http://localhost:8082/swagger-ui.html"
+          width="100%"
+          height="100%"
+        ></OBJECT>
+    </div>
   </div>
 </template>
 
@@ -56,14 +56,16 @@ body {
   margin: 0px;
   padding: 0px;
 }
-#interfaces{
-	width: 100%;
-	height: 100%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	>div:nth-of-type(1){
-		width: 94%;
-	}
+#interfaces {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  > div:nth-of-type(1) {
+    width: 98%;
+    .box-card{
+      width: 100%;
+    }
+  }
 }
 </style>
