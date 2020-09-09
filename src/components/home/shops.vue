@@ -24,7 +24,7 @@
           </el-table-column>
           <el-table-column prop="shopName" label="商铺名称"></el-table-column>
           <el-table-column prop="shopAddress" label="商铺地址" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="shopStatus" label="状态" width="90" align="center">
+          <el-table-column prop="shopStatus" label="状态" width="100" align="center">
             <template slot-scope="scope">
               <el-tag type="success" v-if="scope.row.shopStatus==1">营业</el-tag>
               <el-tag type="info" v-else-if="scope.row.shopStatus==2">休息</el-tag>
@@ -37,7 +37,12 @@
           <el-table-column prop="updateTime" label="最近一次修改时间" align="center" width="160"></el-table-column>
           <el-table-column label="操作" width="50" align="center">
             <template slot-scope="scope">
-              <el-button type="text" size="small" @click="updateShop(scope.row)">修改</el-button>
+              <el-button
+                type="text"
+                size="small"
+                @click="updateShop(scope.row)"
+                icon="el-icon-edit"
+              ></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -55,22 +60,22 @@
           <div class="insert-shop-from">
             <el-input
               v-model="insertForm.shopName"
-              prefix-icon="el-icon-user-solid"
+              prefix-icon="el-icon-s-shop"
               placeholder="请输入商铺名称"
             ></el-input>
             <el-input
               v-model="insertForm.shopAddress"
-              prefix-icon="el-icon-info"
+              prefix-icon="el-icon-location-information"
               placeholder="请输入商铺地址"
             ></el-input>
             <el-input
               v-model="insertForm.shopIntroduction"
-              prefix-icon="el-icon-document"
+              prefix-icon="el-icon-warning-outline"
               placeholder="请输入商铺公告"
             ></el-input>
             <el-input
               v-model="insertForm.shopTel"
-              prefix-icon="el-icon-document"
+              prefix-icon="el-icon-phone"
               placeholder="请输入商铺电话"
             ></el-input>
           </div>
@@ -90,22 +95,22 @@
           <div class="update-shop-from">
             <el-input
               v-model="updateFrom.shopName"
-              prefix-icon="el-icon-user-solid"
+              prefix-icon="el-icon-s-shop"
               :placeholder="shopDetails.shopName"
             ></el-input>
             <el-input
               v-model="updateFrom.shopAddress"
-              prefix-icon="el-icon-info"
+              prefix-icon="el-icon-location-information"
               :placeholder="shopDetails.shopAddress"
             ></el-input>
             <el-input
               v-model="updateFrom.shopIntroduction"
-              prefix-icon="el-icon-document"
+              prefix-icon="el-icon-warning-outline"
               :placeholder="shopDetails.shopIntroduction"
             ></el-input>
             <el-input
               v-model="updateFrom.shopTel"
-              prefix-icon="el-icon-document"
+              prefix-icon="el-icon-phone"
               :placeholder="shopDetails.shopTel"
             ></el-input>
             <el-select v-model="updateFrom.shopStatus" clearable placeholder="修改商铺状态">
@@ -356,6 +361,46 @@ body {
     > div:nth-of-type(3) {
       width: 94%;
       margin-top: 20px;
+    }
+    > div:nth-of-type(3) {
+      width: 94%;
+      margin-top: 20px;
+    }
+    > div:nth-of-type(4) {
+      .el-dialog__body {
+        display: flex;
+        justify-content: center;
+        .insert-shop-from {
+          width: 60%;
+          .el-input {
+            width: 100%;
+            margin-top: 20px;
+            text-align: center;
+          }
+        }
+      }
+    }
+    > div:nth-of-type(5) {
+      .el-dialog__header{
+        >.el-dialog__title{
+          color: rgb(8, 141, 90);
+        }
+      }
+      .el-dialog__body {
+        display: flex;
+        justify-content: center;
+        .update-shop-from {
+          width: 60%;
+          .el-input {
+            width: 100%;
+            margin: 10px 0px;
+            text-align: center;
+          }
+          .el-select{
+            width: 100%;
+          }
+        }
+      }
     }
   }
 }
