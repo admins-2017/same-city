@@ -11,9 +11,9 @@
       </div>
       <div>
         <el-table :data="tableData" border style="width: 100%" highlight-current-row>
-          <el-table-column prop="menuId" label="ID" width="50" align="center"></el-table-column>
+          <el-table-column prop="menuId" label="ID"  align="center" show-overflow-tooltip></el-table-column>
           <el-table-column prop="name" label="权限名称" width="180" align="center"></el-table-column>
-          <el-table-column prop="path" label="跳转路径" width="120"></el-table-column>
+          <el-table-column prop="path" label="跳转路径" width="120" align="center"></el-table-column>
           <el-table-column prop="permission" label="权限标识"></el-table-column>
           <el-table-column prop="type" label="类型" width="80" align="center">
             <template slot-scope="scope">
@@ -36,13 +36,13 @@
               >删除</el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="icon" label="显示图标" width="100" align="center">
+          <el-table-column prop="icon" label="显示图标" width="80" align="center">
             <template slot-scope="scope">
               <i :class="scope.row.icon"></i>
             </template>
           </el-table-column>
-          <el-table-column prop="createTime" label="创建时间" width="180"></el-table-column>
-          <el-table-column prop="updateTime" label="修改时间" width="180"></el-table-column>
+          <el-table-column prop="createTime" label="创建时间" width="170"></el-table-column>
+          <el-table-column prop="updateTime" label="修改时间" width="170"></el-table-column>
         </el-table>
       </div>
       <div>

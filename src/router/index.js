@@ -73,6 +73,10 @@ const routes = [
 			{
 				path: '/suppliers',
 				component: () => import('../components/home/suppliers.vue')
+			},
+			{
+				path: '/tasks',
+				component: () => import('../components/home/tasks.vue')
 			}
 		]
 	},
