@@ -157,6 +157,7 @@ export default {
       },
       shopDetails: {},
       dialogWidht: "30%",
+      userDetails:{},
     };
   },
   methods: {
