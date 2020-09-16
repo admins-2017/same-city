@@ -13,30 +13,32 @@
         <el-table :data="tableData" height="600" border style="width: 100%">
           <el-table-column prop="id" label="id" align="center" width="50"></el-table-column>
           <el-table-column prop="jobName" label="任务名" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="jobIntroduction" label="任务介绍" show-overflow-tooltip></el-table-column>
           <el-table-column prop="beanName" label="bean名称" show-overflow-tooltip align="center"></el-table-column>
           <el-table-column prop="methodName" label="方法名" show-overflow-tooltip align="center"></el-table-column>
+          <el-table-column prop="methodParams" label="方法参数" show-overflow-tooltip align="center"></el-table-column>
           <el-table-column
             prop="cronExpression"
             label="cron表达式"
             show-overflow-tooltip
             align="center"
           ></el-table-column>
-          <el-table-column prop="status" label="状态标记" width="100" align="center">
+          <el-table-column prop="status" label="状态标记" width="80" align="center">
             <template slot-scope="scope">
               <el-tag type="success" v-if="scope.row.status==1">启用</el-tag>
               <el-tag type="info" v-else>暂停</el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="deleteFlag" label="删除标记" width="100" align="center">
+          <el-table-column prop="deleteFlag" label="删除标记" width="80" align="center">
             <template slot-scope="scope">
               <el-tag type="success" v-if="!scope.row.deleteFlag">使用</el-tag>
               <el-tag type="info" v-else>删除</el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="creatorName" label="创建人" width="140" align="center"></el-table-column>
+          <el-table-column prop="creatorName" label="创建人" width="100" align="center"></el-table-column>
           <el-table-column prop="createdTime" label="创建时间" align="center" width="160"></el-table-column>
           <el-table-column prop="updatedTime" label="最近一次修改时间" align="center" width="160"></el-table-column>
-          <el-table-column label="操作" align="center">
+          <el-table-column label="操作" align="center" width="130">
             <template slot-scope="scope">
               <el-button type="text" size="small">修改</el-button>
               <el-button
