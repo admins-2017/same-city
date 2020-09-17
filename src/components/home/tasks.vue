@@ -3,11 +3,11 @@
     <div>
       <div>
         <div>
-          <el-input placeholder="请输入商铺名" prefix-icon="el-icon-search" v-model="queryName"></el-input>
-          <el-button type="primary" plain>查询</el-button>
-          <el-button type="primary" plain>取消</el-button>
+          <el-input placeholder="请输入任务名" prefix-icon="el-icon-search" v-model="queryName"></el-input>
+          <el-button type="primary" @click="findTaskByQueryName" plain>查询</el-button>
+          <el-button type="primary" @click="changeFindTask" plain>取消</el-button>
         </div>
-        <el-button type="primary" plain>新增商铺</el-button>
+        <el-button type="primary" plain @click="insertDialogFormVisible = true">新增任务</el-button>
       </div>
       <div>
         <el-table :data="tableData" height="600" border style="width: 100%">
@@ -16,6 +16,7 @@
           <el-table-column prop="jobIntroduction" label="任务介绍" show-overflow-tooltip></el-table-column>
           <el-table-column prop="beanName" label="bean名称" show-overflow-tooltip align="center"></el-table-column>
           <el-table-column prop="methodName" label="方法名" show-overflow-tooltip align="center"></el-table-column>
+          <el-table-column prop="methodArgType" label="方法参数类型" show-overflow-tooltip align="center"></el-table-column>
           <el-table-column prop="methodParams" label="方法参数" show-overflow-tooltip align="center"></el-table-column>
           <el-table-column
             prop="cronExpression"
@@ -25,8 +26,8 @@
           ></el-table-column>
           <el-table-column prop="status" label="状态标记" width="80" align="center">
             <template slot-scope="scope">
-              <el-tag type="success" v-if="scope.row.status==1">启用</el-tag>
-              <el-tag type="info" v-else>暂停</el-tag>
+              <el-tag type="success" v-if="scope.row.status==1">启用中</el-tag>
+              <el-tag type="info" v-else>已暂停</el-tag>
             </template>
           </el-table-column>
           <el-table-column prop="deleteFlag" label="删除标记" width="80" align="center">
@@ -35,9 +36,21 @@
               <el-tag type="info" v-else>删除</el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="creatorName" label="创建人" width="100" align="center"></el-table-column>
-          <el-table-column prop="createdTime" label="创建时间" align="center" width="160"></el-table-column>
-          <el-table-column prop="updatedTime" label="最近一次修改时间" align="center" width="160"></el-table-column>
+          <el-table-column prop="creatorName" label="创建人" width="80" align="center"></el-table-column>
+          <el-table-column
+            prop="createdTime"
+            label="创建时间"
+            align="center"
+            show-overflow-tooltip
+            width="80"
+          ></el-table-column>
+          <el-table-column
+            prop="updatedTime"
+            label="最近一次修改时间"
+            align="center"
+            show-overflow-tooltip
+            width="80"
+          ></el-table-column>
           <el-table-column label="操作" align="center" width="130">
             <template slot-scope="scope">
               <el-button type="text" size="small">修改</el-button>
@@ -47,7 +60,12 @@
                 v-if="scope.row.status==1&&!scope.row.deleteFlag"
                 @click="suspendJob(scope.row)"
               >停用</el-button>
-              <el-button type="text" size="small" v-if="scope.row.status==2&&!scope.row.deleteFlag" @click="enableJob(scope.row)">启用</el-button>
+              <el-button
+                type="text"
+                size="small"
+                v-if="scope.row.status==2&&!scope.row.deleteFlag"
+                @click="enableJob(scope.row)"
+              >启用</el-button>
               <el-button
                 type="text"
                 size="small"
@@ -67,6 +85,44 @@
           :total="total"
         ></el-pagination>
       </div>
+      <div>
+        <el-dialog title="新增任务" :visible.sync="insertDialogFormVisible" :width="dialogWidht" center>
+          <div class="insert-shop-from">
+            <el-input v-model="jobForm.jobName" prefix-icon="el-icon-s-shop" placeholder="请输入任务名称"></el-input>
+            <el-input
+              v-model="jobForm.jobIntroduction"
+              prefix-icon="el-icon-location-information"
+              placeholder="请输入任务介绍"
+            ></el-input>
+            <el-input
+              v-model="jobForm.cronExpression"
+              prefix-icon="el-icon-warning-outline"
+              placeholder="请输入表达式"
+            ></el-input>
+            <el-input
+              v-model="jobForm.methodParams"
+              prefix-icon="el-icon-phone"
+              placeholder="请输入方法参数"
+            ></el-input>
+            <el-select v-model="value" placeholder="请选择执行方法">
+              <el-option
+                v-for="item in jobDetails"
+                :key="item.id"
+                :label="item.beanName"
+                :value="item.id"
+              >
+                <span style="float: left">{{ item.beanName }}</span>
+                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.methodName }}</span>
+              </el-option>
+            </el-select>
+          </div>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="cancelInsertTask">取 消</el-button>
+            <el-button type="primary" @click="insertJob">确 定</el-button>
+          </div>
+        </el-dialog>
+      </div>
+      <div></div>
     </div>
   </div>
 </template>
@@ -78,6 +134,9 @@ export default {
   data() {
     return {
       tableData: [],
+      insertDialogFormVisible: false,
+      updateDialogFormVisible: false,
+      dialogWidht: "30%",
       size: 10,
       page: 1,
       total: 0,
@@ -92,6 +151,15 @@ export default {
         status: 1,
         deleteFlag: 0,
       },
+      jobForm: {
+        jobName: "",
+        jobIntroduction: "",
+        cronExpression: "",
+        detailId: "",
+        methodParams: "",
+      },
+      jobDetails: [],
+        value: ''
     };
   },
   methods: {
@@ -118,6 +186,23 @@ export default {
           this.$message.error("服务器连接超时 请重试！");
         });
     },
+    getAllJobDetails() {
+      axios({
+        method: "get",
+        url: "/api/scheduleDetail/",
+        headers: {
+          Authorization: this.userDetails.token,
+        },
+      })
+        .then((res) => {
+          console.log(res);
+          this.jobDetails = res.data.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$message.error("服务器连接超时 请重试！");
+        });
+    },
     // 启用任务
     enableJob(val) {
       console.log(val);
@@ -126,7 +211,7 @@ export default {
       formData.append("status", 1);
       axios({
         method: "put",
-        url: "/api/job/",
+        url: "/api/job/status/",
         headers: {
           Authorization: this.userDetails.token,
           "Content-Type": "multipart/form-data",
@@ -157,7 +242,7 @@ export default {
       formData.append("status", 2);
       axios({
         method: "put",
-        url: "/api/job/",
+        url: "/api/job/status/",
         headers: {
           Authorization: this.userDetails.token,
           "Content-Type": "multipart/form-data",
@@ -188,7 +273,7 @@ export default {
       formData.append("deleteFlag", 0);
       axios({
         method: "put",
-        url: "/api/job/",
+        url: "/api/job/status/",
         headers: {
           Authorization: this.userDetails.token,
           "Content-Type": "multipart/form-data",
@@ -219,7 +304,7 @@ export default {
       formData.append("deleteFlag", 1);
       axios({
         method: "put",
-        url: "/api/job/",
+        url: "/api/job/status/",
         headers: {
           Authorization: this.userDetails.token,
           "Content-Type": "multipart/form-data",
@@ -242,10 +327,40 @@ export default {
           this.$message.error("服务器连接超时 请重试！");
         });
     },
+    findTaskByQueryName() {
+      (this.page = 1),
+        axios({
+          method: "get",
+          url: "/api/job/" + this.page + "/" + this.size + "/" + this.queryName,
+          headers: {
+            Authorization: this.userDetails.token,
+          },
+        })
+          .then((res) => {
+            console.log(res);
+            this.total = res.data.data.total;
+            this.tableData = res.data.data.records;
+          })
+          .catch((err) => {
+            console.log(err);
+            this.$message.error("服务器连接超时 请重试！");
+          });
+    },
+    changeFindTask() {
+      (this.queryName = ""), this.getAllJob();
+    },
+    cancelInsertTask() {
+      this.insertDialogFormVisible = false;
+    },
+    insertJob(){
+      console.log(this.jobForm)
+      console.log(this.value)
+    }
   },
   created() {
     this.userDetails = JSON.parse(localStorage.getItem("user-information"));
     this.getAllJob();
+    this.getAllJobDetails();
   },
 };
 </script>
