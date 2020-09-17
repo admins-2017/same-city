@@ -87,7 +87,7 @@
       </div>
       <div>
         <el-dialog title="新增任务" :visible.sync="insertDialogFormVisible" :width="dialogWidht" center>
-          <div class="insert-shop-from">
+          <div class="insert-task-from">
             <el-input v-model="jobForm.jobName" prefix-icon="el-icon-s-shop" placeholder="请输入任务名称"></el-input>
             <el-input
               v-model="jobForm.jobIntroduction"
@@ -99,22 +99,29 @@
               prefix-icon="el-icon-warning-outline"
               placeholder="请输入表达式"
             ></el-input>
-            <el-input
-              v-model="jobForm.methodParams"
-              prefix-icon="el-icon-phone"
-              placeholder="请输入方法参数"
-            ></el-input>
-            <el-select v-model="value" placeholder="请选择执行方法">
+            <el-select v-model="value" placeholder="请选择执行方法" clearable>
               <el-option
                 v-for="item in jobDetails"
                 :key="item.id"
-                :label="item.beanName"
+                :label="item.methodIntroduction"
                 :value="item.id"
               >
-                <span style="float: left">{{ item.beanName }}</span>
-                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.methodName }}</span>
+                <span style="float: left">{{ item.methodName }}</span>
+                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.methodIntroduction }}</span>
               </el-option>
             </el-select>
+			<el-input
+			  v-model="textarea"
+			  prefix-icon="el-icon-phone"
+			  placeholder="请输入方法参数"
+			  v-if="value!=''&&jobDetails[(value-1)].methodArgType=='java.lang.String'"
+			></el-input>
+			<el-input
+			  type="textarea"
+			  placeholder="请输入内容"
+			  :rows="5"
+			  v-model="textarea" v-else-if="value!=''&&jobDetails[(value-1)].methodArgType!='java.lang.String'&&jobDetails[(value-1)].methodArgType!=null">
+			</el-input>
           </div>
           <div slot="footer" class="dialog-footer">
             <el-button @click="cancelInsertTask">取 消</el-button>
@@ -155,11 +162,12 @@ export default {
         jobName: "",
         jobIntroduction: "",
         cronExpression: "",
-        detailId: "",
-        methodParams: "",
+        // detailId: "",
+        // methodParams: "",
       },
       jobDetails: [],
-        value: ''
+        value: '',
+		textarea:''
     };
   },
   methods: {
@@ -351,10 +359,48 @@ export default {
     },
     cancelInsertTask() {
       this.insertDialogFormVisible = false;
+	  this.value = '';
+	  this.textarea= '';
     },
     insertJob(){
       console.log(this.jobForm)
       console.log(this.value)
+	  let formData = new FormData();
+	  for (var key in this.jobForm) {
+	    formData.append(key, this.jobForm[key]);
+	  }
+	  formData.append('detailId', this.value);
+	  formData.append('methodParams', this.textarea);
+	  axios({
+	    method: "post",
+	    url: "/api/job/",
+	    headers: {
+	      Authorization: this.userDetails.token,
+	      "Content-Type": "multipart/form-data",
+	    },
+	    data: formData,
+	  })
+	    .then((res) => {
+	      if (res.data.status == 200) {
+	        this.$message({
+	          message: res.data.data,
+	          type: "success",
+	        });
+			this.insertDialogFormVisible = false;
+			this.value = '';
+			this.textarea= '';
+			this.jobForm.cronExpression = '';
+			this.jobForm.jobName = '';
+			this.jobForm.jobIntroduction= '';
+	        this.getAllJob();
+	      } else {
+	        this.$message.error("删除失败 请重试！");
+	      }
+	    })
+	    .catch((err) => {
+	      console.log(err);
+	      this.$message.error("服务器连接超时 请重试！");
+	    });
     }
   },
   created() {
@@ -409,6 +455,27 @@ body {
       width: 94%;
       margin-top: 20px;
     }
+	> div:nth-of-type(4) {
+	  .el-dialog__body {
+	    display: flex;
+	    justify-content: center;
+	    .insert-task-from {
+	      width: 80%;
+	      > .el-input {
+	        width: 100%;
+	        margin-top: 20px;
+	        text-align: center;
+	      }
+		  .el-select{
+			  width: 100%;
+			  margin-top: 20px;
+		  }
+		  .el-textarea {
+			  margin-top: 20px;
+		  }
+	    }
+	  }
+	}
   }
 }
 </style>
