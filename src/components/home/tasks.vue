@@ -53,7 +53,7 @@
           ></el-table-column>
           <el-table-column label="操作" align="center" width="130">
             <template slot-scope="scope">
-              <el-button type="text" size="small">修改</el-button>
+              <el-button type="text" size="small" @click="openDrawer(scope.row)">修改</el-button>
               <el-button
                 type="text"
                 size="small"
@@ -107,21 +107,24 @@
                 :value="item.id"
               >
                 <span style="float: left">{{ item.methodName }}</span>
-                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.methodIntroduction }}</span>
+                <span
+                  style="float: right; color: #8492a6; font-size: 13px"
+                >{{ item.methodIntroduction }}</span>
               </el-option>
             </el-select>
-			<el-input
-			  v-model="textarea"
-			  prefix-icon="el-icon-phone"
-			  placeholder="请输入方法参数"
-			  v-if="value!=''&&jobDetails[(value-1)].methodArgType=='java.lang.String'"
-			></el-input>
-			<el-input
-			  type="textarea"
-			  placeholder="请输入内容"
-			  :rows="5"
-			  v-model="textarea" v-else-if="value!=''&&jobDetails[(value-1)].methodArgType!='java.lang.String'&&jobDetails[(value-1)].methodArgType!=null">
-			</el-input>
+            <el-input
+              v-model="textarea"
+              prefix-icon="el-icon-phone"
+              placeholder="请输入方法参数"
+              v-if="value!=''&&jobDetails[(value-1)].methodArgType=='java.lang.String'"
+            ></el-input>
+            <el-input
+              type="textarea"
+              placeholder="请输入内容"
+              :rows="5"
+              v-model="textarea"
+              v-else-if="value!=''&&jobDetails[(value-1)].methodArgType!='java.lang.String'&&jobDetails[(value-1)].methodArgType!=null"
+            ></el-input>
           </div>
           <div slot="footer" class="dialog-footer">
             <el-button @click="cancelInsertTask">取 消</el-button>
@@ -129,7 +132,25 @@
           </div>
         </el-dialog>
       </div>
-      <div></div>
+      <div>
+        <el-drawer title="我是标题" :visible.sync="drawer" :with-header="false">
+          <div class="job-drawer">
+            <div>
+              <span>修改任务详情</span>
+            </div>
+            <span>{{updateJobDetail.jobIntroduction}}</span>
+            <span>{{updateJobDetail.cronExpression}}</span>
+            <span>{{updateJobDetail.beanName}}</span>
+            <span>{{updateJobDetail.methodName}}</span>
+            <span>{{updateJobDetail.methodArgType}}</span>
+            <span>{{updateJobDetail.methodParams}}</span>
+            <span>{{updateJobDetail.creatorName}}</span>
+            <span>{{updateJobDetail.createdTime}}</span>
+            <span>{{updateJobDetail.status}}</span>
+            <span>{{updateJobDetail.deleteFlag}}</span>
+          </div>
+        </el-drawer>
+      </div>
     </div>
   </div>
 </template>
@@ -166,8 +187,10 @@ export default {
         // methodParams: "",
       },
       jobDetails: [],
-        value: '',
-		textarea:''
+      value: "",
+      textarea: "",
+      drawer: false,
+      updateJobDetail: {},
     };
   },
   methods: {
@@ -359,49 +382,54 @@ export default {
     },
     cancelInsertTask() {
       this.insertDialogFormVisible = false;
-	  this.value = '';
-	  this.textarea= '';
+      this.value = "";
+      this.textarea = "";
     },
-    insertJob(){
-      console.log(this.jobForm)
-      console.log(this.value)
-	  let formData = new FormData();
-	  for (var key in this.jobForm) {
-	    formData.append(key, this.jobForm[key]);
-	  }
-	  formData.append('detailId', this.value);
-	  formData.append('methodParams', this.textarea);
-	  axios({
-	    method: "post",
-	    url: "/api/job/",
-	    headers: {
-	      Authorization: this.userDetails.token,
-	      "Content-Type": "multipart/form-data",
-	    },
-	    data: formData,
-	  })
-	    .then((res) => {
-	      if (res.data.status == 200) {
-	        this.$message({
-	          message: res.data.data,
-	          type: "success",
-	        });
-			this.insertDialogFormVisible = false;
-			this.value = '';
-			this.textarea= '';
-			this.jobForm.cronExpression = '';
-			this.jobForm.jobName = '';
-			this.jobForm.jobIntroduction= '';
-	        this.getAllJob();
-	      } else {
-	        this.$message.error("删除失败 请重试！");
-	      }
-	    })
-	    .catch((err) => {
-	      console.log(err);
-	      this.$message.error("服务器连接超时 请重试！");
-	    });
-    }
+    insertJob() {
+      console.log(this.jobForm);
+      console.log(this.value);
+      let formData = new FormData();
+      for (var key in this.jobForm) {
+        formData.append(key, this.jobForm[key]);
+      }
+      formData.append("detailId", this.value);
+      formData.append("methodParams", this.textarea);
+      axios({
+        method: "post",
+        url: "/api/job/",
+        headers: {
+          Authorization: this.userDetails.token,
+          "Content-Type": "multipart/form-data",
+        },
+        data: formData,
+      })
+        .then((res) => {
+          if (res.data.status == 200) {
+            this.$message({
+              message: res.data.data,
+              type: "success",
+            });
+            this.insertDialogFormVisible = false;
+            this.value = "";
+            this.textarea = "";
+            this.jobForm.cronExpression = "";
+            this.jobForm.jobName = "";
+            this.jobForm.jobIntroduction = "";
+            this.getAllJob();
+          } else {
+            this.$message.error("删除失败 请重试！");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$message.error("服务器连接超时 请重试！");
+        });
+    },
+    openDrawer(val) {
+      this.drawer = true;
+      console.log(val);
+      this.updateJobDetail = val;
+    },
   },
   created() {
     this.userDetails = JSON.parse(localStorage.getItem("user-information"));
@@ -451,31 +479,51 @@ body {
       width: 94%;
       margin-top: 20px;
     }
-    > div:nth-of-type(3) {
-      width: 94%;
-      margin-top: 20px;
+    > div:nth-of-type(4) {
+      .el-dialog__body {
+        display: flex;
+        justify-content: center;
+        .insert-task-from {
+          width: 80%;
+          > .el-input {
+            width: 100%;
+            margin-top: 20px;
+            text-align: center;
+          }
+          .el-select {
+            width: 100%;
+            margin-top: 20px;
+          }
+          .el-textarea {
+            margin-top: 20px;
+          }
+        }
+      }
     }
-	> div:nth-of-type(4) {
-	  .el-dialog__body {
-	    display: flex;
-	    justify-content: center;
-	    .insert-task-from {
-	      width: 80%;
-	      > .el-input {
-	        width: 100%;
-	        margin-top: 20px;
-	        text-align: center;
-	      }
-		  .el-select{
-			  width: 100%;
-			  margin-top: 20px;
-		  }
-		  .el-textarea {
-			  margin-top: 20px;
-		  }
-	    }
-	  }
-	}
+    > div:nth-of-type(5) {
+      .el-drawer {
+        height: 100%;
+        width: 40%;
+        .el-drawer__body {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          justify-content: center;
+          > .job-drawer {
+            width: 80%;
+            > div:nth-of-type(1) {
+              margin: 20px 0px; 
+              width: 100%;
+              box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+              font-size: 20px;
+              color:  rgba(31, 30, 29, 0.6);
+              display: flex;
+              justify-content: center;
+            }
+          }
+        }
+      }
+    }
   }
 }
 </style>
