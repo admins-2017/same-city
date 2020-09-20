@@ -1,18 +1,29 @@
 <template>
-	<div id="categorys">
-		<h2>这里是商品分类列表</h2>
-	</div>
+	<div class="cron">
+	    <el-popover v-model="cronPopover">
+	      <el-input slot="reference" @click="cronPopover=true" v-model="cron" placeholder="请输入定时策略" style="width: 40% ;margin-left: -50%"></el-input>
+	      <cron @change="changeCron" @close="cronPopover=false" i18n="en"></cron>
+	    </el-popover>
+	  </div>
 </template>
 
 <script>
-	export default {
-		name: 'categorys',
-		data(){
-			return{
-				
-			}
-		}
-	}
+	import {cron} from 'vue-cron';
+	  export default {
+	    components: { cron },
+	    data(){
+	      return {
+	        cronPopover:false,
+	        cron:''
+	      }
+	    },
+	    methods: {
+	      changeCron(val){
+	        this.cron=val
+	      },
+	
+	    },
+	  }
 </script>
 
 <style lang="less">
