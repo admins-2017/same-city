@@ -213,7 +213,7 @@
                   <el-switch v-model="defaultSwitch"></el-switch>
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" @click="updateJobFrom">立即创建</el-button>
+                  <el-button type="primary" @click="updateJobFrom">立即修改</el-button>
                   <el-button @click="resetForm('updateJobForm')">重置</el-button>
                 </el-form-item>
               </el-form>
@@ -549,7 +549,8 @@ export default {
               message: res.data.data,
               type: "success",
             });
-            this.insertDialogFormVisible = false;
+            this.drawer = false;
+			this.defaultSwitch =false;
             this.updateJobForm.jobName = "";
             this.updateJobForm.cronExpression = "";
             this.updateJobForm.detailId = "";
