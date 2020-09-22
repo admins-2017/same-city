@@ -165,16 +165,17 @@
                 </el-form-item>
                 <el-form-item label="任务方法" prop="methodName">
                   <el-select
-                    v-model="updateJobForm.detailId"
+                    v-model="updateJobMethod"
                     :placeholder="updateJobDetail.methodName"
                     clearable
                     :disabled="defaultSwitch?false:true"
+                    visible-change="changeSelect"
                   >
                     <el-option
-                      v-for="item in jobDetails"
+                      v-for="(item,index) in jobDetails"
                       :key="item.id"
                       :label="item.methodIntroduction"
-                      :value="item.id"
+                      :value="index"
                       :disabled="item.id==updateJobDetail.detailId"
                     >
                       <span style="float: left">{{ item.methodName }}</span>
@@ -199,14 +200,19 @@
                     <cron @change="changeUpdateCron" @close="updateCronPopover=false" i18n="cn"></cron>
                   </el-popover>
                 </el-form-item>
-
                 <el-form-item label="任务参数" prop="methodParams">
+                  <el-input
+                    v-model="updateJobArgType"
+                    disabled
+                    v-if="updateJobDetail.methodArgType == null"
+                  ></el-input>
                   <el-input
                     type="textarea"
                     v-model="updateJobForm.methodParams"
                     :rows="5"
                     :placeholder="updateJobDetail.methodParams"
                     :disabled="defaultSwitch?false:true"
+                    v-else
                   ></el-input>
                 </el-form-item>
                 <el-form-item label="修改任务">
@@ -266,7 +272,6 @@ export default {
         jobName: "",
         jobIntroduction: "",
         cronExpression: "",
-        detailId: "",
         methodParams: "",
       },
       jobDetails: [],
@@ -274,6 +279,8 @@ export default {
       textarea: "",
       drawer: false,
       updateJobDetail: {},
+      updateJobMethod: "",
+      updateJobArgType: "无参数方法",
     };
   },
   methods: {
@@ -519,7 +526,6 @@ export default {
         });
     },
     openDrawer(val) {
-      console.log(val);
       this.drawer = true;
       this.updateJobDetail = val;
     },
@@ -528,12 +534,14 @@ export default {
       this.$refs[formName].resetFields();
     },
     updateJobFrom() {
-      console.log(this.updateJobForm);
       let formData = new FormData();
       for (var key in this.updateJobForm) {
         formData.append(key, this.updateJobForm[key]);
       }
       formData.append("id", this.updateJobDetail.id);
+      if (this.jobDetails[this.updateJobMethod] != undefined) {
+        formData.append("detailId", this.jobDetails[this.updateJobMethod].id);
+      }
       axios({
         method: "put",
         url: "/api/job/",
@@ -550,7 +558,7 @@ export default {
               type: "success",
             });
             this.drawer = false;
-			this.defaultSwitch =false;
+            this.defaultSwitch = false;
             this.updateJobForm.jobName = "";
             this.updateJobForm.cronExpression = "";
             this.updateJobForm.detailId = "";
@@ -565,6 +573,9 @@ export default {
           console.log(err);
           this.$message.error("服务器连接超时 请重试！");
         });
+    },
+    changeSelect(val) {
+      console.log(val);
     },
   },
   created() {
