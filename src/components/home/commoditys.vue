@@ -28,11 +28,45 @@
           <el-collapse v-model="activeNames" @change="handleChange">
             <el-collapse-item :title="item.commodityName" :name="item.commodityId" v-for="item in commoditys" :key="item">
               <div>
-                与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；
+				<span>缩略图</span>
+                <img :src="item.commodityPicture" alt="">
               </div>
-              <div>
-                在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。
-              </div>
+			  <div>
+				  <el-row :gutter="20">
+				    <el-col :span="3"><span>商品名：</span></el-col>
+				    <el-col :span="5"><span>{{item.commodityName}}</span></el-col>
+					<el-col :span="3"><span>商品编号：</span></el-col>
+					<el-col :span="5"><span>{{item.commodityNumber}}</span></el-col>
+					<el-col :span="3"><span>商品单位：</span></el-col>
+					<el-col :span="5"><span>{{item.commodityUnit}}</span></el-col>
+				  </el-row>
+				  <el-row :gutter="20">
+				    <el-col :span="3"><span>分类：</span></el-col>
+				    <el-col :span="5"><span>{{item.classificationName}}</span></el-col>
+				  					<el-col :span="3"><span>建议售价：</span></el-col>
+				  					<el-col :span="5"><span>{{item.commoditySellingPrice}}/元</span></el-col>
+				  					<el-col :span="3"><span>状态：</span></el-col>
+				  					<el-col :span="5" v-if="item.commodityStatus == 0"><span>上架</span></el-col>
+									<el-col :span="5" v-if="item.commodityStatus == 1"><span>下架</span></el-col>
+									<el-col :span="5" v-if="item.commodityStatus == 2"><span>删除</span></el-col>
+				  </el-row>
+				  <el-row :gutter="20">
+				    <el-col :span="3"><span>商品介绍：</span></el-col>
+				    <el-col :span="15"><span>{{item.commodityDescription}}</span></el-col>
+				  </el-row>
+				  <el-row :gutter="20">
+				    <el-col :span="3"><span>添加人员：</span></el-col>
+				    <el-col :span="7"><span>{{item.insertUsername}}</span></el-col>
+					<el-col :span="3"><span>修改人员：</span></el-col>
+					<el-col :span="7"><span>{{item.updateUsername}}</span></el-col>
+				  </el-row>
+				  <el-row :gutter="20">
+				    <el-col :span="3"><span>添加时间：</span></el-col>
+				    <el-col :span="7"><span>{{item.insertTime}}</span></el-col>
+				  					<el-col :span="4"><span>最近修改时间：</span></el-col>
+				  					<el-col :span="7"><span>{{item.updateTime}}</span></el-col>
+				  </el-row>
+			  </div>
             </el-collapse-item>
           </el-collapse>
         </div>
