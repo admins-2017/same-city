@@ -156,34 +156,35 @@
         size="30%"
       >
         <div>
-          <el-form ref="form" :model="form" label-width="80px">
+          <el-form ref="updateForm" :model="updateForm" label-width="80px">
             <el-form-item label="商品图:">
               <el-upload
                 class="avatar-uploader"
-                action="https://jsonplaceholder.typicode.com/posts/"
+                action="/api/upload/uploadImg"
                 :show-file-list="false"
                 :on-success="handleAvatarSuccess"
                 :before-upload="beforeAvatarUpload"
+				:headers="updateHeader"
               >
-                <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+                <img v-if="commodityDetail.commodityPicture" :src="commodityDetail.commodityPicture" class="avatar" />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
             <el-form-item label="商品名称:">
               <el-input
-                v-model="form.name"
+                v-model="updateForm.commodityName"
                 :placeholder="commodityDetail.commodityName"
               ></el-input>
             </el-form-item>
             <el-form-item label="商品编号:">
               <el-input
-                v-model="form.name"
+                v-model="updateForm.commodityNumber"
                 :placeholder="commodityDetail.commodityNumber"
               ></el-input>
             </el-form-item>
             <el-form-item label="商品单位:">
               <el-select
-                v-model="unitValue"
+                v-model="updateForm.commodityUnit"
                 clearable
                 :placeholder="commodityDetail.commodityUnit"
               >
@@ -199,13 +200,13 @@
             </el-form-item>
             <el-form-item label="商品分类:">
               <el-input
-                v-model="form.name"
+                v-model="updateForm.classificationId"
                 :placeholder="commodityDetail.commodityName"
               ></el-input>
             </el-form-item>
             <el-form-item label="建议售价:">
               <el-input
-                v-model="form.name"
+                v-model="updateForm.commoditySellingPrice"
                 :placeholder="commodityDetail.commoditySellingPrice"
               >
                 <template slot="append">元</template>
@@ -214,7 +215,7 @@
             <el-form-item label="商品简介:">
               <el-input
                 type="textarea"
-                v-model="form.desc"
+                v-model="updateForm.commodityDescription"
                 :placeholder="commodityDetail.commodityDescription"
                 maxlength="30"
                 show-word-limit
@@ -250,15 +251,13 @@ export default {
       commoditys: [],
       drawer: false,
       direction: "ltr",
-      form: {
-        name: "",
-        region: "",
-        date1: "",
-        date2: "",
-        delivery: false,
-        type: [],
-        resource: "",
-        desc: "",
+      updateForm: {
+        commodityName: "",
+        commodityNumber: "",
+        commoditySellingPrice: "",
+        commodityUnit: "",
+        commodityDescription: "",
+		commodityPicture: ""
       },
       options: [
         {
@@ -294,10 +293,10 @@ export default {
           label: "1/条",
         },
       ],
-      unitValue: "",
       commodityDetail: {},
-      imageUrl:
-        "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1954582644,2804545051&fm=26&gp=0.jpg",
+	  updateHeader: {
+	  	Authorization: ''
+	  },
     };
   },
   methods: {
@@ -387,10 +386,47 @@ export default {
         .catch(_ => {});
     },
     onSubmit() {
-      console.log("submit!");
+      console.log(this.updateForm);
+	  console.log(this.commodityDetail.commodityId)
+	  let formData = new FormData();
+	  for (var key in this.updateForm) {
+	    formData.append(key, this.updateForm[key]);
+	  }
+	  formData.append("commodityId", this.commodityDetail.commodityId);
+	  axios({
+	    method: "put",
+	    url: "/api/commodity/",
+	    headers: {
+	      Authorization: this.userDetails.token,
+	      "Content-Type": "multipart/form-data",
+	    },
+	    data: formData,
+	  })
+	    .then((res) => {
+			console.log(res)
+	      if (res.data.status == 200) {
+	        this.$message({
+	          message: res.data.data,
+	          type: "success",
+	        });
+	        this.drawer = false;
+			Object.keys(this.updateForm).forEach(key => (this.updateForm[key] = ''));
+			this.getAllCommodity();
+	      } else {
+	        this.$message.error("删除失败 请重试！");
+	      }
+	    })
+	    .catch((err) => {
+	      console.log(err);
+	      this.$message.error("服务器连接超时 请重试！");
+	    });
     },
     handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
+		console.log(res);
+		console.log(file)
+      // this.imageUrl = URL.createObjectURL(file.raw);
+	  this.commodityDetail.commodityPicture = res.data
+	  this.updateForm.commodityPicture = res.data
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg";
@@ -409,6 +445,7 @@ export default {
     this.userDetails = JSON.parse(localStorage.getItem("user-information"));
     this.getAllClassification();
     this.getAllCommodity();
+	this.updateHeader.Authorization = this.userDetails.token;
   },
   watch: {
     filterText(val) {
@@ -537,16 +574,19 @@ body {
           .avatar-uploader-icon {
             font-size: 28px;
             color: #8c939d;
-            width: 200px;
+            width: 100%;
             height: 200px;
             line-height: 178px;
             text-align: center;
           }
           .avatar {
-            width: 290px;
+            width: 100%;
             height: 200px;
             display: block;
           }
+		  .el-select{
+			  width: 100%;
+		  }
         }
       }
     }
