@@ -14,6 +14,7 @@
             @node-click="handleNodeClick"
             :filter-node-method="filterNode"
             ref="tree"
+            highlight-current
           >
           </el-tree>
         </div>
@@ -23,6 +24,19 @@
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <span>商品详情</span>
+          <div>
+            <el-button
+              icon="el-icon-search"
+              @click="dialogTableVisible = true"
+              >查询</el-button
+            >
+            <el-button  icon="el-icon-circle-plus-outline"
+              @click="addCommodity">新增</el-button
+            >
+            <el-button icon="el-icon-error" @click="cancelAll"
+              >取消</el-button
+            >
+          </div>
         </div>
         <div class="my-collapse">
           <el-collapse v-model="activeNames" @change="handleChange">
@@ -164,9 +178,13 @@
                 :show-file-list="false"
                 :on-success="handleAvatarSuccess"
                 :before-upload="beforeAvatarUpload"
-				:headers="updateHeader"
+                :headers="updateHeader"
               >
-                <img v-if="commodityDetail.commodityPicture" :src="commodityDetail.commodityPicture" class="avatar" />
+                <img
+                  v-if="commodityDetail.commodityPicture"
+                  :src="commodityDetail.commodityPicture"
+                  class="avatar"
+                />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
@@ -199,10 +217,20 @@
               </el-select>
             </el-form-item>
             <el-form-item label="商品分类:">
-              <el-input
+              <el-select
                 v-model="updateForm.classificationId"
-                :placeholder="commodityDetail.commodityName"
-              ></el-input>
+                clearable
+                :placeholder="commodityDetail.classificationName"
+              >
+                <el-option
+                  v-for="item in allClassificationNode"
+                  :key="item.classificationId"
+                  :label="item.classificationName"
+                  :value="item.classificationId"
+                  :disabled="item.classificationName == commodityDetail.classificationName"
+                >
+                </el-option>
+              </el-select>
             </el-form-item>
             <el-form-item label="建议售价:">
               <el-input
@@ -222,12 +250,212 @@
               ></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="onSubmit">立即创建</el-button>
-              <el-button>取消</el-button>
+              <el-button type="info" @click="onSubmit">立即修改</el-button>
+              <el-button @click="drawer=false">取消</el-button>
             </el-form-item>
           </el-form>
         </div>
       </el-drawer>
+      <div>
+        <el-dialog title="构建查询条件" :visible.sync="dialogTableVisible">
+          <el-form :model="findCommodityForm">
+            <el-form-item label="商品名称" :label-width="formLabelWidth">
+              <el-input
+                v-model="findCommodityForm.commodityName"
+                autocomplete="off"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="商品编号" :label-width="formLabelWidth">
+              <el-input
+                v-model="findCommodityForm.commodityNumber"
+                autocomplete="off"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="商品单位:" :label-width="formLabelWidth">
+              <el-select v-model="findCommodityForm.commodityUnit" clearable>
+                <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="商品状态:" :label-width="formLabelWidth">
+              <el-select v-model="findCommodityForm.commodityStatus" clearable>
+                <el-option
+                  v-for="item in commodityStatus"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="添加人员:" :label-width="formLabelWidth">
+              <el-select v-model="findCommodityForm.insertUser" clearable>
+                <el-option
+                  v-for="item in userList"
+                  :key="item.userId"
+                  :label="item.username"
+                  :value="item.userId"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="修改人员:" :label-width="formLabelWidth">
+              <el-select v-model="findCommodityForm.updateUser" clearable>
+                <el-option
+                  v-for="item in userList"
+                  :key="item.userId"
+                  :label="item.username"
+                  :value="item.userId"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="添加时间:" :label-width="formLabelWidth">
+              <el-date-picker
+                v-model="insertTimeValue"
+                type="datetimerange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                format="yyyy 年 MM 月 dd 日 HH:mm:ss"
+                value-format="yyyy-MM-dd HH:mm:ss"
+              >
+              </el-date-picker>
+            </el-form-item>
+            <el-form-item label="修改时间:" :label-width="formLabelWidth">
+              <el-date-picker
+                v-model="updateTimeValue"
+                type="datetimerange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+              >
+              </el-date-picker>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="cancelFindCommodity">取 消</el-button>
+            <el-button type="primary" @click="getCommodityByCondition"
+              >确 定</el-button
+            >
+          </div>
+        </el-dialog>
+      </div>
+      <div>
+        <el-dialog
+          title="收货地址"
+          :visible.sync="dialogDetailTableVisible"
+          fullscreen
+        >
+          <el-table :data="productsUnderCategory">
+            <el-table-column
+              property="date"
+              label="日期"
+              width="150"
+            ></el-table-column>
+            <el-table-column
+              property="name"
+              label="姓名"
+              width="200"
+            ></el-table-column>
+            <el-table-column property="address" label="地址"></el-table-column>
+          </el-table>
+        </el-dialog>
+      </div>
+      <div class="add-commodity">
+        <el-drawer
+        title="我是标题"
+        :visible.sync="addCommodityDrawer"
+        :direction="direction"
+        :before-close="handleClose"
+        :with-header="false"
+        size="30%"
+      >
+        <div>
+          <el-form ref="addForm" :model="addForm" label-width="80px">
+            <el-form-item label="商品图:">
+              <el-upload
+                class="avatar-uploader"
+                action="/api/upload/uploadImg"
+                :show-file-list="false"
+                :on-success="addHandleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+                :headers="updateHeader"
+              >
+                <img
+                  v-if="addForm.commodityPicture"
+                  :src="addForm.commodityPicture"
+                  class="avatar"
+                />
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              </el-upload>
+            </el-form-item>
+            <el-form-item label="商品名称:">
+              <el-input
+                v-model="addForm.commodityName"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="商品编号:">
+              <el-input
+                v-model="addForm.commodityNumber"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="商品单位:">
+              <el-select
+                v-model="addForm.commodityUnit"
+                clearable
+              >
+                <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="商品分类:">
+              <el-select
+                v-model="addForm.classificationId"
+                clearable
+              >
+                <el-option
+                  v-for="item in allClassificationNode"
+                  :key="item.classificationId"
+                  :label="item.classificationName"
+                  :value="item.classificationId"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="建议售价:">
+              <el-input
+                v-model="addForm.commoditySellingPrice"
+              >
+                <template slot="append">元</template>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="商品简介:">
+              <el-input
+                type="textarea"
+                v-model="addForm.commodityDescription"
+                maxlength="30"
+                show-word-limit
+              ></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="info" @click="insertCommodity">立即修改</el-button>
+              <el-button @click="addCommodityDrawer=false">取消</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+      </el-drawer>
+      </div>
     </div>
   </div>
 </template>
@@ -250,6 +478,7 @@ export default {
       },
       commoditys: [],
       drawer: false,
+      addCommodityDrawer: false,
       direction: "ltr",
       updateForm: {
         commodityName: "",
@@ -257,7 +486,16 @@ export default {
         commoditySellingPrice: "",
         commodityUnit: "",
         commodityDescription: "",
-		commodityPicture: ""
+        commodityPicture: "",
+      },
+      addForm: {
+        commodityName: "",
+        commodityNumber: "",
+        commoditySellingPrice: "",
+        commodityUnit: "",
+        commodityDescription: "",
+        commodityPicture: "",
+        classificationId:""
       },
       options: [
         {
@@ -293,13 +531,102 @@ export default {
           label: "1/条",
         },
       ],
+      commodityStatus: [
+        {
+          value: "0",
+          label: "上架",
+        },
+        {
+          value: "1",
+          label: "下架",
+        },
+        {
+          value: "2",
+          label: "删除",
+        },
+      ],
       commodityDetail: {},
-	  updateHeader: {
-	  	Authorization: ''
-	  },
+      updateHeader: {
+        Authorization: "",
+      },
+      productsUnderCategory: [
+        {
+          date: "2016-05-02",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1518 弄",
+        },
+        {
+          date: "2016-05-04",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1518 弄",
+        },
+        {
+          date: "2016-05-01",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1518 弄",
+        },
+        {
+          date: "2016-05-03",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1518 弄",
+        },
+      ],
+      dialogTableVisible: false,
+      dialogDetailTableVisible: false,
+      commodityDetailsByClassification: [],
+      findCommodityForm: {
+        commodityName: "",
+        commodityNumber: "",
+        commodityUnit: "",
+        commodityStatus: "",
+        insertStartTime: "",
+        insertEndTime: "",
+        insertUser: "",
+        updateStartTime: "",
+        updateEndTime: "",
+        updateUser: "",
+      },
+      formLabelWidth: "120px",
+      insertTimeValue: [],
+      updateTimeValue: [],
+      userList: [],
+      allClassificationNode:[]
     };
   },
   methods: {
+    getAllUser() {
+      axios({
+        method: "get",
+        url: "/api/user/all",
+        headers: {
+          Authorization: this.userDetails.token,
+        },
+      })
+        .then((res) => {
+          this.userList = res.data.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$message.error("服务器连接超时 请重试！");
+        });
+    },
+    getAllClassificationNode() {
+      axios({
+        method: "get",
+        url: "/api/classification/all",
+        headers: {
+          Authorization: this.userDetails.token,
+        },
+      })
+        .then((res) => {
+          console.log(res);
+          this.allClassificationNode = res.data.data;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$message.error("服务器连接超时 请重试！");
+        });
+    },
     getAllClassification() {
       axios({
         method: "get",
@@ -309,7 +636,6 @@ export default {
         },
       })
         .then((res) => {
-          console.log(res);
           this.classificationData = res.data.data;
         })
         .catch((err) => {
@@ -326,7 +652,6 @@ export default {
         },
       })
         .then((res) => {
-          console.log(res);
           this.total = res.data.data.total;
           this.commoditys = res.data.data.records;
         })
@@ -336,12 +661,23 @@ export default {
         });
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
       this.page = val;
-      this.getAllCommodity();
+      let isNoll = false;
+      for (var key in this.findCommodityForm) {
+        if (this.findCommodityForm[key] != "") {
+          isNoll = true;
+        }
+      }
+      console.log(isNoll);
+      if (isNoll) {
+        this.findCommodityByCondition();
+      } else {
+        this.getAllCommodity();
+      }
     },
     handleNodeClick(val) {
       console.log(val);
+      this.dialogDetailTableVisible = true;
     },
     filterNode(value, data) {
       if (!value) return true;
@@ -380,53 +716,94 @@ export default {
     handleClose(done) {
       console.log(done);
       this.$confirm("确认关闭？")
-        .then(_ => {
+        .then((_) => {
           done();
         })
-        .catch(_ => {});
+        .catch((_) => {});
     },
     onSubmit() {
       console.log(this.updateForm);
-	  console.log(this.commodityDetail.commodityId)
-	  let formData = new FormData();
-	  for (var key in this.updateForm) {
-	    formData.append(key, this.updateForm[key]);
-	  }
-	  formData.append("commodityId", this.commodityDetail.commodityId);
-	  axios({
-	    method: "put",
-	    url: "/api/commodity/",
-	    headers: {
-	      Authorization: this.userDetails.token,
-	      "Content-Type": "multipart/form-data",
-	    },
-	    data: formData,
-	  })
-	    .then((res) => {
-			console.log(res)
-	      if (res.data.status == 200) {
-	        this.$message({
-	          message: res.data.data,
-	          type: "success",
-	        });
-	        this.drawer = false;
-			Object.keys(this.updateForm).forEach(key => (this.updateForm[key] = ''));
-			this.getAllCommodity();
-	      } else {
-	        this.$message.error("删除失败 请重试！");
-	      }
-	    })
-	    .catch((err) => {
-	      console.log(err);
-	      this.$message.error("服务器连接超时 请重试！");
-	    });
+      console.log(this.commodityDetail.commodityId);
+      let formData = new FormData();
+      for (var key in this.updateForm) {
+        formData.append(key, this.updateForm[key]);
+      }
+      formData.append("commodityId", this.commodityDetail.commodityId);
+      axios({
+        method: "put",
+        url: "/api/commodity/",
+        headers: {
+          Authorization: this.userDetails.token,
+          "Content-Type": "multipart/form-data",
+        },
+        data: formData,
+      })
+        .then((res) => {
+          console.log(res);
+          if (res.data.status == 200) {
+            this.$message({
+              message: res.data.data,
+              type: "success",
+            });
+            this.drawer = false;
+            Object.keys(this.updateForm).forEach(
+              (key) => (this.updateForm[key] = "")
+            );
+            this.getAllCommodity();
+          } else {
+            this.$message.error("删除失败 请重试！");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$message.error("服务器连接超时 请重试！");
+        });
+    },
+    insertCommodity() {
+      console.log(this.addForm);
+      let formData = new FormData();
+      for (var key in this.addForm) {
+        formData.append(key, this.addForm[key]);
+      }
+      axios({
+        method: "post",
+        url: "/api/commodity/",
+        headers: {
+          Authorization: this.userDetails.token,
+          "Content-Type": "multipart/form-data",
+        },
+        data: formData,
+      })
+        .then((res) => {
+          console.log(res);
+          if (res.data.status == 200) {
+            this.$message({
+              message: res.data.data,
+              type: "success",
+            });
+            this.addCommodityDrawer = false;
+            Object.keys(this.addForm).forEach(
+              (key) => (this.addForm[key] = "")
+            );
+            this.getAllCommodity();
+          } else {
+            this.$message.error("删除失败 请重试！");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$message.error("服务器连接超时 请重试！");
+        });
     },
     handleAvatarSuccess(res, file) {
-		console.log(res);
-		console.log(file)
-      // this.imageUrl = URL.createObjectURL(file.raw);
-	  this.commodityDetail.commodityPicture = res.data
-	  this.updateForm.commodityPicture = res.data
+      console.log(file);
+      this.commodityDetail.commodityPicture = res.data;
+      this.updateForm.commodityPicture = res.data;
+    },
+    addHandleAvatarSuccess(res, file) {
+      console.log(res);
+      console.log(file);
+      this.addForm.commodityPicture = res.data;
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg";
@@ -440,12 +817,81 @@ export default {
       }
       return isJPG && isLt2M;
     },
+    findCommodityByCondition() {
+      this.dialogFormVisible = false;
+      if (this.insertTimeValue.length != 0 && this.insertTimeValue != "") {
+        this.findCommodityForm.insertStartTime = this.insertTimeValue[0];
+        this.findCommodityForm.insertEndTime = this.insertTimeValue[1];
+      }
+      if (this.updateTimeValue.length != 0 && this.insertTimeValue != "") {
+        this.findCommodityForm.updateStartTime = this.updateTimeValue[0];
+        this.findCommodityForm.updateEndTime = this.updateTimeValue[1];
+      }
+      let urlCondition = "";
+      for (var key in this.findCommodityForm) {
+        urlCondition += key + "=" + this.findCommodityForm[key] + "&";
+      }
+      urlCondition += "page=" + this.page + "&";
+      urlCondition += "size=" + this.size;
+
+      axios({
+        method: "get",
+        url: "/api/commodity/?" + urlCondition,
+        headers: {
+          Authorization: this.userDetails.token,
+        },
+      })
+        .then((res) => {
+          console.log(res);
+          this.dialogTableVisible = false;
+          this.total = res.data.data.total;
+          this.commoditys = res.data.data.records;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$message.error("服务器连接超时 请重试！");
+        });
+    },
+    getCommodityByCondition() {
+      this.page = 1;
+      this.findCommodityByCondition();
+    },
+    cancelFindCommodity() {
+      this.dialogTableVisible = false;
+      for (var key in this.findCommodityForm) {
+        this.findCommodityForm[key] = "";
+      }
+      if (this.insertTimeValue.length != 0 && this.insertTimeValue != "") {
+        this.insertTimeValue = [];
+      }
+      if (this.updateTimeValue.length != 0 && this.insertTimeValue != "") {
+        this.updateTimeValue = [];
+      }
+    },
+    cancelAll() {
+      for (var key in this.findCommodityForm) {
+        this.findCommodityForm[key] = "";
+      }
+      if (this.insertTimeValue.length != 0 && this.insertTimeValue != "") {
+        this.insertTimeValue = [];
+      }
+      if (this.updateTimeValue.length != 0 && this.insertTimeValue != "") {
+        this.updateTimeValue = [];
+      }
+      this.page = 1;
+      this.getAllCommodity();
+    },
+    addCommodity(){
+      this.addCommodityDrawer = true;
+    }
   },
   created() {
     this.userDetails = JSON.parse(localStorage.getItem("user-information"));
     this.getAllClassification();
     this.getAllCommodity();
-	this.updateHeader.Authorization = this.userDetails.token;
+    this.getAllUser();
+    this.getAllClassificationNode();
+    this.updateHeader.Authorization = this.userDetails.token;
   },
   watch: {
     filterText(val) {
@@ -479,6 +925,22 @@ body {
       height: 100%;
       overflow-y: auto;
       position: relative;
+      .el-card__header {
+        padding: 10px;
+        .clearfix {
+          padding: 10px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          span {
+            padding: 8px;
+          }
+          .el-button {
+            padding: 8px;
+            font-size: 13px;
+          }
+        }
+      }
       .el-card__body {
         > div {
           .el-tree {
@@ -499,6 +961,22 @@ body {
       height: 100%;
       position: relative;
       overflow-y: auto;
+      .el-card__header {
+        padding: 10px;
+        .clearfix {
+          padding: 10px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          span {
+            padding: 8px;
+          }
+          .el-button {
+            padding: 8px;
+            font-size: 13px;
+          }
+        }
+      }
       .my-collapse {
         width: 100%;
         height: 80%;
@@ -584,10 +1062,15 @@ body {
             height: 200px;
             display: block;
           }
-		  .el-select{
-			  width: 100%;
-		  }
+          .el-select {
+            width: 100%;
+          }
         }
+      }
+    }
+    .add-commodity{
+      .el-upload{
+        width: 100%;
       }
     }
   }

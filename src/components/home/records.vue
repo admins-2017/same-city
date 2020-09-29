@@ -19,7 +19,11 @@
           format="yyyy 年 MM 月 dd 日"
           value-format="yyyy-MM-dd"
         ></el-date-picker>
-        <el-select v-model="queryFrom.requestType" clearable placeholder="请选择类型">
+        <el-select
+          v-model="queryFrom.requestType"
+          clearable
+          placeholder="请选择类型"
+        >
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -28,8 +32,12 @@
           ></el-option>
         </el-select>
         <div>
-          <el-button type="primary" plain @click="getRecordByCondition">查询</el-button>
-          <el-button type="primary" plain @click="cancelCondition">取消</el-button>
+          <el-button type="primary" plain @click="getRecordByCondition"
+            >查询</el-button
+          >
+          <el-button type="primary" plain @click="cancelCondition"
+            >取消</el-button
+          >
         </div>
       </div>
       <div>
@@ -40,14 +48,28 @@
           height="600"
           border
         >
-          <el-table-column prop="recordId" label="操作ID" width="80"></el-table-column>
-          <el-table-column prop="requestTime" label="操作日期" width="220" align="center">
+          <el-table-column
+            prop="recordId"
+            label="操作ID"
+            width="80"
+          ></el-table-column>
+          <el-table-column
+            prop="requestTime"
+            label="操作日期"
+            width="220"
+            align="center"
+          >
             <template slot-scope="scope">
               <i class="el-icon-time"></i>
               <span style="margin-left: 10px">{{ scope.row.requestTime }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="requestUser" label="操作人员" width="180" align="center">
+          <el-table-column
+            prop="requestUser"
+            label="操作人员"
+            width="180"
+            align="center"
+          >
             <template slot-scope="scope">
               <i class="el-icon-user"></i>
               <span style="margin-left: 10px">{{ scope.row.requestUser }}</span>
@@ -64,12 +86,20 @@
               </el-popover>
             </template>
           </el-table-column>
-          <el-table-column prop="requestType" label="请求方式" width="80" align="center">
+          <el-table-column
+            prop="requestType"
+            label="请求方式"
+            width="80"
+            align="center"
+          >
             <template slot-scope="scope">
               <el-tag size="medium">{{ scope.row.requestType }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="description" label="操作描述"></el-table-column>
+          <el-table-column
+            prop="description"
+            label="操作描述"
+          ></el-table-column>
         </el-table>
       </div>
       <div>
@@ -156,24 +186,17 @@ export default {
   methods: {
     handleCurrentChange(val) {
       this.page = val;
-      console.log(this.queryFrom);
-      console.log(this.queryFrom.requestUser != "");
-      console.log(this.queryFrom.requestType != "");
-      console.log(this.queryFrom.startTime != "");
-      console.log(this.queryFrom.endTime != "");
-      console.log(this.queryFrom.startTime != undefined);
-      console.log(this.queryFrom.endTime != undefined);
-
       if (
         this.queryFrom.requestUser != "" ||
         this.queryFrom.requestType != "" ||
         this.queryFrom.startTime != "" ||
-        this.queryFrom.startTime != undefined ||
-        this.queryFrom.endTime != "" ||
-        this.queryFrom.endTime != undefined
+        // this.queryFrom.startTime != undefined ||
+        this.queryFrom.endTime != ""
+        // this.queryFrom.endTime != undefined
       ) {
         console.log("执行条件查询");
-        this.getRecordByCondition();
+        console.log(this.page);
+        this.getRecord();
       } else {
         console.log("执行分页查询");
         this.getRecordByPage();
@@ -210,7 +233,10 @@ export default {
         });
     },
     getRecordByCondition() {
-		this.page = 0
+      this.page = 1;
+      this.getRecord();
+    },
+    getRecord() {
       if (this.recordTime[0] != undefined) {
         this.queryFrom.startTime = this.recordTime[0];
       }
@@ -249,9 +275,9 @@ export default {
     cancelCondition() {
       (this.recordTime = ""),
         (this.queryFrom.requestType = ""),
-		(this.queryFrom.requestUser = "");
-		this.page = 1;
-		this.getRecordByPage();
+        (this.queryFrom.requestUser = "");
+      this.page = 1;
+      this.getRecordByPage();
     },
   },
   created() {
