@@ -82,7 +82,10 @@
                 inactive-text="显示"
               >
               </el-switch>
-              <el-button  type="text" v-if="updateStatus" @click="updateClassification(item)"
+              <el-button
+                type="text"
+                v-if="updateStatus"
+                @click="updateClassification(item)"
                 >立即修改</el-button
               >
               <el-button @click="changeUpdate" type="text">取消</el-button>
@@ -293,12 +296,12 @@ body {
     }
     > div:nth-of-type(3) {
       .update-form {
-		  margin-top: 25px;
-		  display: flex;
-		  justify-content: center;
+        margin-top: 25px;
+        display: flex;
+        justify-content: center;
         .el-form-item__content {
-		  width: 90%;
-		  margin: 0px;
+          width: 90%;
+          margin: 0px;
           display: flex;
           justify-content: space-between;
           align-items: center;
