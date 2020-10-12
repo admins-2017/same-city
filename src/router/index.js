@@ -77,6 +77,10 @@ const routes = [
 			{
 				path: '/tasks',
 				component: () => import('../components/home/tasks.vue')
+			},
+			{
+				path: '/inventory',
+				component: () => import('../components/home/inventory.vue')
 			}
 		]
 	},
