@@ -147,22 +147,102 @@
           ></el-pagination>
         </div>
         <div>
-          <el-dialog :title="dialogTitle" :visible.sync="dialogTableVisible">
-            <el-table :data="gridData">
+          <el-dialog
+            :title="dialogTitle"
+            :width="commodityDialog"
+            :visible.sync="CommodityTableVisible"
+            :close="closeCommodityDialog"
+          >
+            <el-table :data="commodityData" style="width: 100%" background>
+              <el-table-column label="商品ID" align="center" prop="commodityId">
+              </el-table-column>
               <el-table-column
-                property="date"
-                label="日期"
-                width="150"
-              ></el-table-column>
+                label="商品名称"
+                show-overflow-tooltip
+                prop="commodityName"
+              >
+              </el-table-column>
               <el-table-column
-                property="name"
-                label="姓名"
-                width="200"
-              ></el-table-column>
+                label="商品编码"
+                align="center"
+                prop="commodityNumber"
+              >
+              </el-table-column>
               <el-table-column
-                property="address"
-                label="地址"
-              ></el-table-column>
+                label="建议售价"
+                align="center"
+                prop="commoditySellingPrice"
+              >
+              </el-table-column>
+              <el-table-column
+                label="商品规格"
+                align="center"
+                prop="commodityUnit"
+              >
+              </el-table-column>
+              <el-table-column
+                label="商品描述"
+                show-overflow-tooltip
+                prop="commodityDescription"
+              >
+              </el-table-column>
+              <el-table-column
+                label="所属分类"
+                align="center"
+                prop="classificationName"
+              >
+              </el-table-column>
+            </el-table>
+          </el-dialog>
+          <el-dialog :title="dialogTitle" :width="detailsDialog" :visible.sync="dialogTableVisible">
+            <el-table
+              :data="gridData"
+              style="width: 100%"
+              background
+              :row-class-name="tableRowClassName"
+            >
+              <el-table-column type="expand">
+                <template slot-scope="props">
+                  <el-form
+                    label-position="left"
+                    inline
+                    class="demo-table-expand"
+                  >
+                    <el-form-item label="商品名称">
+                      <span>{{ props.row.commodityName }}</span>
+                    </el-form-item>
+                    <el-form-item label="所属店铺">
+                      <span>{{ props.row.shopName }}</span>
+                    </el-form-item>
+                    <el-form-item label="所属分类">
+                      <span>{{ props.row.classificationName }}</span>
+                    </el-form-item>
+                    <el-form-item label="商品简介">
+                      <span>{{ props.row.commodityDescription }}</span>
+                    </el-form-item>
+                    <el-form-item label="商品售价">
+                      <span>{{ props.row.commoditySellingPrice }}</span>
+                    </el-form-item>
+                    <el-form-item label="商品规格">
+                      <span>{{ props.row.commodityUnit }}</span>
+                    </el-form-item>
+                    <el-form-item label="库存数量">
+                      <span style="color: SaddleBrown; font-weight: 600">{{
+                        props.row.inventoryNumber
+                      }}</span>
+                    </el-form-item>
+                    <el-form-item label="商铺地址">
+                      <span>{{ props.row.shopAddress }}</span>
+                    </el-form-item>
+                  </el-form>
+                </template>
+              </el-table-column>
+              <el-table-column label="商铺名称" prop="shopName">
+              </el-table-column>
+              <el-table-column label="商品名称" prop="commodityName">
+              </el-table-column>
+              <el-table-column label="库存数量" prop="inventoryNumber">
+              </el-table-column>
             </el-table>
           </el-dialog>
         </div>
@@ -194,24 +274,12 @@ export default {
       stockNumber: "",
       inventoryNumber: "",
       dialogTitle: "",
-      gridData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }],
-        dialogTableVisible: false,
+      gridData: [],
+      commodityData: [],
+      dialogTableVisible: false,
+      CommodityTableVisible: false,
+      commodityDialog: "70%",
+      detailsDialog: "70%",
     };
   },
   methods: {
@@ -287,11 +355,11 @@ export default {
       this.getCommodityByShop();
     },
     getDetails(val) {
-      let getUrl = "/api/inventory/status/"+val;
+      let getUrl = "/api/inventory/status/" + val;
       if (this.shopId != "") {
         getUrl = getUrl + "&shopId=" + this.shopId;
       }
-      console.log(getUrl)
+      console.log(getUrl);
       axios({
         method: "get",
         url: getUrl,
@@ -301,6 +369,11 @@ export default {
       })
         .then((res) => {
           console.log(res);
+          if (val == 1) {
+            this.commodityData = res.data.data;
+          } else {
+            this.gridData = res.data.data
+          }
         })
         .catch((err) => {
           console.log(err);
@@ -308,29 +381,35 @@ export default {
         });
     },
     getCommodity() {
-      this.dialogTableVisible = true;
-      this.dialogTitle = "商品总量"
+      this.CommodityTableVisible = true;
+      this.dialogTitle = "商品总量";
       this.getDetails(1);
     },
     getWarn() {
       this.dialogTableVisible = true;
-      this.dialogTitle = "缺货商品"
-      this.getDetails(2);
-
+      this.dialogTitle = "缺货商品";
+      this.getDetails(3);
     },
     getZero() {
       this.dialogTableVisible = true;
-      this.dialogTitle = "存量不足"
-      this.getDetails(3);
-
+      this.dialogTitle = "存量不足";
+      this.getDetails(2);
     },
     getAmple() {
       this.dialogTableVisible = true;
-      this.dialogTitle = "存量充足"
+      this.dialogTitle = "存量充足";
       this.getDetails(4);
-
     },
-    
+    closeCommodityDialog() {
+      this.CommodityTableVisible = flase;
+      this.dialogTitle = "";
+      this.commodityData = []
+    },
+    closeDetailsDialog() {
+      this.dialogTableVisible = flase;
+      this.dialogTitle = "";
+      this.gridData = []
+    },
   },
   created() {
     this.userDetails = JSON.parse(localStorage.getItem("user-information"));
@@ -489,6 +568,25 @@ body {
           display: flex;
           justify-content: center;
           align-items: center;
+        }
+        > div:nth-of-type(4) {
+          .el-table {
+            height: 100%;
+            overflow-y: auto;
+          }
+          margin-top: 10px;
+          .demo-table-expand {
+            font-size: 0;
+          }
+          .demo-table-expand label {
+            width: 90px;
+            color: #99a9bf;
+          }
+          .demo-table-expand .el-form-item {
+            margin-right: 0;
+            margin-bottom: 0;
+            width: 50%;
+          }
         }
       }
     }
