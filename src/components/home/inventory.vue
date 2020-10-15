@@ -194,7 +194,11 @@
               </el-table-column>
             </el-table>
           </el-dialog>
-          <el-dialog :title="dialogTitle" :width="detailsDialog" :visible.sync="dialogTableVisible">
+          <el-dialog
+            :title="dialogTitle"
+            :width="detailsDialog"
+            :visible.sync="dialogTableVisible"
+          >
             <el-table
               :data="gridData"
               style="width: 100%"
@@ -372,7 +376,7 @@ export default {
           if (val == 1) {
             this.commodityData = res.data.data;
           } else {
-            this.gridData = res.data.data
+            this.gridData = res.data.data;
           }
         })
         .catch((err) => {
@@ -401,14 +405,14 @@ export default {
       this.getDetails(4);
     },
     closeCommodityDialog() {
-      this.CommodityTableVisible = flase;
+      this.CommodityTableVisible = false;
       this.dialogTitle = "";
-      this.commodityData = []
+      this.commodityData = [];
     },
     closeDetailsDialog() {
-      this.dialogTableVisible = flase;
+      this.dialogTableVisible = false;
       this.dialogTitle = "";
-      this.gridData = []
+      this.gridData = [];
     },
   },
   created() {
