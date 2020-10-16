@@ -193,6 +193,7 @@
               >
               </el-table-column>
             </el-table>
+            <el-button type="text" @click="exportCommodity">导出信息</el-button>
           </el-dialog>
           <el-dialog
             :title="dialogTitle"
@@ -413,6 +414,71 @@ export default {
       this.dialogTableVisible = false;
       this.dialogTitle = "";
       this.gridData = [];
+    },
+    exportDetails(val) {
+      let getUrl = "/api/inventory/export/" + val;
+      if (this.shopId != "") {
+        getUrl = getUrl + "?shopId=" + this.shopId;
+      }
+      axios({
+        method: "get",
+        url: getUrl,
+        responseType: "blob",
+        headers: {
+          Authorization: this.userDetails.token,
+        },
+      })
+      // .then((response) => {
+      //   console.log(response);
+      //   this.downloadFile(response.data);
+      // });
+      .then((res) => {
+        console.log(res)
+        console.log(res.data.size)
+        console.log(res.headers.date)
+        console.log(res.headers.filename)
+          const blob = new Blob([res.data], { //取响应回来的数据
+            type: "application/vnd.ms-excel;charset=utf-8",
+          });
+          const href = window.URL.createObjectURL(blob); // 创建下载的链接
+          const downloadElement = document.createElement("a");
+          downloadElement.href = href;
+          downloadElement.download = decodeURI(res.headers["filename"]);
+          document.body.appendChild(downloadElement);
+          downloadElement.click(); // 点击下载
+          document.body.removeChild(downloadElement); // 下载完成移除元素
+          window.URL.revokeObjectURL(href); // 释放掉blob对象
+        })
+        .catch((fail) => {
+          console.error(fail);
+        });
+    },
+    // downloadFile(data) {
+    //   console.log(data)
+    //   // 文件导出
+    //   if (!data) {
+    //     return;
+    //   }
+    //   let url = window.URL.createObjectURL(new Blob([data]));
+    //   let link = document.createElement("a");
+    //   link.style.display = "none";
+    //   link.href = url;
+    //   link.setAttribute("download", "测试excel.xls");
+
+    //   document.body.appendChild(link);
+    //   link.click();
+    // },
+    exportCommodity() {
+      this.exportDetails(1);
+    },
+    exportZero() {
+      this.exportDetails(2);
+    },
+    exportWarn() {
+      this.exportDetails(3);
+    },
+    exportAmple() {
+      this.exportDetails(4);
     },
   },
   created() {
