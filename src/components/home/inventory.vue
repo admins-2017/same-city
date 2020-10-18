@@ -25,8 +25,11 @@
         <div slot="header" class="clearfix">
           <span>{{ shopName }}</span>
           <div>
-            <el-button style="float: right; padding: 3px 0" type="text"
-              >导出结果</el-button
+            <el-button
+              style="float: right; padding: 3px 0"
+              type="text"
+              @click="exportDetails(0)"
+              >导出所有</el-button
             >
             <el-button
               style="float: right; padding: 3px 0"
@@ -193,7 +196,7 @@
               >
               </el-table-column>
             </el-table>
-            <el-button type="text" @click="exportCommodity">导出信息</el-button>
+            <el-button v-if="commodityData.length!=0" type="text" @click="exportDetails(1)">导出信息</el-button>
           </el-dialog>
           <el-dialog
             :title="dialogTitle"
@@ -249,6 +252,7 @@
               <el-table-column label="库存数量" prop="inventoryNumber">
               </el-table-column>
             </el-table>
+            <el-button v-if="gridData.length!=0" type="text" @click="exportDetails(dialogStatus)">导出结果</el-button>
           </el-dialog>
         </div>
       </el-card>
@@ -285,6 +289,7 @@ export default {
       CommodityTableVisible: false,
       commodityDialog: "70%",
       detailsDialog: "70%",
+      dialogStatus: null,
     };
   },
   methods: {
@@ -362,7 +367,7 @@ export default {
     getDetails(val) {
       let getUrl = "/api/inventory/status/" + val;
       if (this.shopId != "") {
-        getUrl = getUrl + "&shopId=" + this.shopId;
+        getUrl = getUrl + "?shopId=" + this.shopId;
       }
       console.log(getUrl);
       axios({
@@ -393,16 +398,19 @@ export default {
     getWarn() {
       this.dialogTableVisible = true;
       this.dialogTitle = "缺货商品";
+      this.dialogStatus =3;
       this.getDetails(3);
     },
     getZero() {
       this.dialogTableVisible = true;
       this.dialogTitle = "存量不足";
+      this.dialogStatus =2;
       this.getDetails(2);
     },
     getAmple() {
       this.dialogTableVisible = true;
       this.dialogTitle = "存量充足";
+      this.dialogStatus =4;
       this.getDetails(4);
     },
     closeCommodityDialog() {
@@ -428,16 +436,9 @@ export default {
           Authorization: this.userDetails.token,
         },
       })
-      // .then((response) => {
-      //   console.log(response);
-      //   this.downloadFile(response.data);
-      // });
-      .then((res) => {
-        console.log(res)
-        console.log(res.data.size)
-        console.log(res.headers.date)
-        console.log(res.headers.filename)
-          const blob = new Blob([res.data], { //取响应回来的数据
+        .then((res) => {
+          const blob = new Blob([res.data], {
+            //取响应回来的数据
             type: "application/vnd.ms-excel;charset=utf-8",
           });
           const href = window.URL.createObjectURL(blob); // 创建下载的链接
@@ -453,21 +454,9 @@ export default {
           console.error(fail);
         });
     },
-    // downloadFile(data) {
-    //   console.log(data)
-    //   // 文件导出
-    //   if (!data) {
-    //     return;
-    //   }
-    //   let url = window.URL.createObjectURL(new Blob([data]));
-    //   let link = document.createElement("a");
-    //   link.style.display = "none";
-    //   link.href = url;
-    //   link.setAttribute("download", "测试excel.xls");
-
-    //   document.body.appendChild(link);
-    //   link.click();
-    // },
+    exportAll() {
+      this.exportDetails(0);
+    },
     exportCommodity() {
       this.exportDetails(1);
     },
