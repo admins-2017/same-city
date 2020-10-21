@@ -25,17 +25,13 @@
         <div slot="header" class="clearfix">
           <span>商品详情</span>
           <div>
-            <el-button
-              icon="el-icon-search"
-              @click="dialogTableVisible = true"
+            <el-button icon="el-icon-search" @click="dialogTableVisible = true"
               >查询</el-button
             >
-            <el-button  icon="el-icon-circle-plus-outline"
-              @click="addCommodity">新增</el-button
+            <el-button icon="el-icon-circle-plus-outline" @click="addCommodity"
+              >新增</el-button
             >
-            <el-button icon="el-icon-error" @click="cancelAll"
-              >取消</el-button
-            >
+            <el-button icon="el-icon-error" @click="cancelAll">取消</el-button>
           </div>
         </div>
         <div class="my-collapse">
@@ -227,7 +223,10 @@
                   :key="item.classificationId"
                   :label="item.classificationName"
                   :value="item.classificationId"
-                  :disabled="item.classificationName == commodityDetail.classificationName"
+                  :disabled="
+                    item.classificationName ==
+                    commodityDetail.classificationName
+                  "
                 >
                 </el-option>
               </el-select>
@@ -251,7 +250,7 @@
             </el-form-item>
             <el-form-item>
               <el-button type="info" @click="onSubmit">立即修改</el-button>
-              <el-button @click="drawer=false">取消</el-button>
+              <el-button @click="drawer = false">取消</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -369,92 +368,82 @@
       </div>
       <div class="add-commodity">
         <el-drawer
-        title="我是标题"
-        :visible.sync="addCommodityDrawer"
-        :direction="direction"
-        :before-close="handleClose"
-        :with-header="false"
-        size="30%"
-      >
-        <div>
-          <el-form ref="addForm" :model="addForm" label-width="80px">
-            <el-form-item label="商品图:">
-              <el-upload
-                class="avatar-uploader"
-                action="/api/upload/uploadImg"
-                :show-file-list="false"
-                :on-success="addHandleAvatarSuccess"
-                :before-upload="beforeAvatarUpload"
-                :headers="updateHeader"
-              >
-                <img
-                  v-if="addForm.commodityPicture"
-                  :src="addForm.commodityPicture"
-                  class="avatar"
-                />
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-              </el-upload>
-            </el-form-item>
-            <el-form-item label="商品名称:">
-              <el-input
-                v-model="addForm.commodityName"
-              ></el-input>
-            </el-form-item>
-            <el-form-item label="商品编号:">
-              <el-input
-                v-model="addForm.commodityNumber"
-              ></el-input>
-            </el-form-item>
-            <el-form-item label="商品单位:">
-              <el-select
-                v-model="addForm.commodityUnit"
-                clearable
-              >
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+          title="我是标题"
+          :visible.sync="addCommodityDrawer"
+          :direction="direction"
+          :before-close="handleClose"
+          :with-header="false"
+          size="30%"
+        >
+          <div>
+            <el-form ref="addForm" :model="addForm" label-width="80px">
+              <el-form-item label="商品图:">
+                <el-upload
+                  class="avatar-uploader"
+                  action="/api/upload/uploadImg"
+                  :show-file-list="false"
+                  :on-success="addHandleAvatarSuccess"
+                  :before-upload="beforeAvatarUpload"
+                  :headers="updateHeader"
                 >
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="商品分类:">
-              <el-select
-                v-model="addForm.classificationId"
-                clearable
-              >
-                <el-option
-                  v-for="item in allClassificationNode"
-                  :key="item.classificationId"
-                  :label="item.classificationName"
-                  :value="item.classificationId"
+                  <img
+                    v-if="addForm.commodityPicture"
+                    :src="addForm.commodityPicture"
+                    class="avatar"
+                  />
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+              </el-form-item>
+              <el-form-item label="商品名称:">
+                <el-input v-model="addForm.commodityName"></el-input>
+              </el-form-item>
+              <el-form-item label="商品编号:">
+                <el-input v-model="addForm.commodityNumber"></el-input>
+              </el-form-item>
+              <el-form-item label="商品单位:">
+                <el-select v-model="addForm.commodityUnit" clearable>
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  >
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="商品分类:">
+                <el-select v-model="addForm.classificationId" clearable>
+                  <el-option
+                    v-for="item in allClassificationNode"
+                    :key="item.classificationId"
+                    :label="item.classificationName"
+                    :value="item.classificationId"
+                  >
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="建议售价:">
+                <el-input v-model="addForm.commoditySellingPrice">
+                  <template slot="append">元</template>
+                </el-input>
+              </el-form-item>
+              <el-form-item label="商品简介:">
+                <el-input
+                  type="textarea"
+                  v-model="addForm.commodityDescription"
+                  maxlength="30"
+                  show-word-limit
+                ></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="info" @click="insertCommodity"
+                  >立即修改</el-button
                 >
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="建议售价:">
-              <el-input
-                v-model="addForm.commoditySellingPrice"
-              >
-                <template slot="append">元</template>
-              </el-input>
-            </el-form-item>
-            <el-form-item label="商品简介:">
-              <el-input
-                type="textarea"
-                v-model="addForm.commodityDescription"
-                maxlength="30"
-                show-word-limit
-              ></el-input>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="info" @click="insertCommodity">立即修改</el-button>
-              <el-button @click="addCommodityDrawer=false">取消</el-button>
-            </el-form-item>
-          </el-form>
-        </div>
-      </el-drawer>
+                <el-button @click="addCommodityDrawer = false">取消</el-button>
+              </el-form-item>
+            </el-form>
+          </div>
+        </el-drawer>
       </div>
     </div>
   </div>
@@ -495,7 +484,7 @@ export default {
         commodityUnit: "",
         commodityDescription: "",
         commodityPicture: "",
-        classificationId:""
+        classificationId: "",
       },
       options: [
         {
@@ -590,7 +579,7 @@ export default {
       insertTimeValue: [],
       updateTimeValue: [],
       userList: [],
-      allClassificationNode:[]
+      allClassificationNode: [],
     };
   },
   methods: {
@@ -881,9 +870,9 @@ export default {
       this.page = 1;
       this.getAllCommodity();
     },
-    addCommodity(){
+    addCommodity() {
       this.addCommodityDrawer = true;
-    }
+    },
   },
   created() {
     this.userDetails = JSON.parse(localStorage.getItem("user-information"));
@@ -911,10 +900,9 @@ body {
 }
 #commoditys {
   width: 100%;
-  height: 95%;
+  height: 100%;
   display: flex;
   justify-content: space-between;
-  align-items: center;
   > div:nth-of-type(1) {
     width: 22%;
     height: 100%;
@@ -922,9 +910,8 @@ body {
     justify-content: center;
     .box-card {
       width: 95%;
-      height: 100%;
-      overflow-y: auto;
-      position: relative;
+      height: 90%;
+      overflow-y: scroll;
       .el-card__header {
         padding: 10px;
         .clearfix {
@@ -949,6 +936,12 @@ body {
         }
       }
     }
+    .box-card::-webkit-scrollbar {
+     width: 0 !important;
+   }
+   .box-card::-webkit-scrollbar {
+     width: 0 !important;height: 0;
+   }
   }
   > div:nth-of-type(2) {
     width: 78%;
@@ -958,9 +951,7 @@ body {
     background-color: white;
     > .box-card {
       width: 100%;
-      height: 100%;
-      position: relative;
-      overflow-y: auto;
+      height: 90%;
       .el-card__header {
         padding: 10px;
         .clearfix {
@@ -977,52 +968,55 @@ body {
           }
         }
       }
-      .my-collapse {
+      .el-card__body {
         width: 100%;
         height: 80%;
-        overflow-y: auto;
-        .el-collapse {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        .my-collapse {
           width: 100%;
-          height: 100%;
-          .el-collapse-item__wrap {
+          height: 80%;
+          overflow-y: auto;
+          .el-collapse {
             width: 100%;
-            height: 100%;
-
-            .el-collapse-item__content {
+            .el-collapse-item__wrap {
               width: 100%;
-              display: flex;
-              justify-content: space-between;
-              > div:nth-of-type(1) {
-                width: 25%;
-                img {
-                  width: 90%;
-                  height: 160px;
+              .el-collapse-item__content {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                > div:nth-of-type(1) {
+                  width: 25%;
+                  img {
+                    width: 90%;
+                    height: 160px;
+                  }
                 }
-              }
-              > div:nth-of-type(2) {
-                width: 75%;
-                img {
-                  width: 100%;
-                  height: 210px;
-                }
-                .operating-commodity {
-                  width: 50%;
-                  margin: 10px 0px;
-                  display: flex;
-                  justify-content: space-between;
+                > div:nth-of-type(2) {
+                  width: 75%;
+                  img {
+                    width: 100%;
+                    height: 210px;
+                  }
+                  .operating-commodity {
+                    width: 50%;
+                    margin: 10px 0px;
+                    display: flex;
+                    justify-content: space-between;
+                  }
                 }
               }
             }
           }
         }
-      }
-      .el-pagination {
-        margin-bottom: 10px;
-        display: flex;
-        justify-content: center;
-        width: 100%;
-        position: relative;
-        bottom: -20px;
+        .el-pagination {
+          height: 20%;
+          margin-bottom: 10px;
+          display: flex;
+          justify-content: flex-start;
+          width: 100%;
+        }
       }
     }
     .el-drawer {
@@ -1068,8 +1062,8 @@ body {
         }
       }
     }
-    .add-commodity{
-      .el-upload{
+    .add-commodity {
+      .el-upload {
         width: 100%;
       }
     }
