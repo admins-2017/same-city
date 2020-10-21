@@ -82,6 +82,11 @@ const routes = [
 				path: '/inventory',
 				component: () => import('../components/home/inventory.vue')
 			}
+			,
+			{
+				path: '/client',
+				component: () => import('../components/home/client.vue')
+			}
 		]
 	},
 	{
