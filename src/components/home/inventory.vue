@@ -1,5 +1,5 @@
 <template>
-  <div id="commoditys">
+  <div id="inventorys">
     <div>
       <el-card class="box-card">
         <div slot="header" class="clearfix">
@@ -196,7 +196,12 @@
               >
               </el-table-column>
             </el-table>
-            <el-button v-if="commodityData.length!=0" type="text" @click="exportDetails(1)">导出信息</el-button>
+            <el-button
+              v-if="commodityData.length != 0"
+              type="text"
+              @click="exportDetails(1)"
+              >导出信息</el-button
+            >
           </el-dialog>
           <el-dialog
             :title="dialogTitle"
@@ -252,7 +257,12 @@
               <el-table-column label="库存数量" prop="inventoryNumber">
               </el-table-column>
             </el-table>
-            <el-button v-if="gridData.length!=0" type="text" @click="exportDetails(dialogStatus)">导出结果</el-button>
+            <el-button
+              v-if="gridData.length != 0"
+              type="text"
+              @click="exportDetails(dialogStatus)"
+              >导出结果</el-button
+            >
           </el-dialog>
         </div>
       </el-card>
@@ -398,19 +408,19 @@ export default {
     getWarn() {
       this.dialogTableVisible = true;
       this.dialogTitle = "缺货商品";
-      this.dialogStatus =3;
+      this.dialogStatus = 3;
       this.getDetails(3);
     },
     getZero() {
       this.dialogTableVisible = true;
       this.dialogTitle = "存量不足";
-      this.dialogStatus =2;
+      this.dialogStatus = 2;
       this.getDetails(2);
     },
     getAmple() {
       this.dialogTableVisible = true;
       this.dialogTitle = "存量充足";
-      this.dialogStatus =4;
+      this.dialogStatus = 4;
       this.getDetails(4);
     },
     closeCommodityDialog() {
@@ -493,7 +503,7 @@ body {
   padding: 0px;
   overflow-y: hidden;
 }
-#commoditys {
+#inventorys {
   width: 100%;
   height: 100%;
   display: flex;
@@ -594,7 +604,14 @@ body {
           height: 68%;
           .el-table {
             height: 100%;
-            overflow-y: auto;
+            overflow-y: scroll;
+          }
+          .el-table::-webkit-scrollbar {
+            width: 0 !important;
+          }
+          .el-table::-webkit-scrollbar {
+            width: 0 !important;
+            height: 0;
           }
           .el-table .success-row {
             background: white;

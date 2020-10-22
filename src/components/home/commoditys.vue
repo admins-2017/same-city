@@ -706,9 +706,12 @@ export default {
       console.log(done);
       this.$confirm("确认关闭？")
         .then((_) => {
+          console.log(_);
           done();
         })
-        .catch((_) => {});
+        .catch((_) => {
+          console.log(_);
+        });
     },
     onSubmit() {
       console.log(this.updateForm);
@@ -903,6 +906,7 @@ body {
   height: 100%;
   display: flex;
   justify-content: space-between;
+  overflow-y: hidden;
   > div:nth-of-type(1) {
     width: 22%;
     height: 100%;
@@ -951,8 +955,8 @@ body {
     background-color: white;
     > .box-card {
       width: 100%;
-      height: 90%;
-      .el-card__header {
+      height: 100%;
+      > .el-card__header {
         padding: 10px;
         .clearfix {
           padding: 10px;
@@ -968,15 +972,15 @@ body {
           }
         }
       }
-      .el-card__body {
+      > .el-card__body {
         width: 100%;
         height: 80%;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
-        .my-collapse {
+        justify-content: flex-start;
+         .my-collapse {
           width: 100%;
-          height: 80%;
+          height: 85% ;
           overflow-y: auto;
           .el-collapse {
             width: 100%;
@@ -1011,8 +1015,6 @@ body {
           }
         }
         .el-pagination {
-          height: 20%;
-          margin-bottom: 10px;
           display: flex;
           justify-content: flex-start;
           width: 100%;

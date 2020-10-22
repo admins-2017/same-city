@@ -9,30 +9,47 @@
           <div>
             <div>
               <el-input
-                placeholder="请输入内容"
+                placeholder="请输入供应商名称"
                 prefix-icon="el-icon-search"
                 v-model="input2"
                 size="small"
               >
               </el-input>
               <el-input
-                placeholder="请输入内容"
+                placeholder="请输入供应商电话号"
                 prefix-icon="el-icon-search"
                 v-model="input2"
                 size="small"
               >
               </el-input>
               <el-input
-                placeholder="请输入内容"
+                placeholder="请输入供应商邮箱号"
                 prefix-icon="el-icon-search"
                 v-model="input2"
                 size="small"
               >
               </el-input>
+              <el-select
+                size="small"
+                v-model="supplierStatus"
+                clearable
+                placeholder="请选择状态"
+              >
+                <el-option
+                  v-for="item in sexs"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
             </div>
             <div>
               <el-button size="small" icon="el-icon-search">搜索</el-button>
-              <el-button size="small" icon="el-icon-circle-plus-outline"
+              <el-button
+                size="small"
+                icon="el-icon-circle-plus-outline"
+                @click="addSupplierVisible = true"
                 >新增</el-button
               >
               <el-button size="small" icon="el-icon-circle-close"
@@ -45,7 +62,11 @@
           <el-table :data="supplierData" height="80%" stripe>
             <el-table-column fixed prop="supplierId" label="ID">
             </el-table-column>
-            <el-table-column prop="supplierName" label="名称">
+            <el-table-column
+              prop="supplierName"
+              show-overflow-tooltip
+              label="名称"
+            >
             </el-table-column>
             <el-table-column
               prop="supplierAddress"
@@ -90,7 +111,20 @@
                   size="small"
                   >编辑</el-button
                 >
-                <el-button type="text" size="small">删除</el-button>
+                <el-button
+                  type="text"
+                  size="small"
+                  v-if="scope.row.supplierStatus"
+                  @click="updateSupplierStatus(scope.row.supplierId, 0)"
+                  >删除</el-button
+                >
+                <el-button
+                  type="text"
+                  @click="updateSupplierStatus(scope.row.supplierId, 1)"
+                  size="small"
+                  v-else
+                  >恢复</el-button
+                >
               </template>
             </el-table-column>
           </el-table>
@@ -98,12 +132,87 @@
             <el-pagination
               @current-change="handleCurrentChange"
               :page-size="size"
+              :current-page="page"
               layout="total, prev, pager, next, jumper"
               :total="total"
             ></el-pagination>
           </div>
         </div>
       </el-card>
+    </div>
+    <div>
+      <el-dialog
+        title="新增供应商"
+        :visible.sync="addSupplierVisible"
+        width="40%"
+        :before-close="handleAddClose"
+        center
+      >
+        <el-form
+          :model="addSupplierForm"
+          :rules="rules"
+          ref="addSupplierForm"
+          label-width="150px"
+          class="demo-ruleForm"
+          label-position="left"
+        >
+          <el-form-item label="供应商名称" prop="supplierName">
+            <el-input v-model="addSupplierForm.supplierName"></el-input>
+          </el-form-item>
+          <el-form-item label="供应商注册资金" prop="supplierCapital">
+            <el-input v-model="addSupplierForm.supplierCapital"></el-input>
+          </el-form-item>
+          <el-form-item label="供应生产地址" prop="supplierAddress">
+            <el-input v-model="addSupplierForm.supplierAddress"></el-input>
+          </el-form-item>
+          <el-form-item label="供应商负责人" prop="supplierPerson">
+            <el-input v-model="addSupplierForm.supplierPerson"></el-input>
+          </el-form-item>
+          <el-form-item label="供应商联系电话" prop="supplierTelephone">
+            <el-input v-model="addSupplierForm.supplierTelephone"></el-input>
+          </el-form-item>
+          <el-form-item label="供应商电子邮箱" prop="supplierEmail">
+            <el-input v-model="addSupplierForm.supplierEmail">
+              <template slot="append">.com</template>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="供应商主营业务" prop="supplierBusiness">
+            <el-input v-model="addSupplierForm.supplierBusiness"></el-input>
+          </el-form-item>
+          <el-form-item label="与供应商曾是否合作">
+            <el-select
+              v-model="addSupplierForm.supplierCooperated"
+              placeholder="请选择"
+            >
+              <el-option label="否" value="false"></el-option>
+              <el-option label="是" value="true"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="submitForm('addSupplierForm')"
+              >立即创建</el-button
+            >
+            <el-button @click="resetForm('addSupplierForm')">重置</el-button>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
+    </div>
+    <div>
+      <el-dialog
+        title="修改供应商"
+        :visible.sync="updateSupplierVisible"
+        width="40%"
+        :before-close="handleUpdateClose"
+        center
+      >
+        <span>这是一段信息</span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="updateSupplierVisible = false">取 消</el-button>
+          <el-button type="primary" @click="updateSupplierVisible = false"
+            >确 定</el-button
+          >
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -119,6 +228,69 @@ export default {
       page: 1,
       total: 0,
       supplierData: [],
+      sexs: [
+        {
+          value: "false",
+          label: "删除",
+        },
+        {
+          value: "true",
+          label: "正常",
+        },
+      ],
+      supplierStatus: "",
+      addSupplierVisible: false,
+      updateSupplierVisible: false,
+      addSupplierForm: {
+        supplierName: "",
+        supplierCapital: "",
+        supplierAddress: "",
+        supplierPerson: "",
+        supplierTelephone: "",
+        supplierEmail: "",
+        supplierBusiness: "",
+        supplierCooperated: "",
+      },
+      rules: {
+        supplierName: [
+          { required: true, message: "请输入供应商名称", trigger: "blur" },
+          {
+            min: 3,
+            max: 20,
+            message: "长度在 3 到 20 个字符",
+            trigger: "blur",
+          },
+        ],
+        supplierAddress: [
+          { required: true, message: "请输入供应商地址", trigger: "blur" },
+        ],
+        supplierPerson: [
+          {
+            required: true,
+            message: "请输入供应商负责人名称",
+            trigger: "blur",
+          },
+          { min: 2, max: 8, message: "长度在 3 到 5 个字符", trigger: "blur" },
+        ],
+        supplierTelephone: [
+          { required: true, message: "请输入供应商联系方式", trigger: "blur" },
+        ],
+        supplierEmail: [
+          { required: true, message: "请输入供应商邮箱地址", trigger: "blur" },
+        ],
+        supplierBusiness: [
+          { required: true, message: "请输入供应商主营业务", trigger: "blur" },
+        ],
+        supplierCooperated: [
+          {
+            type: "array",
+            required: true,
+            message: "请选择是否合作",
+            trigger: "change",
+          },
+        ],
+        desc: [{ required: true, message: "请填写活动形式", trigger: "blur" }],
+      },
     };
   },
   methods: {
@@ -126,8 +298,33 @@ export default {
       console.log(row);
     },
     handleCurrentChange(val) {
+      console.log(val);
       this.page = val;
       this.getSupplier();
+    },
+    handleAddClose(done) {
+      this.$confirm("确认关闭？")
+        .then((_) => {
+          console.log(_);
+          this.clearAddSupplierFormByClose();
+          done();
+        })
+        .catch((_) => {
+          console.log(_);
+          console.log(this.addSupplierForm);
+        });
+    },
+    handleUpdateClose(done) {
+      this.$confirm("确认关闭？")
+        .then((_) => {
+          console.log(_);
+          this.clearAddSupplierFormByClose();
+          done();
+        })
+        .catch((_) => {
+          console.log(_);
+          console.log(this.addSupplierForm);
+        });
     },
     getSupplier() {
       axios({
@@ -140,6 +337,85 @@ export default {
         .then((res) => {
           this.supplierData = res.data.data.records;
           this.total = res.data.data.total;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$message.error("服务器连接超时 请重试！");
+        });
+    },
+    submitForm(formName) {
+      console.log(formName);
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.addSupplier();
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
+    clearAddSupplierFormByClose() {
+      console.log("执行clearAddSupplierFormByClose");
+      this.$refs["addSupplierForm"].resetFields();
+    },
+    addSupplier() {
+      let formData = new FormData();
+      for (var key in this.addSupplierForm) {
+        if (key === "supplierEmail") {
+          this.addSupplierForm[key] += ".com";
+        }
+        formData.append(key, this.addSupplierForm[key]);
+      }
+      console.log(formData);
+      axios({
+        method: "post",
+        url: "/api/supplier/",
+        headers: {
+          Authorization: this.userDetails.token,
+          "Content-Type": "multipart/form-data",
+        },
+        data: formData,
+      })
+        .then((res) => {
+          console.log(res);
+          if (res.data.status == 200) {
+            this.$message({
+              message: res.data.data,
+              type: "success",
+            });
+            this.addSupplierVisible = false;
+            this.$refs["addSupplierForm"].resetFields();
+            this.handleCurrentChange(1);
+          } else {
+            this.$message.error("删除失败 请重试！");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$message.error("服务器连接超时 请重试！");
+        });
+    },
+    updateSupplierStatus(val1, val2) {
+      axios({
+        method: "put",
+        url: "/api/supplier/status/"+ val2 + "/" + val1,
+        headers: {
+          Authorization: this.userDetails.token,
+        },
+      })
+        .then((res) => {
+          if (res.data.status == 200) {
+            this.$message({
+              message: res.data.data,
+              type: "success",
+            });
+            this.getSupplier();
+          } else {
+            this.$message.error("删除失败 请重试！");
+          }
         })
         .catch((err) => {
           console.log(err);
@@ -193,7 +469,7 @@ body {
           > div:nth-of-type(1) {
             font-size: 20px;
             color: rgb(138, 138, 138);
-            width: 25%;
+            width: 20%;
             height: 100%;
             display: flex;
             align-items: center;
@@ -202,23 +478,32 @@ body {
             }
           }
           > div:nth-of-type(2) {
-            width: 75%;
+            width: 80%;
             height: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             div:nth-of-type(1) {
               width: 70%;
+              height: 100%;
               display: flex;
               justify-content: space-between;
-              .el-input {
-                width: 20%;
+              > .el-input {
+                width: 25%;
                 height: 100%;
                 margin-right: 10px;
               }
+              > .el-select {
+                width: 25%;
+                margin-right: 10px;
+                > .el-input {
+                  width: 100%;
+                  height: 100%;
+                }
+              }
             }
             div:nth-of-type(2) {
-              width: 30%;
+              width: 25%;
               display: flex;
               justify-content: flex-end;
               .el-button {
@@ -241,6 +526,15 @@ body {
           .el-table {
             width: 100%;
           }
+          // 去除el.table流体高度的滚动条
+          ::-webkit-scrollbar {
+            width: 1px;
+            height: 1px;
+          }
+          // ::-webkit-scrollbar-thumb {
+          //   background-color: #a1a3a9;
+          //   border-radius: 0px;
+          // }
           > div:nth-of-type(2) {
             width: 100%;
             margin-top: 20px;
