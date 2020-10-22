@@ -11,27 +11,27 @@
               <el-input
                 placeholder="请输入供应商名称"
                 prefix-icon="el-icon-search"
-                v-model="input2"
+                v-model="queryName"
                 size="small"
               >
               </el-input>
               <el-input
                 placeholder="请输入供应商电话号"
                 prefix-icon="el-icon-search"
-                v-model="input2"
+                v-model="queryTel"
                 size="small"
               >
               </el-input>
               <el-input
                 placeholder="请输入供应商邮箱号"
                 prefix-icon="el-icon-search"
-                v-model="input2"
+                v-model="queryMail"
                 size="small"
               >
               </el-input>
               <el-select
                 size="small"
-                v-model="supplierStatus"
+                v-model="queryStatus"
                 clearable
                 placeholder="请选择状态"
               >
@@ -45,15 +45,23 @@
               </el-select>
             </div>
             <div>
-              <el-button size="small" icon="el-icon-search">搜索</el-button>
+              <el-button
+                size="small"
+                @click="getSupplierByQuery"
+                icon="el-icon-search"
+                >搜索</el-button
+              >
+              <el-button
+                size="small"
+                icon="el-icon-circle-close"
+                @click="changeQuery"
+                >取消</el-button
+              >
               <el-button
                 size="small"
                 icon="el-icon-circle-plus-outline"
                 @click="addSupplierVisible = true"
                 >新增</el-button
-              >
-              <el-button size="small" icon="el-icon-circle-close"
-                >取消</el-button
               >
             </div>
           </div>
@@ -205,13 +213,72 @@
         :before-close="handleUpdateClose"
         center
       >
-        <span>这是一段信息</span>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="updateSupplierVisible = false">取 消</el-button>
-          <el-button type="primary" @click="updateSupplierVisible = false"
-            >确 定</el-button
-          >
-        </span>
+        <el-form
+          :model="updateForm"
+          label-width="150px"
+          class="demo-ruleForm"
+          label-position="left"
+        >
+          <el-form-item label="供应商名称" prop="supplierName">
+            <el-input
+              v-model="updateForm.supplierName"
+              :placeholder="updateSupplierForm.supplierName"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="供应商注册资金" prop="supplierCapital">
+            <el-input
+              v-model="updateForm.supplierCapital"
+              :placeholder="updateSupplierForm.supplierCapital"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="供应生产地址" prop="supplierAddress">
+            <el-input
+              v-model="updateForm.supplierAddress"
+              :placeholder="updateSupplierForm.supplierAddress"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="供应商负责人" prop="supplierPerson">
+            <el-input
+              v-model="updateForm.supplierPerson"
+              :placeholder="updateSupplierForm.supplierPerson"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="供应商联系电话" prop="supplierTelephone">
+            <el-input
+              v-model="updateForm.supplierTelephone"
+              :placeholder="updateSupplierForm.supplierTelephone"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="供应商电子邮箱" prop="supplierEmail">
+            <el-input
+              v-model="updateForm.supplierEmail"
+              :placeholder="updateSupplierForm.supplierEmail"
+            >
+              <template slot="append">.com</template>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="供应商主营业务" prop="supplierBusiness">
+            <el-input
+              v-model="updateForm.supplierBusiness"
+              :placeholder="updateSupplierForm.supplierBusiness"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="与供应商曾是否合作">
+            <el-select
+              v-model="updateForm.supplierCooperated"
+              placeholder="请选择"
+            >
+              <el-option label="否" value="false"></el-option>
+              <el-option label="是" value="true"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="submitUpdateForm()"
+              >立即创建</el-button
+            >
+            <el-button @click="resetUpdateForm('updateForm')">重置</el-button>
+          </el-form-item>
+        </el-form>
       </el-dialog>
     </div>
   </div>
@@ -223,7 +290,10 @@ export default {
   name: "suppliers",
   data() {
     return {
-      input2: "",
+      queryName: "",
+      queryTel: "",
+      queryMail: "",
+      queryStatus: "",
       size: 10,
       page: 1,
       total: 0,
@@ -238,10 +308,20 @@ export default {
           label: "正常",
         },
       ],
-      supplierStatus: "",
       addSupplierVisible: false,
       updateSupplierVisible: false,
       addSupplierForm: {
+        supplierName: "",
+        supplierCapital: "",
+        supplierAddress: "",
+        supplierPerson: "",
+        supplierTelephone: "",
+        supplierEmail: "",
+        supplierBusiness: "",
+        supplierCooperated: "",
+      },
+      updateSupplierForm: {},
+      updateForm: {
         supplierName: "",
         supplierCapital: "",
         supplierAddress: "",
@@ -296,11 +376,21 @@ export default {
   methods: {
     handleClick(row) {
       console.log(row);
+      this.updateSupplierVisible = true;
+      this.updateSupplierForm = row;
     },
     handleCurrentChange(val) {
-      console.log(val);
       this.page = val;
-      this.getSupplier();
+      if (
+        this.queryName != "" ||
+        this.queryTel != "" ||
+        this.queryMail != "" ||
+        this.queryStatus != ""
+      ) {
+        this.getSupplierByQuery();
+      } else {
+        this.getSupplier();
+      }
     },
     handleAddClose(done) {
       this.$confirm("确认关闭？")
@@ -318,12 +408,11 @@ export default {
       this.$confirm("确认关闭？")
         .then((_) => {
           console.log(_);
-          this.clearAddSupplierFormByClose();
+          this.clearUpdateSupplierFormByClose();
           done();
         })
         .catch((_) => {
           console.log(_);
-          console.log(this.addSupplierForm);
         });
     },
     getSupplier() {
@@ -360,6 +449,51 @@ export default {
     clearAddSupplierFormByClose() {
       console.log("执行clearAddSupplierFormByClose");
       this.$refs["addSupplierForm"].resetFields();
+    },
+    submitUpdateForm() {
+      console.log(this.updateForm)
+      let formData = new FormData();
+      for (var key in this.updateForm) {
+        if (key === "supplierEmail"&&this.updateForm[key]!="") {
+          this.updateForm[key] += ".com";
+        }
+        formData.append(key, this.updateForm[key]);
+      }
+        formData.append("supplierId", this.updateSupplierForm.supplierId);
+      axios({
+        method: "put",
+        url: "/api/supplier/",
+        headers: {
+          Authorization: this.userDetails.token,
+          "Content-Type": "multipart/form-data",
+        },
+        data: formData,
+      })
+        .then((res) => {
+          console.log(res);
+          if (res.data.status == 200) {
+            this.$message({
+              message: res.data.data,
+              type: "success",
+            });
+            this.updateSupplierVisible = false;
+            this.updateForm={};
+            this.handleCurrentChange(1);
+          } else {
+            this.$message.error("删除失败 请重试！");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$message.error("服务器连接超时 请重试！");
+        });
+    },
+    resetUpdateForm(formName) {
+      this.$refs[formName].resetFields();
+    },
+    clearUpdateSupplierFormByClose() {
+      this.updateSupplierForm = {};
+      this.updateForm = {};
     },
     addSupplier() {
       let formData = new FormData();
@@ -401,7 +535,7 @@ export default {
     updateSupplierStatus(val1, val2) {
       axios({
         method: "put",
-        url: "/api/supplier/status/"+ val2 + "/" + val1,
+        url: "/api/supplier/status/" + val2 + "/" + val1,
         headers: {
           Authorization: this.userDetails.token,
         },
@@ -421,6 +555,45 @@ export default {
           console.log(err);
           this.$message.error("服务器连接超时 请重试！");
         });
+    },
+    getSupplierByQuery() {
+      let getUrl =
+        "/api/supplier/query?page=" + this.page + "&size=" + this.size;
+      if (this.queryName != "") {
+        getUrl += "&supplierName=" + this.queryName;
+      }
+      if (this.queryTel != "") {
+        getUrl += "&supplierTelephone=" + this.queryTel;
+      }
+      if (this.queryMail != "") {
+        getUrl += "&supplierEmail=" + this.queryMail;
+      }
+      if (this.queryStatus != "") {
+        getUrl += "&supplierStatus=" + this.queryStatus;
+      }
+      axios({
+        method: "get",
+        url: getUrl,
+        headers: {
+          Authorization: this.userDetails.token,
+        },
+      })
+        .then((res) => {
+          this.supplierData = res.data.data.records;
+          this.total = res.data.data.total;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$message.error("服务器连接超时 请重试！");
+        });
+    },
+    changeQuery() {
+      this.queryName = "";
+      this.queryTel = "";
+      this.queryMail = "";
+      this.queryStatus = "";
+      this.page = 1;
+      this.getSupplier();
     },
   },
   created() {
