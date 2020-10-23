@@ -4,7 +4,7 @@
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <div>
-            <span>客户详情</span>
+            <span>供应商详情</span>
           </div>
           <div>
             <div>
@@ -218,6 +218,7 @@
           label-width="150px"
           class="demo-ruleForm"
           label-position="left"
+          ref="updateForm"
         >
           <el-form-item label="供应商名称" prop="supplierName">
             <el-input
@@ -266,10 +267,19 @@
           <el-form-item label="与供应商曾是否合作">
             <el-select
               v-model="updateForm.supplierCooperated"
-              placeholder="请选择"
+              :placeholder="updateSupplierForm.supplierCooperated ? '是':'否' "
+              clearable
             >
-              <el-option label="否" value="false"></el-option>
-              <el-option label="是" value="true"></el-option>
+              <el-option
+                label="否"
+                :disabled="updateSupplierForm.supplierCooperated == false"
+                value="false"
+              ></el-option>
+              <el-option
+                label="是"
+                :disabled="updateSupplierForm.supplierCooperated == true"
+                value="true"
+              ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -451,7 +461,7 @@ export default {
       this.$refs["addSupplierForm"].resetFields();
     },
     submitUpdateForm() {
-      console.log(this.updateForm)
+      console.log(this.updateForm);
       let formData = new FormData();
       for (var key in this.updateForm) {
         if (key === "supplierEmail"&&this.updateForm[key]!="") {
