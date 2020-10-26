@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import './plugins/element.js'
 import './plugins/axios.js'
+import './assets/css/index.less'
 import VueCron from 'vue-cron'
 
 Vue.config.productionTip = false

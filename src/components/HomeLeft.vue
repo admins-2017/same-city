@@ -48,7 +48,9 @@
     </div>
     <div class="left-main">
       <tags></tags>
-      <router-view></router-view>
+      <div class="router-view-area">
+        <router-view></router-view>
+      </div>
     </div>
   </div>
 </template>
@@ -107,7 +109,7 @@ body {
 }
 
 #homeleft {
-  height: 100%;
+  height: 92%;
   display: flex;
   justify-content: space-between;
 
@@ -158,6 +160,10 @@ body {
     overflow-y: hidden;
     overflow-x: hidden;
     background-color: whitesmoke;
+    .router-view-area {
+      height: calc(100% - 32px);
+      padding: 20px;
+    }
   }
 }
 </style>
