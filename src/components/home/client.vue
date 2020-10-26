@@ -162,6 +162,16 @@
             </el-table-column>
           </el-table>
           <div>
+             <el-popconfirm
+              confirmButtonText="确定"
+              cancelButtonText="取消"
+              icon="el-icon-info"
+              iconColor="red"
+              title="确定导出当前客户吗？"
+              @onConfirm="exportClient"
+            >
+              <el-button slot="reference" size="small" >导出当前信息</el-button>
+            </el-popconfirm>
             <el-pagination
               @current-change="handleCurrentChange"
               :page-size="size"
@@ -230,7 +240,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="submitForm('addClientForm')"
-              >立即创建</el-button
+              >添加</el-button
             >
             <el-button @click="resetForm('addClientForm')">重置</el-button>
           </el-form-item>
@@ -314,7 +324,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="submitUpdateForm()"
-              >立即创建</el-button
+              >修改</el-button
             >
             <el-button @click="resetUpdateForm('updateForm')">重置</el-button>
           </el-form-item>
@@ -629,6 +639,48 @@ export default {
       this.page = 1;
       this.getClient();
     },
+    exportClient() {
+      let getUrl = "/api/client/export?page=" + this.page + "&size=" + this.size;
+      if (this.queryName != "") {
+        getUrl += "&clientName=" + this.queryName;
+      }
+      if (this.queryTel != "") {
+        getUrl += "&clientPhone=" + this.queryTel;
+      }
+      if (this.queryMail != "") {
+        getUrl += "&clientEmail=" + this.queryMail;
+      }
+      if (this.queryStatus != "") {
+        getUrl += "&clientStatus=" + this.queryStatus;
+      }
+      axios({
+        method: "get",
+        url: getUrl,
+        responseType: "blob",
+        headers: {
+          Authorization: this.userDetails.token,
+        },
+      })
+        .then((res) => {
+          console.log(res)
+          const blob = new Blob([res.data], {
+            //取响应回来的数据
+            type: "application/vnd.ms-excel;charset=utf-8",
+          });
+          const href = window.URL.createObjectURL(blob); // 创建下载的链接
+          const downloadElement = document.createElement("a");
+          downloadElement.href = href;
+          downloadElement.download = decodeURI(res.headers["filename"]);
+          document.body.appendChild(downloadElement);
+          downloadElement.click(); // 点击下载
+          document.body.removeChild(downloadElement); // 下载完成移除元素
+          window.URL.revokeObjectURL(href); // 释放掉blob对象
+        })
+        .catch((fail) => {
+           this.$message.error('导出结果为空，无法导出');
+          console.error(fail);
+        });
+    },
   },
   created() {
     this.userDetails = JSON.parse(localStorage.getItem("user-information"));
@@ -746,7 +798,7 @@ body {
             width: 100%;
             margin-top: 20px;
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
           }
         }
       }

@@ -10,7 +10,7 @@
         <el-button type="primary" plain @click="insertDialogFormVisible = true">新增任务</el-button>
       </div>
       <div>
-        <el-table :data="tableData" height="600" border style="width: 100%">
+        <el-table :data="tableData" height="100%"  style="width: 100%">
           <el-table-column prop="id" label="id" align="center" width="50"></el-table-column>
           <el-table-column prop="jobName" label="任务名" show-overflow-tooltip></el-table-column>
           <el-table-column prop="jobIntroduction" label="任务介绍" show-overflow-tooltip></el-table-column>
@@ -599,7 +599,7 @@ body {
   width: 100%;
   height: 100%;
   display: flex;
-
+  overflow-y: hidden;
   > div {
     width: 98%;
     height: 98%;
@@ -610,6 +610,7 @@ body {
 
     > div:nth-of-type(1) {
       width: 94%;
+      height: 5%;
       margin-top: 20px;
       padding: 0px 20px;
       display: flex;
@@ -625,6 +626,11 @@ body {
     > div:nth-of-type(2) {
       width: 94%;
       margin-top: 20px;
+      height: 70%;
+      ::-webkit-scrollbar {
+            width: 1px;
+            height: 1px;
+          }
     }
 
     > div:nth-of-type(3) {

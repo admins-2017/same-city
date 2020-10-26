@@ -45,7 +45,7 @@
           :data="tableData"
           style="width: 100%"
           :row-class-name="tableRowClassName"
-          height="600"
+          height="100%"
           border
         >
           <el-table-column
@@ -302,6 +302,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow-y: hidden;
 
   > div {
     width: 98%;
@@ -312,14 +313,16 @@ body {
     align-items: center;
 
     > div:nth-of-type(1) {
+      height: 5%;
       width: 94%;
-      margin-top: 20px;
+      margin-top: 10px;
       padding: 0px 20px;
       display: flex;
       justify-content: space-between;
 
       .el-input {
         width: 20%;
+        height: 100%;
         margin-right: 5px;
       }
 
@@ -340,7 +343,7 @@ body {
     > div:nth-of-type(2) {
       width: 94%;
       margin-top: 20px;
-
+      height: 70%;
       .el-table {
         .get-row {
           background: rgb(179, 231, 192);
@@ -358,6 +361,11 @@ body {
           background: rgb(218, 177, 161);
         }
       }
+       // 去除el.table流体高度的滚动条
+          ::-webkit-scrollbar {
+            width: 1px;
+            height: 1px;
+          }
     }
 
     > div:nth-of-type(3) {

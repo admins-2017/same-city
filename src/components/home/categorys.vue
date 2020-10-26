@@ -24,7 +24,11 @@
             v-for="item in classificationList"
             :key="item.classificationId"
           >
-            <el-table :data="item.children" style="width: 100%" height="550">
+            <el-table
+              :data="item.children"
+              style="width: 100%"
+              height="90%"
+            >
               <el-table-column type="expand">
                 <template slot-scope="props">
                   <el-tag
@@ -188,9 +192,12 @@ export default {
     handleClose(done) {
       this.$confirm("确认关闭？")
         .then((_) => {
+          console.log(_);
           done();
         })
-        .catch((_) => {});
+        .catch((_) => {
+          console.log(_);
+        });
     },
     onSubmit() {
       console.log("submit!");
@@ -251,6 +258,7 @@ body {
   height: 100%;
   margin: 0px;
   padding: 0px;
+  overflow-y: hidden;
 }
 
 #categorys {
@@ -259,9 +267,9 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-
+  overflow-y: hidden;
   > div {
-    width: 98%;
+    width: 100%;
     height: 98%;
     display: flex;
     flex-direction: column;
@@ -270,7 +278,8 @@ body {
 
     > div:nth-of-type(1) {
       width: 95%;
-      margin: 10px 0px;
+      padding: 10px 0px;
+      height: 5%;
       display: flex;
       justify-content: space-between;
       > div:nth-of-type(1) {
@@ -290,9 +299,27 @@ body {
 
     > div:nth-of-type(2) {
       width: 95%;
+      height: 85%;
+      .el-tabs{
+        width: 100%;
+        height: 90%;
+        overflow-y: hidden;
+        .el-tabs__content{
+          height: 100%;
+          .el-tab-pane{
+            height: 100%;
+            overflow-y: auto;
+          }
+          ::-webkit-scrollbar {
+          width: 1px;
+          height: 1px;
+        }
+        }
+      }
       .el-tag {
         margin-right: 10px;
       }
+      
     }
     > div:nth-of-type(3) {
       .update-form {

@@ -10,7 +10,7 @@
         <el-button type="primary" plain @click="insertDialogFormVisible = true">新增用户</el-button>
       </div>
       <div>
-        <el-table :data="tableData" border style="width: 100%" height="500">
+        <el-table :data="tableData" border style="width: 100%" height="100%">
           <el-table-column fixed prop="roleId" label="角色id" width="170"></el-table-column>
           <el-table-column prop="roleName" label="角色名称" width="170"></el-table-column>
           <el-table-column prop="roleDescription" label="角色简介"></el-table-column>
@@ -443,7 +443,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-
+  overflow-y: hidden;
   > div {
     width: 98%;
     height: 98%;
@@ -454,11 +454,10 @@ body {
 
     > div:nth-of-type(1) {
       width: 94%;
-      margin-top: 20px;
-      padding: 0px 20px;
+      margin-top: 10px;
       display: flex;
       justify-content: space-between;
-
+      height: 5%;
       > div:nth-of-type(1) {
         display: flex;
         justify-content: center;
@@ -469,11 +468,18 @@ body {
     > div:nth-of-type(2) {
       margin-top: 20px;
       width: 94%;
+      height: 70%;
+      ::-webkit-scrollbar {
+          width: 1px;
+          height: 1px;
+        }
     }
 
     > div:nth-of-type(3) {
-      margin-top: 30px;
+      height: 10%;
       width: 94%;
+      display: flex;
+      align-items: center;
     }
 
     > div:nth-of-type(4) {

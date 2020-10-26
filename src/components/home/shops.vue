@@ -3,38 +3,97 @@
     <div>
       <div>
         <div>
-          <el-input placeholder="请输入商铺名" prefix-icon="el-icon-search" v-model="queryName"></el-input>
+          <el-input
+            placeholder="请输入商铺名"
+            prefix-icon="el-icon-search"
+            v-model="queryName"
+          ></el-input>
           <el-button type="primary" plain @click="findShopName">查询</el-button>
           <el-button type="primary" plain @click="cancelFind">取消</el-button>
         </div>
-        <el-button type="primary" plain @click="insertDialogFormVisible = true">新增商铺</el-button>
+        <el-button type="primary" plain @click="insertDialogFormVisible = true"
+          >新增商铺</el-button
+        >
       </div>
       <div>
-        <el-table :data="tableData" height="600" border style="width: 100%">
+        <el-table :data="tableData" height="100%" highlight-current-row border  style="width: 100%">
           <el-table-column type="expand">
             <template slot-scope="props">
-              <el-table :data="props.row.children" style="width: 100%" ref="singleTable">
-                <el-table-column prop="username" label="店员名" width="180"></el-table-column>
-                <el-table-column prop="userDetailsTel" label="联系方式" width="180"></el-table-column>
-                <el-table-column prop="userDetailsSex" label="性别"></el-table-column>
-                <el-table-column prop="userDetailsMail" label="联系邮箱"></el-table-column>
-                <el-table-column prop="userDetailsAddr" label="联系地址"></el-table-column>
+              <el-table
+                :data="props.row.children"
+                style="width: 100%"
+                ref="singleTable"
+              >
+                <el-table-column
+                  prop="username"
+                  label="店员名"
+                  width="180"
+                ></el-table-column>
+                <el-table-column
+                  prop="userDetailsTel"
+                  label="联系方式"
+                  width="180"
+                ></el-table-column>
+                <el-table-column
+                  prop="userDetailsSex"
+                  label="性别"
+                ></el-table-column>
+                <el-table-column
+                  prop="userDetailsMail"
+                  label="联系邮箱"
+                ></el-table-column>
+                <el-table-column
+                  prop="userDetailsAddr"
+                  label="联系地址"
+                ></el-table-column>
               </el-table>
             </template>
           </el-table-column>
           <el-table-column prop="shopName" label="商铺名称"></el-table-column>
-          <el-table-column prop="shopAddress" label="商铺地址" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="shopStatus" label="状态" width="100" align="center">
+          <el-table-column
+            prop="shopAddress"
+            label="商铺地址"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="shopStatus"
+            label="状态"
+            width="100"
+            align="center"
+          >
             <template slot-scope="scope">
-              <el-tag type="success" v-if="scope.row.shopStatus==1">营业</el-tag>
-              <el-tag type="info" v-else-if="scope.row.shopStatus==2">休息</el-tag>
+              <el-tag type="success" v-if="scope.row.shopStatus == 1"
+                >营业</el-tag
+              >
+              <el-tag type="info" v-else-if="scope.row.shopStatus == 2"
+                >休息</el-tag
+              >
               <el-tag type="warning" v-else>暂停营业</el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="shopIntroduction" label="商铺公告" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="shopTel" label="商铺电话" width="140" align="center"></el-table-column>
-          <el-table-column prop="insertTime" label="创建时间" align="center" width="160"></el-table-column>
-          <el-table-column prop="updateTime" label="最近一次修改时间" align="center" width="160"></el-table-column>
+          <el-table-column
+            prop="shopIntroduction"
+            label="商铺公告"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="shopTel"
+            label="商铺电话"
+            width="140"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="insertTime"
+            label="创建时间"
+            align="center"
+            width="160"
+          ></el-table-column>
+          <el-table-column
+            prop="updateTime"
+            label="最近一次修改时间"
+            align="center"
+            width="160"
+          ></el-table-column>
           <el-table-column label="操作" width="50" align="center">
             <template slot-scope="scope">
               <el-button
@@ -56,7 +115,12 @@
         ></el-pagination>
       </div>
       <div>
-        <el-dialog title="新增商铺" :visible.sync="insertDialogFormVisible" :width="dialogWidht" center>
+        <el-dialog
+          title="新增商铺"
+          :visible.sync="insertDialogFormVisible"
+          :width="dialogWidht"
+          center
+        >
           <div class="insert-shop-from">
             <el-input
               v-model="insertForm.shopName"
@@ -113,15 +177,33 @@
               prefix-icon="el-icon-phone"
               :placeholder="shopDetails.shopTel"
             ></el-input>
-            <el-select v-model="updateFrom.shopStatus" clearable placeholder="修改商铺状态">
-              <el-option label="营业" value="1" :disabled="1==shopDetails.shopStatus ? true:false"></el-option>
-              <el-option label="休息" value="2" :disabled="2==shopDetails.shopStatus ? true:false"></el-option>
-              <el-option label="暂停营业" value="3" :disabled="3==shopDetails.shopStatus ? true:false"></el-option>
+            <el-select
+              v-model="updateFrom.shopStatus"
+              clearable
+              placeholder="修改商铺状态"
+            >
+              <el-option
+                label="营业"
+                value="1"
+                :disabled="1 == shopDetails.shopStatus ? true : false"
+              ></el-option>
+              <el-option
+                label="休息"
+                value="2"
+                :disabled="2 == shopDetails.shopStatus ? true : false"
+              ></el-option>
+              <el-option
+                label="暂停营业"
+                value="3"
+                :disabled="3 == shopDetails.shopStatus ? true : false"
+              ></el-option>
             </el-select>
           </div>
           <div slot="footer" class="dialog-footer">
             <el-button @click="cancelUpdateShop">取 消</el-button>
-            <el-button type="primary" @click="updateShopDetails">确 定</el-button>
+            <el-button type="primary" @click="updateShopDetails"
+              >确 定</el-button
+            >
           </div>
         </el-dialog>
       </div>
@@ -157,7 +239,7 @@ export default {
       },
       shopDetails: {},
       dialogWidht: "30%",
-      userDetails:{},
+      userDetails: {},
     };
   },
   methods: {
@@ -335,6 +417,7 @@ body {
   width: 100%;
   height: 100%;
   display: flex;
+  overflow-y: hidden;
   > div {
     width: 98%;
     height: 98%;
@@ -344,6 +427,7 @@ body {
     align-items: center;
     > div:nth-of-type(1) {
       width: 94%;
+      height: 5%;
       margin-top: 20px;
       padding: 0px 20px;
       display: flex;
@@ -357,7 +441,15 @@ body {
     }
     > div:nth-of-type(2) {
       width: 94%;
+      height: 70%;
       margin-top: 20px;
+      ::-webkit-scrollbar {
+        width: 1px;
+        height: 1px;
+      }
+      .gutter{
+        width: 0px ;
+      }
     }
     > div:nth-of-type(3) {
       width: 94%;
@@ -382,8 +474,8 @@ body {
       }
     }
     > div:nth-of-type(5) {
-      .el-dialog__header{
-        >.el-dialog__title{
+      .el-dialog__header {
+        > .el-dialog__title {
           color: rgb(8, 141, 90);
         }
       }
@@ -397,7 +489,7 @@ body {
             margin: 10px 0px;
             text-align: center;
           }
-          .el-select{
+          .el-select {
             width: 100%;
           }
         }

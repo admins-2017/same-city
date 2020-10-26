@@ -12,27 +12,51 @@
           ></el-input>
         </div>
         <div>
-          <el-tree :props="shops" :data="allShop" @node-click="handleCheckChange"></el-tree>
+          <el-tree
+            :props="shops"
+            :data="allShop"
+            @node-click="handleCheckChange"
+          ></el-tree>
         </div>
       </div>
       <div class="users-right">
         <div>
           <div>
-            <el-input placeholder="请输入用户名" prefix-icon="el-icon-search" v-model="queryName"></el-input>
-            <el-button type="primary" plain @click="getUserByName">查询</el-button>
+            <el-input
+              placeholder="请输入用户名"
+              prefix-icon="el-icon-search"
+              v-model="queryName"
+            ></el-input>
+            <el-button type="primary" plain @click="getUserByName"
+              >查询</el-button
+            >
             <el-button type="primary" plain @click="clearQuery">取消</el-button>
           </div>
-          <el-button type="primary" plain @click="dialogFormVisible = true">新增用户</el-button>
+          <el-button type="primary" plain @click="dialogFormVisible = true"
+            >新增用户</el-button
+          >
         </div>
         <div>
-          <el-table :data="tableData" border :height="'500'">
-            <el-table-column prop="userId" sortable label="用户id" width="175"></el-table-column>
-            <el-table-column prop="username" label="姓名" width="85"></el-table-column>
+          <el-table :data="tableData" border height="100%">
+            <el-table-column
+              prop="userId"
+              sortable
+              label="用户id"
+              width="175"
+            ></el-table-column>
+            <el-table-column
+              prop="username"
+              label="姓名"
+              width="85"
+            ></el-table-column>
             <el-table-column
               prop="userDetailsSex"
               label="性别"
               width="65"
-              :filters="[{ text: '男', value: 1 }, { text: '女', value: 2 }]"
+              :filters="[
+                { text: '男', value: 1 },
+                { text: '女', value: 2 },
+              ]"
               :filter-method="filterHandler"
               filter-placement="bottom-end"
             >
@@ -41,19 +65,38 @@
                   :type="'success'"
                   disable-transitions
                   v-if="scope.row.userDetailsSex === 1"
-                >男</el-tag>
+                  >男</el-tag
+                >
                 <el-tag :type="'primary'" disable-transitions v-else>女</el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="userDetailsTel" label="联系方式" width="120"></el-table-column>
-            <el-table-column prop="userDetailsAddr" label="家庭住址"></el-table-column>
-            <el-table-column prop="roleName" label="角色" width="100"></el-table-column>
-            <el-table-column prop="shopName" label="所属商铺" width="120"></el-table-column>
+            <el-table-column
+              prop="userDetailsTel"
+              label="联系方式"
+              width="120"
+            ></el-table-column>
+            <el-table-column
+              prop="userDetailsAddr"
+              label="家庭住址"
+            ></el-table-column>
+            <el-table-column
+              prop="roleName"
+              label="角色"
+              width="100"
+            ></el-table-column>
+            <el-table-column
+              prop="shopName"
+              label="所属商铺"
+              width="120"
+            ></el-table-column>
             <el-table-column
               prop="status"
               label="状态"
               width="70"
-              :filters="[{ text: '正常', value: 'NORMAL' }, { text: '停用', value: 'PROHIBIT' }]"
+              :filters="[
+                { text: '正常', value: 'NORMAL' },
+                { text: '停用', value: 'PROHIBIT' },
+              ]"
               :filter-method="filterHandler"
               filter-placement="bottom-end"
             >
@@ -61,25 +104,39 @@
                 <el-tag
                   :type="scope.row.status === 'NORMAL' ? 'success' : 'danger'"
                   disable-transitions
-                  v-if="scope.row.status=='NORMAL'"
-                >正常</el-tag>
+                  v-if="scope.row.status == 'NORMAL'"
+                  >正常</el-tag
+                >
                 <el-tag
                   :type="scope.row.status === 'NORMAL' ? 'success' : 'danger'"
                   disable-transitions
                   v-else
-                >停用</el-tag>
+                  >停用</el-tag
+                >
               </template>
             </el-table-column>
             <el-table-column label="操作" width="100">
               <template slot-scope="scope">
-                <el-button type="text" @click="handleClick(scope.row)" size="small">编辑</el-button>
+                <el-button
+                  type="text"
+                  @click="handleClick(scope.row)"
+                  size="small"
+                  >编辑</el-button
+                >
                 <el-button
                   type="text"
                   size="small"
                   @click="stopUser(scope.row.userId)"
                   v-if="scope.row.status === 'NORMAL'"
-                >停用</el-button>
-                <el-button type="text" size="small" @click="startUser(scope.row.userId)" v-else>启用</el-button>
+                  >停用</el-button
+                >
+                <el-button
+                  type="text"
+                  size="small"
+                  @click="startUser(scope.row.userId)"
+                  v-else
+                  >启用</el-button
+                >
               </template>
             </el-table-column>
           </el-table>
@@ -95,22 +152,48 @@
           ></el-pagination>
         </div>
         <div>
-          <el-dialog title="新增用户" :visible.sync="dialogFormVisible" :width="dialogWidht" center>
+          <el-dialog
+            title="新增用户"
+            :visible.sync="dialogFormVisible"
+            :width="dialogWidht"
+            center
+          >
             <el-form :model="form">
               <el-form-item label="用户名" :label-width="formLabelWidth">
-                <el-input v-model="form.username" autocomplete="off" :class="textForm"></el-input>
+                <el-input
+                  v-model="form.username"
+                  autocomplete="off"
+                  :class="textForm"
+                ></el-input>
               </el-form-item>
               <el-form-item label="初始密码" :label-width="formLabelWidth">
-                <el-input :placeholder="'123456'" autocomplete="off" :class="textForm" disabled></el-input>
+                <el-input
+                  :placeholder="'123456'"
+                  autocomplete="off"
+                  :class="textForm"
+                  disabled
+                ></el-input>
               </el-form-item>
               <el-form-item label="联系方式" :label-width="formLabelWidth">
-                <el-input v-model="form.userDetailsTel" autocomplete="off" :class="textForm"></el-input>
+                <el-input
+                  v-model="form.userDetailsTel"
+                  autocomplete="off"
+                  :class="textForm"
+                ></el-input>
               </el-form-item>
               <el-form-item label="联系地址" :label-width="formLabelWidth">
-                <el-input v-model="form.userDetailsAddr" autocomplete="off" :class="textForm"></el-input>
+                <el-input
+                  v-model="form.userDetailsAddr"
+                  autocomplete="off"
+                  :class="textForm"
+                ></el-input>
               </el-form-item>
               <el-form-item label="联系邮箱" :label-width="formLabelWidth">
-                <el-input v-model="form.userDetailsMail" autocomplete="off" :class="textForm"></el-input>
+                <el-input
+                  v-model="form.userDetailsMail"
+                  autocomplete="off"
+                  :class="textForm"
+                ></el-input>
               </el-form-item>
               <el-form-item label="性别" :label-width="formLabelWidth">
                 <el-select v-model="form.userDetailsSex" placeholder="请选择">
@@ -146,7 +229,12 @@
           </el-dialog>
         </div>
         <div>
-          <el-dialog title="修改用户" :visible.sync="dialogFormVisible2" :width="dialogWidht" center>
+          <el-dialog
+            title="修改用户"
+            :visible.sync="dialogFormVisible2"
+            :width="dialogWidht"
+            center
+          >
             <el-form :model="updateUserFrom">
               <el-form-item label="用户名" :label-width="formLabelWidth">
                 <el-input
@@ -175,39 +263,55 @@
               <el-form-item label="性别" :label-width="formLabelWidth">
                 <el-select
                   v-model="updateUserFrom.userDetailsSex"
-                  :placeholder="1==userDetailsShow.userDetailsSex?'男':'女' "
+                  :placeholder="
+                    1 == userDetailsShow.userDetailsSex ? '男' : '女'
+                  "
                 >
                   <el-option
                     label="男"
                     value="1"
-                    :disabled="1==userDetailsShow.userDetailsSex ? true:false"
+                    :disabled="
+                      1 == userDetailsShow.userDetailsSex ? true : false
+                    "
                   ></el-option>
                   <el-option
                     label="女"
                     value="2"
-                    :disabled="2==userDetailsShow.userDetailsSex ? true:false"
+                    :disabled="
+                      2 == userDetailsShow.userDetailsSex ? true : false
+                    "
                   ></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="所属商铺" :label-width="formLabelWidth">
-                <el-select v-model="updateUserFrom.shopId" :placeholder="userDetailsShow.shopName">
+                <el-select
+                  v-model="updateUserFrom.shopId"
+                  :placeholder="userDetailsShow.shopName"
+                >
                   <el-option
                     :label="shop.shopName"
                     :value="shop.shopId"
                     v-for="shop in allShop"
                     :key="shop.shopId"
-                    :disabled="shop.shopId==userDetailsShow.shopId ? true:false"
+                    :disabled="
+                      shop.shopId == userDetailsShow.shopId ? true : false
+                    "
                   ></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="分配角色" :label-width="formLabelWidth">
-                <el-select v-model="updateUserFrom.roleId" :placeholder="userDetailsShow.roleName">
+                <el-select
+                  v-model="updateUserFrom.roleId"
+                  :placeholder="userDetailsShow.roleName"
+                >
                   <el-option
                     :label="role.roleName"
                     :value="role.roleId"
                     v-for="role in roles"
                     :key="role.roleId"
-                    :disabled="role.roleId==userDetailsShow.roleId ? true:false"
+                    :disabled="
+                      role.roleId == userDetailsShow.roleId ? true : false
+                    "
                   ></el-option>
                 </el-select>
               </el-form-item>
@@ -215,7 +319,11 @@
             <div slot="footer" class="dialog-footer">
               <el-button @click="dialogFormVisible = false">取 消</el-button>
               <el-button type="primary" @click="updateUser">确 定</el-button>
-              <el-button type="danger" @click="deleteUser(userDetailsShow.userId)">删 除</el-button>
+              <el-button
+                type="danger"
+                @click="deleteUser(userDetailsShow.userId)"
+                >删 除</el-button
+              >
             </div>
           </el-dialog>
         </div>
@@ -595,7 +703,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-
+  overflow: hidden;
   > div {
     width: 98%;
     height: 98%;
@@ -610,15 +718,17 @@ body {
       display: flex;
       flex-direction: column;
       align-items: center;
-
+      overflow-y: hidden;
       > div:nth-of-type(1) {
-        margin-top: 20px;
+        margin-top: 10px;
         width: 90%;
+        height: 5%;
       }
 
       > div:nth-of-type(2) {
         margin-top: 20px;
         width: 90%;
+        height: 80%;
       }
     }
 
@@ -630,16 +740,15 @@ body {
       align-items: center;
 
       > div:nth-of-type(1) {
-        margin-top: 20px;
+        margin-top: 10px;
         width: 95%;
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding-left: 20px;
-
+        height: 5%;
         > div:nth-of-type(1) {
           width: 80%;
-
           .el-input {
             width: 25%;
           }
@@ -652,6 +761,11 @@ body {
         display: flex;
         align-items: center;
         padding-left: 20px;
+        height: 70%;
+        ::-webkit-scrollbar {
+          width: 1px;
+          height: 1px;
+        }
       }
 
       > div:nth-of-type(3) {
