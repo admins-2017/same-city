@@ -36,7 +36,7 @@ const routes = [
 			},
 			{
 				path: '/orders',
-				component: () => import('../components/home/orders.vue')
+				component: () => import('../views/Order/index.vue')
 			},
 			{
 				path: '/roles',

@@ -1,3 +1,5 @@
+@import "./constant.less";
+
 html,
 body {
     width: 100%;
@@ -6,28 +8,45 @@ body {
     padding: 0px;
 }
 
-.el-table {
-    width: 100%;
-
-    .cell {
-        text-align: center;
-    }
-}
-
 .area {
-    .area-header {
-        align-items: center;
+    .area-title {
+        font-size: 20px;
+        padding-left: 10px;
+        line-height: 20px;
+        position: relative;
+        padding: 20px 20px 0 30px;
         background: #fff;
-        border-radius: 5px;
+        border-radius: 5px 5px 0 0;
+
+        &:before {
+            content: '';
+            position: absolute;
+            width: 2.5px;
+            height: 20px;
+            background-color: @link-color;
+            left: 20px;
+        }
+    }
+
+    .area-child {
+        background: #fff;
+        border-radius: 0 0 5px 5px;
         padding: 20px;
         margin-bottom: 20px;
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+        flex-wrap: wrap;
 
-        .area-title {
-            font-size: 24px;
-            border-left: 5px solid teal;
-            padding-left: 13px;
-            line-height: 24px;
-            margin-bottom: 20px;
+        >.el-button {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+        }
+
+        &:last-child {
+            margin-bottom: 0;
         }
 
         .area-search {
@@ -47,5 +66,17 @@ body {
         background: #fff;
         padding: 20px;
         border-radius: 5px;
+    }
+}
+
+.el-dialog {
+    .area {
+        .area-title {
+            font-size: 16px;
+            line-height: 16px;
+            &:before {
+                height: 16px;
+            }
+        }
     }
 }

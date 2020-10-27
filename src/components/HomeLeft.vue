@@ -163,6 +163,7 @@ body {
     .router-view-area {
       height: calc(100% - 32px);
       padding: 20px;
+      overflow-y: auto;
     }
   }
 }

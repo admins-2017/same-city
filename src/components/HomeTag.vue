@@ -47,8 +47,8 @@
 		background-color: white;
 		width: 100%;
 		padding-left: 10px;
-		box-shadow: 0 10px 4px #f4f7fc;
 		position: relative;
+		border-bottom: 1px solid whitesmoke;
 		z-index: 1000;
 		.el-tag{
 			border: 0px;

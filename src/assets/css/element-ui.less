@@ -1,0 +1,114 @@
+/* .el-table start */
+.el-table {
+    width: 100%;
+
+    .cell {
+        text-align: center;
+
+        .el-form-item {
+            width: 100%;
+            margin-bottom: 0;
+
+            .el-form-item__content {
+                width: 100%;
+            }
+        }
+    }
+
+    td {
+        padding: 7px 0;
+    }
+
+    .el-table__empty-block {
+        min-height: 53px;
+
+        .el-table__empty-text {
+            line-height: 53px;
+        }
+    }
+}
+
+/* .el-table end */
+
+/* .el-dialog start */
+.el-dialog {
+    border-radius: 5px;
+
+    .el-dialog__header {
+        padding: 20px 20px 20px 30px;
+        background: #f3f3f3;
+        font-size: 20px;
+        font-weight: 600;
+        color: #2a2e3a;
+        border-radius: 5px 5px 0 0;
+        letter-spacing: 2px;
+    }
+
+    .el-dialog__body {
+        padding: 20px;
+        background-color: #eee;
+    }
+
+    .el-dialog__footer {
+        background: #f3f3f3;
+        padding: 20px;
+        border-radius: 0 0 5px 5px;
+
+        .dialog-footer {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+}
+
+/* .el-dialog end */
+
+/* .el-form start */
+.el-form-item__error {
+    text-align: left;
+    position: unset;
+    padding-top: 0;
+}
+
+.area {
+    .el-form--inline {
+        .el-form-item {
+            margin-right: 0;
+
+            &:nth-child(n+5) {
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    .area-child {
+        >.el-form-item {
+            width: 23%;
+            margin-bottom: 0;
+
+            .el-form-item__label {
+                float: left;
+                display: block;
+                text-align: left;
+                font-size: 12px;
+                line-height: 28px;
+            }
+
+            .el-form-item__content {
+                width: 100%;
+
+                .el-form-item__error {
+                    padding-top: 0;
+                }
+            }
+        }
+    }
+
+    .el-input__inner {
+        height: 32px;
+        line-height: 32px;
+    }
+}
+
+/* .el-form end */

@@ -5,6 +5,7 @@ import store from './store'
 import './plugins/element.js'
 import './plugins/axios.js'
 import './assets/css/index.less'
+import './assets/css/element-ui.less'
 import VueCron from 'vue-cron'
 
 Vue.config.productionTip = false
