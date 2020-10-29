@@ -5,8 +5,7 @@ import Home from '../views/Home.vue'
 
 Vue.use(VueRouter)
 
-const routes = [
-	{
+const routes = [{
 		path: '/',
 		name: 'Login',
 		component: Login
@@ -81,11 +80,14 @@ const routes = [
 			{
 				path: '/inventory',
 				component: () => import('../components/home/inventory.vue')
-			}
-			,
+			},
 			{
 				path: '/client',
 				component: () => import('../components/home/client.vue')
+			},
+			{
+				path: '/dashboard',
+				component: () => import('../views/Dashboard/index.vue')
 			}
 		]
 	},

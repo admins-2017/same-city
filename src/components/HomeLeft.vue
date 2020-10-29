@@ -5,49 +5,53 @@
         <el-menu
           default-active="1"
           :collapse="!isCollapse"
-          :style="!isCollapse?'width:64px':'width:150px'"
+          :style="!isCollapse ? 'width:64px' : 'width:150px'"
           class="el-menu-vertical-demo"
+          background-color="#5d7599"
+          text-color="#fff"
           @open="handleOpen"
           @close="handleClose"
+          unique-opened
           router
         >
-          <div v-for="(menu) in userMenu" :key="menu.name">
-            <el-submenu :index="menu.menuId+''" v-if="menu.type==0">
+          <div v-for="menu in userMenu" :key="menu.name">
+            <el-submenu :index="menu.menuId + ''" v-if="menu.type == 0">
               <template slot="title">
                 <i :class="menu.icon"></i>
-                <span slot="title" v-if="isCollapse">{{menu.name}}</span>
+                <span slot="title" v-if="isCollapse">{{ menu.name }}</span>
               </template>
-              <el-menu-item-group v-if="menu.children.length!=0">
-                <span slot="title" v-if="!isCollapse">{{menu.name}}</span>
+              <el-menu-item-group v-if="menu.children.length != 0">
+                <span slot="title" v-if="!isCollapse">{{ menu.name }}</span>
                 <el-menu-item
                   :index="child.path"
-                  v-for="(child) in menu.children"
+                  v-for="child in menu.children"
                   :key="child.name"
                 >
                   <i :class="child.icon"></i>
                   <router-link
-                    :to="'/'+child.path"
-                    @click.native="doSomething(child.path,child.name)"
-                  >{{child.name}}</router-link>
+                    :to="'/' + child.path"
+                    @click.native="doSomething(child.path, child.name)"
+                    >{{ child.name }}</router-link
+                  >
                 </el-menu-item>
               </el-menu-item-group>
             </el-submenu>
             <el-menu-item
-              v-if="menu.type==1"
+              v-if="menu.type == 1"
               :class="onItem"
               :index="menu.path"
-              @click.native="doSomething(menu.path,menu.name)"
+              @click.native="doSomething(menu.path, menu.name)"
             >
               <i :class="menu.icon"></i>
-              <span slot="title">{{menu.name}}</span>
+              <span slot="title">{{ menu.name }}</span>
             </el-menu-item>
           </div>
         </el-menu>
       </el-row>
-      <el-switch v-model="isCollapse" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+      <!-- <el-switch v-model="isCollapse" active-color="#13ce66" inactive-color="#ff4949"></el-switch> -->
     </div>
     <div class="left-main">
-      <tags></tags>
+      <!-- <tags></tags> -->
       <div class="router-view-area">
         <router-view></router-view>
       </div>
@@ -65,7 +69,7 @@ export default {
   },
   data() {
     return {
-      isCollapse: false,
+      isCollapse: true,
       tags: [],
       isOk: true,
       onItem: "on-my-item",
@@ -117,33 +121,9 @@ body {
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    background-color: #bbe6d6;
-
-    > .el-row {
-      > .el-menu {
-        border: 0px !important;
-        > div {
-          > .el-submenu {
-            background-color: #bbe6d6 !important;
-            .el-menu-item-group__title {
-              padding: 0px !important;
-            }
-
-            .el-submenu__icon-arrow {
-              display: none;
-            }
-
-            .el-menu-item {
-              padding-left: 40px !important;
-              background-color: #bbe6d6 !important;
-              // text-align: center;
-            }
-          }
-          > .el-menu-item {
-            background-color: #bbe6d6 !important;
-          }
-        }
-      }
+    background-color: #5d7599;
+    &::-webkit-scrollbar {
+      display: none;
     }
 
     > .el-switch {
@@ -159,9 +139,10 @@ body {
     flex: 1;
     overflow-y: hidden;
     overflow-x: hidden;
-    background-color: whitesmoke;
+    background-color: #eff2f4;
     .router-view-area {
-      height: calc(100% - 32px);
+      // height: calc(100% - 32px);
+      height: 100%;
       padding: 20px;
       overflow-y: auto;
     }

@@ -1,11 +1,23 @@
 <template>
   <div id="orders" class="area">
-    <div class="area-title">销售单</div>
+    <div class="area-title">资金流查询</div>
     <div class="area-child">
       <div class="area-search">
-        <el-input v-model="input" placeholder="请输入内容"></el-input>
-        <el-button type="primary" @click="getList" size="small">查询</el-button>
-        <el-button type="primary" @click="toAdd" size="small">添加</el-button>
+        <el-input v-model="text.query" placeholder="请输入内容"></el-input>
+        <el-button
+          type="primary"
+          @click="query"
+          icon="el-icon-search"
+          size="small"
+          >查询</el-button
+        >
+        <el-button
+          type="primary"
+          @click="toAdd"
+          icon="el-icon-plus"
+          size="small"
+          >添加</el-button
+        >
       </div>
     </div>
     <div class="area-body">
@@ -23,6 +35,8 @@
         </el-table-column>
       </el-table>
     </div>
+    <!-- 分页 -->
+    <pagination :config="config" @change="getList" />
     <!-- 新增 -->
     <add ref="add-form" />
     <!-- 详情 -->
@@ -31,35 +45,55 @@
 </template>
 
 <script>
-import { getOrderList } from "@/api/order";
-import add from "./modules/add";
-import detail from "./modules/detail";
+import { getOrderList } from "@/api/order"; // 获取列表
+import { COUNT } from "@/utils/constant"; // 查询条数
+import add from "./modules/add"; // 组件-新增
+import detail from "./modules/detail"; // 组件-详情
+import pagination from "@/components/pagination"; // 组件-分页
 export default {
   name: "orders",
   components: {
     add,
     detail,
+    pagination,
   },
   data() {
     return {
       list: {
         order: [],
       },
-      load: true,
+      config: {
+        total: 12, // 总数
+        page: 1, // 页数
+        count: COUNT, // 条数
+      },
+      text: {
+        query: "", // 查询内容
+      },
+      load: true, // 表格loading
     };
   },
   created() {
-    this.getList();
+    this.getList(1);
   },
   methods: {
     // 获取列表
-    getList() {
+    getList(page, count = this.config.count) {
       this.load = true;
-      getOrderList().then((resp) => {
-        console.log(resp);
-        this.list.order = resp.records;
-        this.load = false;
-      });
+      getOrderList(page, count)
+        .then((resp) => {
+          this.list.order = resp.records;
+          this.load = false;
+        })
+        .catch(() => {
+          this.load = false;
+        });
+    },
+
+    // 查询
+    query() {
+      this.config.page = 1;
+      this.getList(1);
     },
 
     // 新增
@@ -69,8 +103,9 @@ export default {
 
     // 详情
     toDetail(obj) {
+      console.log(obj)
       this.$refs["detail-form"].info = obj;
-      this.$refs["detail-form"].show.dialog = true;
+      this.$refs["detail-form"].dialog = true;
     },
   },
 };

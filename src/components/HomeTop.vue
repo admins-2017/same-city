@@ -1,16 +1,13 @@
 <template>
   <div id="hometop">
     <div class="top-logo">
-      <img src="../assets/logo2.png" alt="" />
+      <img src="../assets/logo3.jpg" alt="" />
       <span>巨蜥云</span>
     </div>
     <div class="top-nav"></div>
     <div class="top-user">
-      <img :src="userDetails.userDetailsUrl" alt="" />
-      <el-dropdown trigger="click">
-        <span class="el-dropdown-link">
-          设置<i class="el-icon-arrow-down el-icon--right"></i>
-        </span>
+      <el-dropdown>
+        <img :src="userDetails.userDetailsUrl" alt="" />
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item icon="el-icon-user-solid">
             <router-link to="/detail">个人中心</router-link>
@@ -66,15 +63,16 @@ export default {
     align-items: center;
 
     span {
-      color: black;
+      color: #2a2e3a;
       font-size: 20px;
       margin-right: 10px;
     }
 
     img {
-      width: 30px;
-      height: 30px;
+      width: 40px;
+      height: 40px;
       margin-right: 15px;
+      transform: rotate(43deg);
     }
   }
 
@@ -82,27 +80,12 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+
     img {
       width: 30px;
       height: 30px;
       border-radius: 50%;
-      margin-right: 10px;
-    }
-
-    .el-dropdown-link {
       cursor: pointer;
-      color: black;
-    }
-
-    .el-icon-arrow-down {
-      font-size: 12px;
-    }
-
-    .demonstration {
-      display: block;
-      color: #8492a6;
-      font-size: 14px;
-      margin-bottom: 20px;
     }
   }
 }

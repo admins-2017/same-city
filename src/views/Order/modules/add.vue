@@ -8,6 +8,7 @@
     :show-close="false"
     append-to-body
   >
+    <template slot="title"> <i class="el-icon-plus" />新增销售单 </template>
     <div class="area">
       <el-form :model="form" :rules="rules.form" ref="addForm" inline>
         <!-- 基本信息 -->
@@ -28,16 +29,13 @@
           <el-form-item label="活动名称" prop="name">
             <el-input v-model="form.name" placeholder="请输入"></el-input>
           </el-form-item>
-          <!-- </el-form> -->
         </div>
         <!-- 明细信息 -->
         <div class="area-title">明细信息</div>
         <div class="area-child">
-          <el-button
-            icon="el-icon-plus"
-            @click="addTableColumn"
-            size="mini"
-          ></el-button>
+          <el-button icon="el-icon-plus" @click="addTableColumn" size="mini"
+            >添加商品</el-button
+          >
           <el-table :data="form.table" empty-text="-" border>
             <el-table-column label="#" type="index" />
             <el-table-column label="name">
@@ -91,7 +89,6 @@
               </template>
             </el-table-column>
           </el-table>
-          <!-- </el-form> -->
         </div>
         <!-- 支付信息 -->
         <div class="area-title">支付信息</div>
@@ -112,15 +109,20 @@
         <!-- 其他信息 -->
         <div class="area-title">其他信息</div>
         <div class="area-child">
-          <el-form-item label="备注">
-            <el-input v-model="form.name" placeholder="请输入"></el-input>
+          <el-form-item label="备注" class="textarea">
+            <el-input
+              v-model="form.name"
+              type="textarea"
+              :rows="2"
+              placeholder="请输入"
+            ></el-input>
           </el-form-item>
         </div>
       </el-form>
     </div>
     <span slot="footer" class="dialog-footer">
-      <el-button size="small" @click="calcel">取 消</el-button>
-      <el-button size="small" type="primary" @click="add">确 定</el-button>
+      <el-button @click="calcel">取 消</el-button>
+      <el-button type="primary" @click="add">确 定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -188,7 +190,6 @@ export default {
     // 取消
     calcel() {
       Object.assign(this.$data.form, this.$options.data().form); // 还原form数据
-      this.$refs.addForm.clearValidate(); // 移除表单验证
       this.$refs.addForm.clearValidate(); // 移除表单验证
       this.show.dialog = false;
     },
