@@ -1,11 +1,14 @@
 <template>
   <div id="homeleft">
-    <div class="left-content">
+    <div
+      class="left-content"
+      :style="!isCollapse ? 'width:64px' : 'width:200px'"
+    >
       <el-row class="tac">
         <el-menu
           default-active="1"
-          :collapse="!isCollapse"
-          :style="!isCollapse ? 'width:64px' : 'width:150px'"
+          mode="vertical "
+          :collapse="isCollapse"
           class="el-menu-vertical-demo"
           background-color="#5d7599"
           text-color="#fff"
@@ -69,7 +72,7 @@ export default {
   },
   data() {
     return {
-      isCollapse: true,
+      isCollapse: false,
       tags: [],
       isOk: true,
       onItem: "on-my-item",
@@ -122,15 +125,9 @@ body {
     overflow-y: auto;
     overflow-x: hidden;
     background-color: #5d7599;
+    transition: width 0.2s ease-in-out;
     &::-webkit-scrollbar {
       display: none;
-    }
-
-    > .el-switch {
-      margin-top: 20px;
-      width: 100%;
-      display: flex;
-      justify-content: center;
     }
   }
 

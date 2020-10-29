@@ -1,7 +1,7 @@
 <template>
 	<div id="home">
 		<top :userDetails="testVuex"></top>
-		<left :userMenu="userMenu"></left>
+		<left ref="left" :userMenu="userMenu"></left>
 	</div>
 </template>
 

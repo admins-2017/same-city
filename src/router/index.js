@@ -18,7 +18,7 @@ const routes = [{
 		children: [{
 				// 当 /user/:id/profile 匹配成功，
 				// UserProfile 会被渲染在 User 的 <router-view> 中
-				path: '/detail',
+				path: '/detail2',
 				component: () => import('../components/UserDetails.vue')
 			},
 			{
@@ -88,6 +88,10 @@ const routes = [{
 			{
 				path: '/dashboard',
 				component: () => import('../views/Dashboard/index.vue')
+			},
+			{
+				path: '/detail',
+				component: () => import('../views/Detail/index.vue')
 			}
 		]
 	},

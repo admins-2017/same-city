@@ -15,6 +15,10 @@ export default new Vuex.Store({
 			name: '主页',
 			type: 'closable',
 			path: '/detail'
+		},{
+			name: '系统管理',
+			type: 'closable',
+			path: '/detail'
 		}],
 		menuTree: []
 	},

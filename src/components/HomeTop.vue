@@ -1,8 +1,9 @@
 <template>
-  <div id="hometop">
+  <div id="hometop" class="home-top">
     <div class="top-logo">
-      <img src="../assets/logo3.jpg" alt="" />
-      <span>巨蜥云</span>
+      <img src="../assets/logo4.png" @click="handleCollapse" />
+      <span>雄安新区建设资金管理区块链信息系统
+</span>
     </div>
     <div class="top-nav"></div>
     <div class="top-user">
@@ -43,6 +44,11 @@ export default {
       this.userDetails.userDetailsUrl = val;
     },
   },
+  methods: {
+    handleCollapse() {
+      this.$parent.$refs.left.isCollapse = !this.$parent.$refs.left.isCollapse;
+    },
+  },
 };
 </script>
 
@@ -56,8 +62,7 @@ export default {
   border-bottom: 1px solid whitesmoke;
 
   .top-logo {
-    width: 15%;
-    height: 90%;
+    height: 100%;
     display: flex;
     justify-content: start;
     align-items: center;
@@ -72,7 +77,16 @@ export default {
       width: 40px;
       height: 40px;
       margin-right: 15px;
+      // transform: rotate(43deg);
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .off {
       transform: rotate(43deg);
+    }
+
+    .on {
+      transform: rotate(0deg);
     }
   }
 

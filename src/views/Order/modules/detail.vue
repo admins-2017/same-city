@@ -118,26 +118,17 @@
 </template>
 
 <script>
-import { SETTLEMENT_METHOD, ORDER_STATE } from "@/utils/constant"; // 查询条数
+import { transMethod, transState } from "@/utils";
 export default {
   data() {
     return {
       info: {},
       dialog: false,
-      settlementMethod: SETTLEMENT_METHOD,
     };
   },
-  computed: {
-    transMethod() {
-      return (o) => {
-        return SETTLEMENT_METHOD[o];
-      };
-    },
-    transState() {
-      return (o) => {
-        return ORDER_STATE[o];
-      };
-    },
+  methods: {
+    transMethod, // 支付方式
+    transState, // 订单状态
   },
 };
 </script>

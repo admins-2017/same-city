@@ -34,8 +34,6 @@ export default {
 
 <style lang="less" scoped>
 .el-pagination {
-  padding: 20px 0;
-  text-align: right;
-  margin-bottom: 20px;
+  margin-bottom: 45px;
 }
 </style>
