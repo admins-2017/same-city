@@ -1,8 +1,9 @@
 <template>
   <el-dialog
     title="新增销售单"
-    :visible.sync="show.dialog"
     width="80%"
+    ref="dialogRef"
+    :visible.sync="show.dialog"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :show-close="false"
@@ -14,14 +15,15 @@
         <!-- 基本信息 -->
         <div class="area-title">基本信息</div>
         <div class="area-child">
-          <el-form-item label="销售单号">
+          <el-form-item label="销售单号" prop="orderNumber">
             <el-input
               v-model="form.orderNumber"
-              placeholder="请输入"
+              placeholder="请输入销售单号"
+              readonly
             ></el-input>
           </el-form-item>
-          <el-form-item label="客户">
-            <el-select v-model="form.clientId" placeholder="请选择">
+          <el-form-item label="客户" prop="clientId">
+            <el-select v-model="form.clientId" placeholder="请选择客户">
               <el-option
                 v-for="item in list.clients"
                 :key="item.clientId"
@@ -31,19 +33,11 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <!-- <el-form-item label="商铺">
-            <el-select v-model="form.shopId" placeholder="请选择">
-              <el-option
-                v-for="item in list.shops"
-                :key="item.shopId"
-                :label="item.shopName"
-                :value="item.shopId"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item> -->
-          <el-form-item label="销售人员">
-            <el-select v-model="form.userId" placeholder="请选择">
+          <el-form-item label="销售人员" prop="orderOperatorUser">
+            <el-select
+              v-model="form.orderOperatorUser"
+              placeholder="请选择销售人员"
+            >
               <el-option
                 v-for="item in list.users"
                 :key="item.userId"
@@ -53,11 +47,12 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="下单时间">
+          <el-form-item label="下单时间" prop="orderDate">
             <el-date-picker
               v-model="form.orderDate"
               type="datetime"
-              placeholder="选择日期时间"
+              placeholder="请选择下单时间"
+              value-format="yyyy-MM-dd HH:mm:ss"
             >
             </el-date-picker>
           </el-form-item>
@@ -68,13 +63,13 @@
           <el-button icon="el-icon-plus" @click="addTableColumn" size="mini"
             >添加商品</el-button
           >
-          <el-table :data="form.table" empty-text="-" border>
+          <el-table :data="form.details" empty-text="-" border>
             <el-table-column label="#" type="index" />
             <el-table-column label="商铺">
               <template slot-scope="scope">
                 <el-form-item
-                  :prop="'table.' + scope.$index + '.shopId'"
-                  :rules="rules.table.shopId"
+                  :prop="'details.' + scope.$index + '.shopId'"
+                  :rules="rules.details.shopId"
                 >
                   <el-select
                     v-model="scope.row.shopId"
@@ -94,12 +89,13 @@
             <el-table-column label="商品">
               <template slot-scope="scope">
                 <el-form-item
-                  :prop="'table.' + scope.$index + '.commodityId'"
-                  :rules="rules.table.commodityId"
+                  :prop="'details.' + scope.$index + '.commodityName'"
+                  :rules="rules.details.commodityName"
                 >
                   <el-input
-                    v-model="scope.row.commodityId"
+                    v-model="scope.row.commodityName"
                     placeholder="请选择商品"
+                    suffix-icon="el-icon-arrow-down"
                     readonly
                     @click.native="chooseCommodity(scope)"
                   ></el-input>
@@ -109,11 +105,11 @@
             <el-table-column label="数量">
               <template slot-scope="scope">
                 <el-form-item
-                  :prop="'table.' + scope.$index + '.commodityId'"
-                  :rules="rules.table.commodityId"
+                  :prop="'details.' + scope.$index + '.orderDetailNumber'"
+                  :rules="rules.details.orderDetailNumber"
                 >
                   <el-input
-                    v-model="scope.row.commodityId"
+                    v-model="scope.row.orderDetailNumber"
                     placeholder="请输入数量"
                   ></el-input>
                 </el-form-item>
@@ -122,11 +118,11 @@
             <el-table-column label="价格">
               <template slot-scope="scope">
                 <el-form-item
-                  :prop="'table.' + scope.$index + '.commodityId'"
-                  :rules="rules.table.commodityId"
+                  :prop="'details.' + scope.$index + '.orderDetailPrice'"
+                  :rules="rules.details.orderDetailPrice"
                 >
                   <el-input
-                    v-model="scope.row.commodityId"
+                    v-model="scope.row.orderDetailPrice"
                     placeholder="请输入价格"
                   ></el-input>
                 </el-form-item>
@@ -138,7 +134,7 @@
                   type="text"
                   icon="el-icon-delete"
                   size="mini"
-                  @click="deleteTableColumn(scope.$index)"
+                  @click="form.details.splice(scope.$index, 1)"
                   >移除</el-button
                 >
               </template>
@@ -148,34 +144,28 @@
         <!-- 支付信息 -->
         <div class="area-title">支付信息</div>
         <div class="area-child">
-          <el-form-item label="折扣率">
+          <el-form-item label="折扣率" prop="orderDiscountRate">
             <el-input
               v-model="form.orderDiscountRate"
-              placeholder="请输入"
+              placeholder="请输入折扣率"
             ></el-input>
           </el-form-item>
           <el-form-item label="折后金额">
-            <el-input
-              v-model="form.orderAmountAfterDiscount"
-              placeholder="请输入"
-            ></el-input>
+            <span>{{ form.orderAmountAfterDiscount }}</span>
           </el-form-item>
-          <el-form-item label="本单实付">
+          <el-form-item label="本单实付" prop="orderActualPayment">
             <el-input
               v-model="form.orderActualPayment"
-              placeholder="请输入"
+              placeholder="请输入本单实付"
             ></el-input>
           </el-form-item>
-          <el-form-item label="本单未付">
-            <el-input
-              v-model="form.orderUnpaidAmount"
-              placeholder="请输入"
-            ></el-input>
+          <el-form-item label="本单未付" prop="orderUnpaidAmount">
+            <span>{{ form.orderUnpaidAmount }}</span>
           </el-form-item>
-          <el-form-item label="支付方式">
+          <el-form-item label="支付方式" prop="orderSettlementMethod">
             <el-select
               v-model="form.orderSettlementMethod"
-              placeholder="请选择"
+              placeholder="请选择支付方式"
             >
               <el-option
                 v-for="item in list.methods"
@@ -186,10 +176,15 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="结算账户">
+          <!-- 支付方式为 1-现金 时不显示结算账号 -->
+          <el-form-item
+            label="结算账户"
+            prop="orderSettlementAccount"
+            v-if="[2, 3, 4, 5].includes(form.orderSettlementMethod)"
+          >
             <el-input
               v-model="form.orderSettlementAccount"
-              placeholder="请输入"
+              placeholder="请选择结算账户"
             ></el-input>
           </el-form-item>
           <el-form-item />
@@ -211,7 +206,9 @@
     </div>
     <span slot="footer" class="dialog-footer">
       <el-button @click="calcel">取 消</el-button>
-      <el-button type="primary" @click="add">确 定</el-button>
+      <el-button type="primary" @click="add" :loading="show.load"
+        >确 定</el-button
+      >
     </span>
     <!-- 商品列表 -->
     <shop ref="shop" />
@@ -219,9 +216,10 @@
 </template>
 
 <script>
-import { initOrder } from "@/api/order"; // 新增销售订单-前置查询
+import { initOrder, addOrder } from "@/api/order"; // 新增销售订单-初始化订单
 import { transMethod, transState } from "@/utils"; // 字典转换
 import { SETTLEMENT_METHOD_LIST } from "@/utils/constant.js"; // 支付方式列表
+import { detailsRule, formRule } from "@/rule/order.js"; // 验证规则
 import shop from "./shop"; // 组件-新增
 export default {
   components: {
@@ -231,7 +229,7 @@ export default {
     return {
       show: {
         dialog: false,
-        load: true,
+        load: false,
       },
       list: {
         clients: [],
@@ -239,62 +237,86 @@ export default {
         methods: SETTLEMENT_METHOD_LIST,
       },
       form: {
-        orderNumber: "",
-        clientId: "",
-        shopId: "",
-        userId: "",
-        orderDiscountRate: "",
-        orderAmountAfterDiscount: "",
-        orderActualPayment: "",
-        orderUnpaidAmount: "",
-        orderSettlementMethod: "",
-        orderSettlementAccount: "",
-        orderRemarks: "",
-        orderDate: "",
-        table: [],
+        orderNumber: "", // 销售单号
+        clientId: "", // 客户
+        orderOperatorUser: "", // 销售人员
+        orderDate: "", // 下单时间
+        orderDiscountRate: "", // 折扣率
+        orderAmountAfterDiscount: "-", // 折后金额
+        orderActualPayment: "", // 本单实付
+        orderUnpaidAmount: "-", // 本单未付
+        orderSettlementMethod: "", // 支付方式
+        orderSettlementAccount: "", // 结算账户
+        orderRemarks: "", // 备注
+        details: [
+          {
+            shopId: "",
+            commodityId: "",
+            commodityName: "",
+            orderDetailNumber: "",
+            orderDetailPrice: "",
+          },
+        ], // 明细
+        orderTotalAmount: "", // 合计金额
+        orderStatus: 1, // 销售单状态(1 销售 2 退货 3 作废 )
       },
       rules: {
-        form: {
-          name: [
-            { required: true, message: "请输入活动名称", trigger: "blur" },
-          ],
-        },
-        table: {
-          number: [
-            { required: true, message: "请输入活动名称", trigger: "blur" },
-          ],
-          shopId: [
-            { required: true, message: "请输入活动名称", trigger: "blur" },
-          ],
-          commodityId: [
-            { required: true, message: "请输入活动名称", trigger: "blur" },
-          ],
-        },
+        form: formRule,
+        details: detailsRule,
       },
     };
   },
   methods: {
-    // 新增init
+    // 初始化订单
     init() {
       initOrder()
         .then((resp) => {
-          console.log(resp);
           this.form.orderNumber = resp.orderNumber;
           this.list.clients = resp.clients;
           this.list.shops = resp.shops;
           this.list.users = resp.users;
-          this.show.load = false;
+          this.show.dialog = true;
+          this.$parent.load.add = false;
         })
-        .catch(() => {});
+        .catch(() => {
+          this.$parent.load.add = false;
+          this.$message.error("初始化订单失败，请稍后重试");
+        });
     },
 
     // 新增
     add() {
       this.$refs.addForm.validate((valid) => {
         if (valid) {
-          console.log(this.form);
+          this.show.load = true;
+          addOrder(this.form)
+            .then((resp) => {
+              console.log(resp);
+              this.show.load = false;
+              this.$notify.success({
+                title: "新增成功",
+              });
+              this.calcel();
+              this.$parent.getList(1);
+            })
+            .catch(() => {
+              this.show.load = false;
+              this.$notify.error({
+                title: "新增失败",
+                message: "请稍后重试",
+              });
+              this.calcel();
+            });
         } else {
-          console.log("error submit!!");
+          this.$nextTick(() => {
+            document
+              .getElementsByClassName("el-dialog__wrapper")
+              .item(1).scrollTop =
+              document
+                .getElementsByClassName("is-error")
+                .item(0)
+                .getBoundingClientRect().top - 100;
+          });
           return false;
         }
       });
@@ -302,8 +324,17 @@ export default {
 
     // 选择商品
     chooseCommodity(scope) {
-      this.$refs.shop.getList(scope.row.shopId, scope.$index);
+      if (this.$refs.shop.shopId !== scope.row.shopId) {
+        this.$refs.shop.getList(scope.row.shopId, scope.$index);
+      }
       this.$refs.shop.dialog = true;
+    },
+
+    // 计算总金额
+    calcTotalAmt() {
+      this.form.details.forEach((d) => {
+        this.form.orderTotalAmount += d.orderDetailPrice;
+      });
     },
 
     // 添加行
@@ -311,13 +342,11 @@ export default {
       let obj = {
         shopId: "",
         commodityId: "",
+        commodityName: "",
+        orderDetailNumber: "",
+        orderDetailPrice: "",
       };
-      this.form.table.push(obj);
-    },
-
-    // 删除行
-    deleteTableColumn(index) {
-      this.form.table.splice(index, 1);
+      this.form.details.push(obj);
     },
 
     // 取消
@@ -330,5 +359,20 @@ export default {
     transMethod, // 支付方式
     transState, // 订单状态
   },
+  watch: {
+    "form.orderDiscountRate"(val) {
+      console.log(this.form.orderTotalAmount, val);
+      this.form.orderAmountAfterDiscount = this.form.orderTotalAmount * val;
+    },
+    "form.orderActualPayment"(val) {
+      this.form.orderUnpaidAmount = this.form.orderAmountAfterDiscount - val;
+    },
+  },
 };
 </script>
+
+<style lang="less" scoped>
+.el-table {
+  border-radius: 5px;
+}
+</style>

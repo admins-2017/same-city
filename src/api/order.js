@@ -23,3 +23,12 @@ export function initOrder() {
     method: "get",
   });
 }
+
+// 新增销售订单-前置查询
+export function addOrder(data) {
+  return request({
+    url: `api/order`,
+    data: data,
+    method: "post",
+  });
+}

@@ -38,6 +38,22 @@
     display: block !important;
     width: 6px !important;
   }
+
+  thead {
+    color: @minor-color;
+  }
+}
+
+.area-child {
+  .el-table {
+    th {
+      font-weight: 400 !important;
+      font-size: 12px;
+    }
+    .cell {
+      font-size: 12px;
+    }
+  }
 }
 
 /* .el-table end */
@@ -51,7 +67,7 @@
     background: #f3f3f3;
     font-size: 20px;
     font-weight: 600;
-    color: #2a2e3a;
+    color: @main-color;
     border-radius: 5px 5px 0 0;
     letter-spacing: 2px;
     position: relative;
@@ -88,9 +104,10 @@
 
 /* .el-form start */
 .el-form-item__error {
-  text-align: left;
+  text-align: right;
   position: unset;
   padding-top: 0;
+  zoom: 0.9;
 }
 
 .area {
@@ -99,7 +116,7 @@
       margin-right: 0;
 
       &:nth-child(n + 5) {
-        margin-bottom: 0;
+        margin-top: 20px;
       }
     }
   }
@@ -136,7 +153,22 @@
   .el-input__inner {
     height: 32px;
     line-height: 32px;
+    transition: border-radius 0.5s ease-in-out;
   }
+}
+.el-form-item.is-error .el-input__inner,
+.el-form-item.is-error .el-input__inner:focus,
+.el-form-item.is-error .el-textarea__inner,
+.el-form-item.is-error .el-textarea__inner:focus {
+  border-color: #dcdfe6;
+  border-bottom: 1px solid #ffa507;
+  border-radius: 4px 4px 0 0;
+}
+.el-form-item.is-required:not(.is-no-asterisk) > .el-form-item__label:before,
+.el-form-item.is-required:not(.is-no-asterisk)
+  .el-form-item__label-wrap
+  > .el-form-item__label:before {
+  content: "๑"; // ๑ ✦
 }
 
 /* .el-form end */
@@ -153,7 +185,7 @@
 /* .el-input start */
 .el-input {
   font-size: 13px;
-//   width: 200px;
+  //   width: 200px;
   + .el-input {
     margin-left: 20px;
   }
@@ -164,6 +196,11 @@
       font-size: 12px;
     }
   }
+}
+.el-date-editor.el-input,
+.el-date-editor.el-input__inner,
+.el-select {
+  width: 100%;
 }
 
 /* .el-input end */
@@ -254,3 +291,9 @@
 }
 
 /* .el-tabs end */
+
+/* .el-icon start */
+.el-icon-arrow-up {
+  font-size: 12px !important;
+}
+/* .el-icon end */

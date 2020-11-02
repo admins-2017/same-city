@@ -21,6 +21,7 @@
           @click="query"
           icon="el-icon-search"
           size="small"
+          :loading="load.table"
           >查询</el-button
         >
         <el-button
@@ -28,12 +29,13 @@
           @click="toAdd"
           icon="el-icon-plus"
           size="small"
+          :loading="load.add"
           >添加</el-button
         >
       </div>
     </div>
     <div class="area-body">
-      <el-table :data="list.order" v-loading="load">
+      <el-table :data="list.order" v-loading="load.table">
         <el-table-column label="#" type="index" />
         <el-table-column label="订单号" prop="orderNumber" />
         <el-table-column label="客户名称" prop="clientName" />
@@ -75,14 +77,17 @@ export default {
         order: [],
       },
       config: {
-        total: 12, // 总数
+        total: 0, // 总数
         page: 1, // 页数
         count: COUNT, // 条数
       },
       text: {
         query: "", // 查询内容
       },
-      load: true, // 表格loading
+      load: {
+        add: false, // 添加按钮loading
+        table: true, // 表格loading
+      },
       search: {
         number: "",
         date: "",
@@ -99,14 +104,15 @@ export default {
   methods: {
     // 获取列表
     getList(page, count = this.config.count) {
-      this.load = true;
+      this.load.table = true;
       getOrderList(page, count)
         .then((resp) => {
           this.list.order = resp.records;
-          this.load = false;
+          this.config.total = resp.total;
+          this.load.table = false;
         })
         .catch(() => {
-          this.load = false;
+          this.load.table = false;
         });
     },
 
@@ -118,8 +124,8 @@ export default {
 
     // 新增
     toAdd() {
+      this.load.add = true;
       this.$refs["add-form"].init();
-      this.$refs["add-form"].show.dialog = true;
     },
 
     // 详情

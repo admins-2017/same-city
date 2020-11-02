@@ -54,6 +54,7 @@
           <el-form-item label="销售人员">
             <span>{{ info.operatorUser }}</span>
           </el-form-item>
+          <el-form-item v-if="info.orderSettlementMethod === 1" />
         </div>
         <!-- 商品详情 -->
         <div class="area-title">订单详情</div>
@@ -132,4 +133,3 @@ export default {
   },
 };
 </script>
-

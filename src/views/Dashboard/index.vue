@@ -2,18 +2,22 @@
   <div class="dashboard area">
     <div class="area-title">首页驾驶舱</div>
     <div class="area-body">
-      <h2>敏捷供应 购销协同</h2>
+      <div id="echart" />
     </div>
   </div>
 </template>
 
 <script>
+import chart from "echarts";
 export default {
   data() {
     return {
       info: {},
       dialog: false,
     };
+  },
+  created() {
+    // chart
   },
 };
 </script>
