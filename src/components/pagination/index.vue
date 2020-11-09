@@ -31,9 +31,3 @@ export default {
   },
 };
 </script>
-
-<style lang="less" scoped>
-.el-pagination {
-  margin-bottom: 45px;
-}
-</style>

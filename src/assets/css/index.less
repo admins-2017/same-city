@@ -50,14 +50,23 @@ body {
         }
 
         .area-search {
+            width: 100%;
             display: flex;
 
-            .el-input {
-                width: 200px;
+            >.el-input {
+                width: 15%;
             }
 
-            .el-button {
+            >.el-date-editor {
+                width: 20%;
+            }
+
+            .el-button, .el-select {
                 margin-left: 20px;
+            }
+
+            >.el-select {
+                width: 15%;
             }
         }
     }
@@ -83,4 +92,13 @@ body {
             padding-top: 0;
         }
     }
+}
+
+// input type=number 隐藏箭头
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+input[type="number"]{
+    -moz-appearance: textfield;
 }

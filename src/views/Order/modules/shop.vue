@@ -56,7 +56,6 @@ export default {
         });
     },
     confirm(row) {
-      console.log(row);
       this.$parent.$parent.form.details[this.index].commodityId =
         row.commodityId;
       this.$parent.$parent.form.details[this.index].commodityName =
@@ -65,7 +64,9 @@ export default {
         row.commoditySellingPrice;
       this.$parent.$parent.form.details[this.index].orderDetailNumber = 1;
       this.$parent.$parent.calcTotalAmt();
-      this.$parent.$parent.$refs.addForm.validateField("commodityId");
+      this.$parent.$parent.$refs.addForm.validateField(
+        "details." + this.index + ".commodityName"
+      );
       this.dialog = false;
     },
 

@@ -1,9 +1,8 @@
 <template>
   <div id="hometop" class="home-top">
     <div class="top-logo">
-      <img src="../assets/logo4.png" @click="handleCollapse" />
-      <span>雄安新区建设资金管理区块链信息系统
-</span>
+      <img src="../assets/img/logo4.png" @click="handleCollapse" />
+      <span>雄安新区建设资金管理区块链信息系统 </span>
     </div>
     <div class="top-nav"></div>
     <div class="top-user">

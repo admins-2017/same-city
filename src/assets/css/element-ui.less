@@ -161,7 +161,7 @@
 .el-form-item.is-error .el-textarea__inner,
 .el-form-item.is-error .el-textarea__inner:focus {
   border-color: #dcdfe6;
-  border-bottom: 1px solid #ffa507;
+  border-bottom: 1px solid @danger-color;
   border-radius: 4px 4px 0 0;
 }
 .el-form-item.is-required:not(.is-no-asterisk) > .el-form-item__label:before,
@@ -202,13 +202,21 @@
 .el-select {
   width: 100%;
 }
+// .el-date-editor {
+//   .el-range-separator,.el-range__close-icon,.el-range__icon {
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//   }
+// }
 
 /* .el-input end */
 
 /* .el-pagination start */
 .el-pagination {
-  padding: 20px 0 0 0;
-  text-align: right;
+  padding-top: 20px;
+  text-align: center;
+  padding-bottom: 5px;
 
   .el-pagination__sizes,
   .el-select .el-input {

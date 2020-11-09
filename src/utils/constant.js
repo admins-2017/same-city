@@ -37,3 +37,14 @@ export const ORDER_STATE = {
   2: "退货",
   3: "作废",
 };
+// 订单状态
+export const ORDER_STATE_LIST = [
+  {
+    key: 1,
+    value: "销售",
+  },
+  {
+    key: 2,
+    value: "退货",
+  },
+];

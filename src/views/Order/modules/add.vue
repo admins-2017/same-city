@@ -12,6 +12,21 @@
     <template slot="title"> <i class="el-icon-plus" />新增销售单 </template>
     <div class="area" v-loading="show.load">
       <el-form :model="form" :rules="rules.form" ref="addForm" inline>
+        <!-- 订单类型 -->
+        <div class="area-title">订单类型</div>
+        <div class="area-child">
+          <el-form-item label="订单类型" class="long">
+            <el-radio-group v-model="form.orderStatus" size="small">
+              <el-radio
+                v-for="item in list.type"
+                :key="item.key"
+                :label="item.key"
+                border
+                >{{ item.value }}</el-radio
+              >
+            </el-radio-group>
+          </el-form-item>
+        </div>
         <!-- 基本信息 -->
         <div class="area-title">基本信息</div>
         <div class="area-child">
@@ -74,6 +89,7 @@
                   <el-select
                     v-model="scope.row.shopId"
                     placeholder="请选择商铺"
+                    @change="changeShop(scope.$index)"
                   >
                     <el-option
                       v-for="item in list.shops"
@@ -94,10 +110,13 @@
                 >
                   <el-input
                     v-model="scope.row.commodityName"
-                    placeholder="请选择商品"
+                    :placeholder="
+                      scope.row.shopId === '' ? '请先选择商铺' : '请选择商品'
+                    "
                     suffix-icon="el-icon-arrow-down"
                     readonly
-                    @click.native="chooseCommodity(scope)"
+                    @focus="chooseCommodity(scope)"
+                    :disabled="scope.row.shopId === ''"
                   ></el-input>
                 </el-form-item>
               </template>
@@ -109,8 +128,9 @@
                   :rules="rules.details.orderDetailNumber"
                 >
                   <el-input
-                    v-model="scope.row.orderDetailNumber"
+                    v-model.number="scope.row.orderDetailNumber"
                     placeholder="请输入数量"
+                    @change="calcTotalAmt"
                   ></el-input>
                 </el-form-item>
               </template>
@@ -124,6 +144,9 @@
                   <el-input
                     v-model="scope.row.orderDetailPrice"
                     placeholder="请输入价格"
+                    type="number"
+                    min="0.00"
+                    @change="calcTotalAmt"
                   ></el-input>
                 </el-form-item>
               </template>
@@ -135,11 +158,16 @@
                   icon="el-icon-delete"
                   size="mini"
                   @click="form.details.splice(scope.$index, 1)"
+                  v-if="scope.$index !== 0"
                   >移除</el-button
                 >
+                <i class="el-icon-tickets" v-else />
               </template>
             </el-table-column>
           </el-table>
+          <div>
+            <i class="el-icon-money" />金额总计：{{ form.orderTotalAmount }} 元
+          </div>
         </div>
         <!-- 支付信息 -->
         <div class="area-title">支付信息</div>
@@ -148,6 +176,8 @@
             <el-input
               v-model="form.orderDiscountRate"
               placeholder="请输入折扣率"
+              type="number"
+              min="0.00"
             ></el-input>
           </el-form-item>
           <el-form-item label="折后金额">
@@ -157,6 +187,8 @@
             <el-input
               v-model="form.orderActualPayment"
               placeholder="请输入本单实付"
+              type="number"
+              min="0.00"
             ></el-input>
           </el-form-item>
           <el-form-item label="本单未付" prop="orderUnpaidAmount">
@@ -218,7 +250,7 @@
 <script>
 import { initOrder, addOrder } from "@/api/order"; // 新增销售订单-初始化订单
 import { transMethod, transState } from "@/utils"; // 字典转换
-import { SETTLEMENT_METHOD_LIST } from "@/utils/constant.js"; // 支付方式列表
+import { SETTLEMENT_METHOD_LIST, ORDER_STATE_LIST } from "@/utils/constant.js"; // 支付方式列表
 import { detailsRule, formRule } from "@/rule/order.js"; // 验证规则
 import shop from "./shop"; // 组件-新增
 export default {
@@ -235,6 +267,7 @@ export default {
         clients: [],
         shops: [],
         methods: SETTLEMENT_METHOD_LIST,
+        type: ORDER_STATE_LIST,
       },
       form: {
         orderNumber: "", // 销售单号
@@ -257,7 +290,7 @@ export default {
             orderDetailPrice: "",
           },
         ], // 明细
-        orderTotalAmount: "", // 合计金额
+        orderTotalAmount: 0, // 合计金额
         orderStatus: 1, // 销售单状态(1 销售 2 退货 3 作废 )
       },
       rules: {
@@ -280,6 +313,7 @@ export default {
         })
         .catch(() => {
           this.$parent.load.add = false;
+          this.show.dialog = true;
           this.$message.error("初始化订单失败，请稍后重试");
         });
     },
@@ -330,10 +364,20 @@ export default {
       this.$refs.shop.dialog = true;
     },
 
+    // 改变商铺清空已选商品
+    changeShop(i) {
+      console.log(this.form.details[i]);
+      this.form.details[i].commodityName = "";
+      this.form.details[i].commodityId = "";
+      this.form.details[i].orderDetailNumber = "";
+      this.form.details[i].orderDetailPrice = "";
+    },
+
     // 计算总金额
     calcTotalAmt() {
+      this.form.orderTotalAmount = 0;
       this.form.details.forEach((d) => {
-        this.form.orderTotalAmount += d.orderDetailPrice;
+        this.form.orderTotalAmount += d.orderDetailNumber * d.orderDetailPrice;
       });
     },
 
@@ -360,8 +404,10 @@ export default {
     transState, // 订单状态
   },
   watch: {
+    "form.details"() {
+      this.calcTotalAmt();
+    },
     "form.orderDiscountRate"(val) {
-      console.log(this.form.orderTotalAmount, val);
       this.form.orderAmountAfterDiscount = this.form.orderTotalAmount * val;
     },
     "form.orderActualPayment"(val) {
@@ -374,5 +420,20 @@ export default {
 <style lang="less" scoped>
 .el-table {
   border-radius: 5px;
+  + div {
+    width: 100%;
+    font-size: 12px;
+    padding-top: 10px;
+    text-align: right;
+    i {
+      margin-right: 5px;
+    }
+  }
+}
+.long {
+  width: unset !important;
+}
+.el-radio {
+  margin-right: 10px;
 }
 </style>

@@ -134,14 +134,11 @@ body {
   .left-main {
     height: 100%;
     flex: 1;
-    overflow-y: hidden;
+    overflow-y: auto;
     overflow-x: hidden;
     background-color: #eff2f4;
     .router-view-area {
-      // height: calc(100% - 32px);
-      height: 100%;
       padding: 20px;
-      overflow-y: auto;
     }
   }
 }

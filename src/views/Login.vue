@@ -182,7 +182,7 @@ body {
   height: 100%;
   background-repeat: no-repeat;
   background-size: 100% 100%;
-  background-image: url(../assets/beijing.jpg);
+  background-image: url(../assets/img/beijing.jpg);
   background-position: 100% 100%;
 
   > div {

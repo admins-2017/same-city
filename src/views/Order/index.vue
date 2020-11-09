@@ -3,8 +3,21 @@
     <div class="area-title">资金流查询</div>
     <div class="area-child">
       <div class="area-search">
+        <el-select
+          v-model="search.state"
+          clearable
+          placeholder="请选择订单状态"
+        >
+          <el-option
+            v-for="item in list.users"
+            :key="item.userId"
+            :label="item.username"
+            :value="item.userId"
+          >
+          </el-option>
+        </el-select>
         <el-input
-          v-model="search.number"
+          v-model="search.orderNumber"
           placeholder="请输入订单号查询"
         ></el-input>
         <el-date-picker
@@ -14,8 +27,22 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           align="right"
+          value-format="yyyy-MM-dd HH:mm:ss"
         >
         </el-date-picker>
+        <el-select
+          v-model="search.operatorUser"
+          clearable
+          placeholder="请选择销售人员"
+        >
+          <el-option
+            v-for="item in list.users"
+            :key="item.userId"
+            :label="item.username"
+            :value="item.userId"
+          >
+          </el-option>
+        </el-select>
         <el-button
           type="primary"
           @click="query"
@@ -25,7 +52,7 @@
           >查询</el-button
         >
         <el-button
-          type="primary"
+          type="success"
           @click="toAdd"
           icon="el-icon-plus"
           size="small"
@@ -38,13 +65,24 @@
       <el-table :data="list.order" v-loading="load.table">
         <el-table-column label="#" type="index" />
         <el-table-column label="订单号" prop="orderNumber" />
+        <el-table-column label="订单状态">
+          <template slot-scope="scope">
+            {{ obj.state[scope.row.orderStatus] }}
+          </template>
+        </el-table-column>
         <el-table-column label="客户名称" prop="clientName" />
         <el-table-column label="总金额" prop="orderActualPayment" />
         <el-table-column label="折后金额" prop="orderAmountAfterDiscount" />
         <el-table-column label="下单时间" prop="orderDate" width="180" />
-        <el-table-column label="操作" width="100">
+        <el-table-column label="操作" width="150">
           <template slot-scope="scope">
             <el-button type="text" @click="toDetail(scope.row)">详情</el-button>
+            <el-button
+              type="text"
+              @click="cancellation(scope.row.orderId)"
+              :loading="load.cancel"
+              >作废</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -59,8 +97,13 @@
 </template>
 
 <script>
-import { getOrderList } from "@/api/order"; // 获取列表
-import { COUNT } from "@/utils/constant"; // 查询条数
+import {
+  getOrderList,
+  getOrderListOption,
+  cancelOrder,
+  getUser,
+} from "@/api/order"; // 获取列表
+import { COUNT, ORDER_STATE } from "@/utils/constant"; // 查询条数
 import add from "./modules/add"; // 组件-新增
 import detail from "./modules/detail"; // 组件-详情
 import pagination from "@/components/pagination"; // 组件-分页
@@ -75,6 +118,10 @@ export default {
     return {
       list: {
         order: [],
+        users: [],
+      },
+      obj: {
+        state: ORDER_STATE,
       },
       config: {
         total: 0, // 总数
@@ -87,19 +134,19 @@ export default {
       load: {
         add: false, // 添加按钮loading
         table: true, // 表格loading
+        cancel: false,
       },
       search: {
-        number: "",
+        orderNumber: "",
         date: "",
-        user: "",
-        type: "",
-        sale: "",
+        operatorUser: "",
       },
       value2: "",
     };
   },
   created() {
     this.getList(1);
+    this.getUserList();
   },
   methods: {
     // 获取列表
@@ -116,10 +163,33 @@ export default {
         });
     },
 
+    // 获取列表
+    getListOption(page, count = this.config.count) {
+      this.load.table = true;
+      getOrderListOption(page, count, this.search)
+        .then((resp) => {
+          this.list.order = [];
+          this.list.order = resp.records;
+          this.config.total = resp.total;
+          this.load.table = false;
+        })
+        .catch(() => {
+          this.load.table = false;
+        });
+    },
+
+    // 获取销售人员
+    getUserList() {
+      getUser().then((resp) => {
+        this.list.users = resp;
+      });
+    },
+
     // 查询
     query() {
       this.config.page = 1;
-      this.getList(1);
+      // this.getList(1);
+      this.getListOption(1);
     },
 
     // 新增
@@ -133,6 +203,19 @@ export default {
       console.log(obj);
       this.$refs["detail-form"].info = obj;
       this.$refs["detail-form"].dialog = true;
+    },
+
+    // 作废
+    cancellation(id) {
+      this.load.cancel = true;
+      cancelOrder(id)
+        .then(() => {
+          this.load.cancel = false;
+          this.getList(1);
+        })
+        .catch(() => {
+          this.load.cancel = true;
+        });
     },
   },
 };

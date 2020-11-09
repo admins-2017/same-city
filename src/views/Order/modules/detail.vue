@@ -114,6 +114,7 @@
     </div>
     <span slot="footer" class="dialog-footer">
       <el-button type="primary" @click="dialog = false">关 闭</el-button>
+      <el-button type="primary" @click="dialog = false">导 出</el-button>
     </span>
   </el-dialog>
 </template>
