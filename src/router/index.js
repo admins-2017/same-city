@@ -69,7 +69,7 @@ const routes = [
       },
       {
         path: "/purchases",
-        component: () => import("../components/home/purchases.vue"),
+        component: () => import("../views/Purchase/index.vue"),
       },
       {
         path: "/suppliers",
