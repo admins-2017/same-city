@@ -105,8 +105,7 @@
 /* .el-form start */
 .el-form-item__error {
   text-align: right;
-  position: unset;
-  padding-top: 0;
+  width: 100%;
   zoom: 0.9;
 }
 
@@ -163,6 +162,9 @@
   border-color: #dcdfe6;
   border-bottom: 1px solid @danger-color;
   border-radius: 4px 4px 0 0;
+  +.el-input__prefix {
+    color: @danger-color;
+  }
 }
 .el-form-item.is-required:not(.is-no-asterisk) > .el-form-item__label:before,
 .el-form-item.is-required:not(.is-no-asterisk)
@@ -186,9 +188,6 @@
 .el-input {
   font-size: 13px;
   //   width: 200px;
-  + .el-input {
-    margin-left: 20px;
-  }
 
   + .el-date-editor {
     margin-left: 20px;
@@ -197,10 +196,17 @@
     }
   }
 }
+input:-webkit-autofill {
+  box-shadow: 0 0 0px 1000px white inset;	/**通过边框阴影遮挡住背景*/
+  -webkit-text-fill-color: #333;
+ }
 .el-date-editor.el-input,
 .el-date-editor.el-input__inner,
 .el-select {
   width: 100%;
+}
+.el-date-editor .el-range-input {
+  font-size: 13px;
 }
 // .el-date-editor {
 //   .el-range-separator,.el-range__close-icon,.el-range__icon {

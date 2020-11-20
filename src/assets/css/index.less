@@ -1,104 +1,115 @@
 @import "./constant.less";
 
 html,
-body {
-    width: 100%;
-    height: 100%;
-    margin: 0px;
-    padding: 0px;
+body,
+#app {
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+}
+#app > div {
+  width: 100%;
+  height: 100%;
 }
 
 .area {
-    .area-title {
-        font-size: 20px;
-        padding-left: 10px;
-        line-height: 20px;
-        position: relative;
-        padding: 20px 20px 20px 30px;
-        background: #fff;
-        border-radius: 5px 5px 0 0;
+  .area-title {
+    font-size: 20px;
+    padding-left: 10px;
+    line-height: 20px;
+    position: relative;
+    padding: 20px 20px 20px 30px;
+    background: #fff;
+    border-radius: 5px 5px 0 0;
 
-        &:before {
-            content: '';
-            position: absolute;
-            width: 2.5px;
-            height: 20px;
-            background-color: @link-color;
-            left: 20px;
-        }
+    &:before {
+      content: "";
+      position: absolute;
+      width: 2.5px;
+      height: 20px;
+      background-color: @link-color;
+      left: 20px;
+    }
+  }
+
+  .area-child {
+    background: #fff;
+    border-radius: 0 0 5px 5px;
+    padding: 10px 20px 20px 20px;
+    margin-bottom: 20px;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    > .el-button {
+      position: absolute;
+      top: -35px;
+      right: 20px;
     }
 
-    .area-child {
-        background: #fff;
-        border-radius: 0 0 5px 5px;
-        padding: 10px 20px 20px 20px;
-        margin-bottom: 20px;
-        position: relative;
-        display: flex;
-        justify-content: space-between;
-        flex-direction: row;
-        flex-wrap: wrap;
-
-        >.el-button {
-            position: absolute;
-            top: -35px;
-            right: 20px;
-        }
-
-        &:last-child {
-            margin-bottom: 0;
-        }
-
-        .area-search {
-            width: 100%;
-            display: flex;
-
-            >.el-input {
-                width: 15%;
-            }
-
-            >.el-date-editor {
-                width: 20%;
-            }
-
-            .el-button, .el-select {
-                margin-left: 20px;
-            }
-
-            >.el-select {
-                width: 15%;
-            }
-        }
+    &:last-child {
+      margin-bottom: 0;
     }
 
-    .area-body {
-        background: #fff;
-        padding: 20px;
-        border-radius: 5px;
-        margin-top: 20px;
+    .area-search {
+      width: 100%;
+      display: flex;
+
+      > .el-input {
+        width: 15%;
+        + .el-input {
+          margin-left: 20px;
+        }
+      }
+
+      > .el-date-editor {
+        width: 20%;
+        margin-left: 20px;
+        font-size: 13px;
+      }
+
+      .el-button,
+      .el-select {
+        margin-left: 20px;
+      }
+
+      > .el-select {
+        width: 15%;
+      }
     }
+  }
+
+  .area-body {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 20px;
+  }
 }
 
 .el-dialog {
-    .area {
-        .area-title {
-            font-size: 16px;
-            line-height: 16px;
-            &:before {
-                height: 16px;
-            }
-        }
-        .area-child {
-            padding-top: 0;
-        }
+  .area {
+    .area-title {
+      font-size: 16px;
+      line-height: 16px;
+      &:before {
+        height: 16px;
+      }
     }
+    .area-child {
+      padding-top: 0;
+    }
+  }
 }
 
 // input type=number 隐藏箭头
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
+  -webkit-appearance: none;
 }
-input[type="number"]{
-    -moz-appearance: textfield;
+input[type="number"] {
+  -moz-appearance: textfield;
 }

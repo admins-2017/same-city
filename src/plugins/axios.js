@@ -1,7 +1,6 @@
 "use strict";
 
-import Vue from 'vue';
+import Vue from "vue";
 import axios from "axios";
 
-Vue.use(axios)
-
+Vue.prototype.axios = axios;

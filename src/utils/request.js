@@ -6,24 +6,27 @@ const service = axios.create({
 });
 
 // 请求头添加token
-service.interceptors.request.use((config) => {
-  config.headers = {
-    "Content-Type": "application/json;charset=UTF-8",
-    Accept: "application/json;charset=UTF-8",
-  };
-  return config;
-});
+service.interceptors.request.use(
+  (config, type = "application/json;charset=UTF-8") => {
+    config.headers = {
+      "Content-Type": type,
+      Accept: "application/json;charset=UTF-8",
+    };
+    return config;
+  }
+);
 // response 拦截器
 service.interceptors.response.use(
   (response) => {
     const code = response.status;
     if (code < 200 || code > 300) {
-      // Message.error({
-      //     title: response.message
-      // })
       return Promise.reject("error");
     } else {
-      return response.data.data;
+      // if (response.data.data) {
+      //   return response.data.data;
+      // } else {
+      return response.data;
+      // }
     }
   },
   (error) => {

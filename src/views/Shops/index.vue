@@ -1,119 +1,130 @@
 <template>
-  <div id="shops">
-    <div>
-      <div>
-        <div>
-          <el-input
-            placeholder="请输入商铺名"
-            prefix-icon="el-icon-search"
-            v-model="queryName"
-          ></el-input>
-          <el-button type="primary" plain @click="findShopName">查询</el-button>
-          <el-button type="primary" plain @click="cancelFind">取消</el-button>
-        </div>
-        <el-button type="primary" plain @click="insertDialogFormVisible = true"
+  <div class="shops area">
+    <div class="area-title">店铺</div>
+    <div class="area-child">
+      <div class="area-search">
+        <el-input
+          placeholder="请输入商铺名"
+          prefix-icon="el-icon-search"
+          v-model="queryName"
+        ></el-input>
+        <el-button type="primary" size="small" @click="findShopName">
+          查询
+        </el-button>
+        <el-button type="primary" size="small" @click="cancelFind">
+          取消
+        </el-button>
+        <el-button
+          type="primary"
+          size="small"
+          @click="insertDialogFormVisible = true"
           >新增商铺</el-button
         >
       </div>
-      <div>
-        <el-table :data="tableData" height="100%" highlight-current-row border  style="width: 100%">
-          <el-table-column type="expand">
-            <template slot-scope="props">
-              <el-table
-                :data="props.row.children"
-                style="width: 100%"
-                ref="singleTable"
-              >
-                <el-table-column
-                  prop="username"
-                  label="店员名"
-                  width="180"
-                ></el-table-column>
-                <el-table-column
-                  prop="userDetailsTel"
-                  label="联系方式"
-                  width="180"
-                ></el-table-column>
-                <el-table-column
-                  prop="userDetailsSex"
-                  label="性别"
-                ></el-table-column>
-                <el-table-column
-                  prop="userDetailsMail"
-                  label="联系邮箱"
-                ></el-table-column>
-                <el-table-column
-                  prop="userDetailsAddr"
-                  label="联系地址"
-                ></el-table-column>
-              </el-table>
-            </template>
-          </el-table-column>
-          <el-table-column prop="shopName" label="商铺名称"></el-table-column>
-          <el-table-column
-            prop="shopAddress"
-            label="商铺地址"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="shopStatus"
-            label="状态"
-            width="100"
-            align="center"
-          >
-            <template slot-scope="scope">
-              <el-tag type="success" v-if="scope.row.shopStatus == 1"
-                >营业</el-tag
-              >
-              <el-tag type="info" v-else-if="scope.row.shopStatus == 2"
-                >休息</el-tag
-              >
-              <el-tag type="warning" v-else>暂停营业</el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="shopIntroduction"
-            label="商铺公告"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="shopTel"
-            label="商铺电话"
-            width="140"
-            align="center"
-          ></el-table-column>
-          <el-table-column
-            prop="insertTime"
-            label="创建时间"
-            align="center"
-            width="160"
-          ></el-table-column>
-          <el-table-column
-            prop="updateTime"
-            label="最近一次修改时间"
-            align="center"
-            width="160"
-          ></el-table-column>
-          <el-table-column label="操作" width="50" align="center">
-            <template slot-scope="scope">
-              <el-button
-                type="text"
-                size="small"
-                @click="updateShop(scope.row)"
-                icon="el-icon-edit"
-              ></el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-      <div>
+    </div>
+    <div class="area-body">
+      <el-table :data="tableData">
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-table
+              :data="props.row.children"
+              style="width: 100%"
+              ref="singleTable"
+              border
+            >
+              <el-table-column
+                prop="username"
+                label="店员名"
+                width="180"
+              ></el-table-column>
+              <el-table-column
+                prop="userDetailsTel"
+                label="联系方式"
+                width="180"
+              ></el-table-column>
+              <el-table-column
+                prop="userDetailsSex"
+                label="性别"
+              ></el-table-column>
+              <el-table-column
+                prop="userDetailsMail"
+                label="联系邮箱"
+              ></el-table-column>
+              <el-table-column
+                prop="userDetailsAddr"
+                label="联系地址"
+              ></el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
+        <el-table-column prop="shopName" label="商铺名称"></el-table-column>
+        <el-table-column
+          prop="shopAddress"
+          label="商铺地址"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="shopStatus"
+          label="状态"
+          width="100"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <el-tag type="success" v-if="scope.row.shopStatus == 1"
+              >营业</el-tag
+            >
+            <el-tag type="info" v-else-if="scope.row.shopStatus == 2"
+              >休息</el-tag
+            >
+            <el-tag type="warning" v-else>暂停营业</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="shopIntroduction"
+          label="商铺公告"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="shopTel"
+          label="商铺电话"
+          width="140"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="insertTime"
+          label="创建时间"
+          align="center"
+          width="160"
+        ></el-table-column>
+        <el-table-column
+          prop="updateTime"
+          label="最近一次修改时间"
+          align="center"
+          width="160"
+        ></el-table-column>
+        <el-table-column label="操作" width="50" align="center">
+          <template slot-scope="scope">
+            <el-button
+              type="text"
+              size="small"
+              @click="updateShop(scope.row)"
+              icon="el-icon-edit"
+            ></el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <!-- 分页 -->
+    <pagination :config="config" @change="getAllShop" />
+    <div>
+      <!-- <div>
         <el-pagination
           @current-change="handleCurrentChange"
           :page-size="size"
           layout="total, prev, pager, next, jumper"
           :total="total"
         ></el-pagination>
-      </div>
+      </div> -->
       <div>
         <el-dialog
           title="新增商铺"
@@ -212,11 +223,21 @@
 </template>
 
 <script>
+import { getShopList } from "@/api/order"; // 接口-查询店铺
+import pagination from "@/components/pagination"; // 组件-分页
 import axios from "axios";
 export default {
   name: "shops",
+  components: {
+    pagination,
+  },
   data() {
     return {
+      config: {
+        total: 0, // 总数
+        page: 1, // 页数
+        count: 10, // 条数
+      },
       insertDialogFormVisible: false,
       updateDialogFormVisible: false,
       queryName: "",
@@ -246,23 +267,18 @@ export default {
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
       this.page = val;
-      this.getAllShop();
+      this.getAllShop(1);
     },
-    getAllShop() {
-      axios({
-        method: "get",
-        url: "/api/shop/" + this.page + "/" + this.size,
-        headers: {
-          Authorization: this.userDetails.token,
-        },
-      })
-        .then((res) => {
-          console.log(res);
-          this.total = res.data.data.total;
-          this.tableData = res.data.data.records;
+
+    // 查询店铺
+    getAllShop(page, count = this.config.count) {
+      getShopList(page, count)
+        .then((resp) => {
+          console.log(resp);
+          this.tableData = resp.records;
+          this.config.total = resp.total;
         })
-        .catch((err) => {
-          console.log(err);
+        .catch(() => {
           this.$message.error("服务器连接超时 请重试！");
         });
     },
@@ -400,101 +416,100 @@ export default {
   },
   created() {
     this.userDetails = JSON.parse(localStorage.getItem("user-information"));
-    this.getAllShop();
+    this.getAllShop(1);
   },
 };
 </script>
 
 <style lang="less">
-html,
-body {
-  width: 100%;
-  height: 100%;
-  margin: 0px;
-  padding: 0px;
-}
-#shops {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  overflow-y: hidden;
-  > div {
-    width: 98%;
-    height: 98%;
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    > div:nth-of-type(1) {
-      width: 94%;
-      height: 5%;
-      margin-top: 20px;
-      padding: 0px 20px;
-      display: flex;
-      justify-content: space-between;
+// html,
+// body {
+//   width: 100%;
+//   height: 100%;
+//   margin: 0px;
+//   padding: 0px;
+// }
+// .shops {
+//   width: 100%;
+//   height: 100%;
 
-      > div:nth-of-type(1) {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-    }
-    > div:nth-of-type(2) {
-      width: 94%;
-      height: 70%;
-      margin-top: 20px;
-      ::-webkit-scrollbar {
-        width: 1px;
-        height: 1px;
-      }
-      .gutter{
-        width: 0px ;
-      }
-    }
-    > div:nth-of-type(3) {
-      width: 94%;
-      margin-top: 20px;
-    }
-    > div:nth-of-type(3) {
-      width: 94%;
-      margin-top: 20px;
-    }
-    > div:nth-of-type(4) {
-      .el-dialog__body {
-        display: flex;
-        justify-content: center;
-        .insert-shop-from {
-          width: 60%;
-          .el-input {
-            width: 100%;
-            margin-top: 20px;
-            text-align: center;
-          }
-        }
-      }
-    }
-    > div:nth-of-type(5) {
-      .el-dialog__header {
-        > .el-dialog__title {
-          color: rgb(8, 141, 90);
-        }
-      }
-      .el-dialog__body {
-        display: flex;
-        justify-content: center;
-        .update-shop-from {
-          width: 60%;
-          .el-input {
-            width: 100%;
-            margin: 10px 0px;
-            text-align: center;
-          }
-          .el-select {
-            width: 100%;
-          }
-        }
-      }
-    }
-  }
-}
+//   > div {
+//     width: 98%;
+//     height: 98%;
+//     background-color: white;
+//     display: flex;
+//     flex-direction: column;
+//     align-items: center;
+//     > div:nth-of-type(1) {
+//       width: 94%;
+//       height: 5%;
+//       margin-top: 20px;
+//       padding: 0px 20px;
+//       display: flex;
+//       justify-content: space-between;
+
+//       > div:nth-of-type(1) {
+//         display: flex;
+//         justify-content: center;
+//         align-items: center;
+//       }
+//     }
+//     > div:nth-of-type(2) {
+//       width: 94%;
+//       height: 70%;
+//       margin-top: 20px;
+//       ::-webkit-scrollbar {
+//         width: 1px;
+//         height: 1px;
+//       }
+//       .gutter {
+//         width: 0px;
+//       }
+//     }
+//     > div:nth-of-type(3) {
+//       width: 94%;
+//       margin-top: 20px;
+//     }
+//     > div:nth-of-type(3) {
+//       width: 94%;
+//       margin-top: 20px;
+//     }
+//     > div:nth-of-type(4) {
+//       .el-dialog__body {
+//         display: flex;
+//         justify-content: center;
+//         .insert-shop-from {
+//           width: 60%;
+//           .el-input {
+//             width: 100%;
+//             margin-top: 20px;
+//             text-align: center;
+//           }
+//         }
+//       }
+//     }
+//     > div:nth-of-type(5) {
+//       .el-dialog__header {
+//         > .el-dialog__title {
+//           color: rgb(8, 141, 90);
+//         }
+//       }
+//       .el-dialog__body {
+//         display: flex;
+//         justify-content: center;
+//         .update-shop-from {
+//           width: 60%;
+//           .el-input {
+//             width: 100%;
+//             margin: 10px 0px;
+//             text-align: center;
+//           }
+//           .el-select {
+//             width: 100%;
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
 </style>

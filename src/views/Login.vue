@@ -1,61 +1,91 @@
 <template>
   <div class="login">
-    <div>
-      <el-tabs type="border-card">
-        <el-tab-pane :label="tab1">
-          <div class="login-content">
-            <form action="/login" class="login-form">
-              <div>
-                <i class="el-icon-s-custom"></i>
-                <input type="text" placeholder="请输入用户名" v-model="loginData.username" />
-              </div>
-              <div>
-                <i class="el-icon-document"></i>
-                <input type="password" placeholder="请输入密码" v-model="loginData.password" />
-              </div>
-            </form>
+    <h1><img src="../assets/img/logo5.jpg" />巨蜥云<sup>๑</sup></h1>
+    <el-tabs type="border-card">
+      <el-tab-pane label="账号登录">
+        <div class="account">
+          <el-form
+            :model="loginData"
+            :rules="rules"
+            ref="accountForm"
+            label-width="100px"
+            class="demo-ruleForm"
+          >
+            <el-form-item prop="username">
+              <el-input
+                placeholder="请输入用户名"
+                prefix-icon="el-icon-user"
+                v-model="loginData.username"
+              />
+            </el-form-item>
+            <el-form-item prop="password">
+              <el-input
+                type="password"
+                placeholder="请输入密码"
+                prefix-icon="el-icon-lock"
+                v-model="loginData.password"
+              />
+            </el-form-item>
             <div class="content-code">
-              <div>
-                <img :src="resultCode" alt />
-                <input type="text" v-model="loginData.result" />
-              </div>
+              <img
+                :src="resultCode"
+                alt
+                v-loading="load.code"
+                @click="getImgCode"
+              />
+              <el-form-item prop="result">
+                <el-input
+                  type="text"
+                  placeholder="验证码"
+                  prefix-icon="el-icon-collection-tag"
+                  v-model="loginData.result"
+                />
+              </el-form-item>
             </div>
-            <div class="content-details">
-              <span>
-                还没有账号？
-                <router-link to="/">立即注册</router-link>
-              </span>
-              <span>
-                <router-link to="/find">忘记密码</router-link>
-              </span>
-            </div>
-            <div class="content-botton">
-              <el-button type="primary" @click="test">登录</el-button>
-            </div>
+          </el-form>
+          <!-- <div class="content-details">
+            <router-link to="/">立即注册</router-link>
+            <router-link to="/find">忘记密码</router-link>
+          </div> -->
+          <el-button type="primary" :loading="load.login" @click="userLogin">
+            登录
+          </el-button>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="手机号登录">
+        <div class="tel">
+          <el-input
+            placeholder="请输入手机号"
+            prefix-icon="el-icon-mobile-phone"
+            v-model="smsData.number"
+          />
+          <div>
+            <el-input
+              placeholder="验证码"
+              prefix-icon="el-icon-collection-tag"
+              v-model="smsData.result"
+            >
+              <el-button slot="append" type="success" @click="getSmsResult">
+                发送验证码
+              </el-button>
+            </el-input>
           </div>
-        </el-tab-pane>
-        <el-tab-pane :label="tab2">
-          <div class="login-sms">
-            <div>
-              <i class="el-icon-mobile-phone"></i>
-              <input type="text" placeholder="请输入手机号" v-model="smsData.number" />
-            </div>
-            <div>
-              <i class="el-icon-message"></i>
-              <input type="text" placeholder="验证码" v-model="smsData.result" />
-              <button @click="getSmsResult">发送验证码</button>
-            </div>
-            <div>
-              <el-button type="primary" @click="test2">登录</el-button>
-            </div>
-          </div>
-        </el-tab-pane>
-      </el-tabs>
+          <el-button type="primary" @click="test2">登录</el-button>
+        </div>
+      </el-tab-pane>
+    </el-tabs>
+    <div class="bottom-layer">
+      <span class="lh">©2020&nbsp;Baidu&nbsp;</span>
+      <span class="lh">(京)-经营性-2017-0020</span>
+      <span class="lh s-bottom-recordcode">京公网安备11000002000001号</span>
+      <span class="lh">京ICP证030173号</span>
     </div>
   </div>
 </template>
 
 <script>
+import { getCode, login } from "@/api/login"; // 接口-获取验证码 / 登录
+import { accountRule } from "@/rule/login"; // 校验规则-账号登录
 import axios from "axios";
 export default {
   name: "login",
@@ -77,39 +107,70 @@ export default {
       resultCode: "",
       tab1: "账号登录",
       tab2: "手机号登录",
+      load: {
+        code: false,
+        login: false,
+      },
+      rules: accountRule, // 账号登陆规则
     };
   },
+  created() {
+    // 获取图片验证码
+    this.getImgCode();
+  },
   methods: {
-    test() {
-      let formData = new FormData();
-      for (var key in this.loginData) {
-        formData.append(key, this.loginData[key]);
-      }
+    // 获取图片验证码
+    getImgCode() {
+      this.load.code = true;
+      getCode()
+        .then((resp) => {
+          this.loginData.code = resp.uuid;
+          this.resultCode = resp.img;
+          // this.load.code = false;
+        })
+        .catch(() => {
+          this.load.code = false;
+          this.$message.error("服务器连接超时 请重试！");
+        });
+    },
 
-      axios({
-        method: "post",
-        url: "/api/login/userLogin",
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        withCredentials: true,
-        data: formData,
-      }).then((res) => {
-        if (res.data.meta.status == 200) {
-          this.$message({
-            message: res.data.meta.msg,
-            type: "success",
-          });
-          localStorage.setItem(
-            "user-information",
-            JSON.stringify(res.data.data)
-          );
-          this.$router.push("/home");
+    // 登录
+    userLogin() {
+      this.$refs.accountForm.validate((valid) => {
+        if (valid) {
+          this.load.login = true;
+          let formData = new FormData();
+          for (var key in this.loginData) {
+            formData.append(key, this.loginData[key]);
+          }
+          login(formData)
+            .then((resp) => {
+              if (resp.meta.status == 200) {
+                this.$message({
+                  message: resp.meta.msg,
+                  type: "success",
+                });
+                localStorage.setItem(
+                  "user-information",
+                  JSON.stringify(resp.data)
+                );
+                this.$router.push("/home");
+              } else {
+                this.$message.error(resp.msg);
+              }
+              this.load.login = false;
+            })
+            .catch((err) => {
+              console.log(err);
+              this.$message.error("登录失败，请稍后重试");
+              this.load.login = false;
+            });
         } else {
-          this.$message.error(res.data.meta.msg);
+          return false;
         }
       });
     },
+
     test2() {
       let formData = new FormData();
       for (var key in this.smsData) {
@@ -134,6 +195,8 @@ export default {
         }
       });
     },
+
+    // 获取手机验证码
     getSmsResult() {
       axios({
         method: "post",
@@ -151,231 +214,123 @@ export default {
         });
     },
   },
-  created() {
-    axios({
-      method: "get",
-      url: "/api/user/code",
-    })
-      .then((res) => {
-        this.loginData.code = res.data.uuid;
-        this.resultCode = res.data.img;
-      })
-      .catch((err) => {
-        console.log(err);
-        this.$message.error("服务器连接超时 请重试！");
-      });
-  },
 };
 </script>
 
-<style lang="less" scoped>
-html,
-body {
-  margin: 0px;
-  padding: 0px;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
+<style lang="scss" scoped>
 .login {
-  height: 100%;
+  background-image: url(../assets/img/beijing.jpg);
   background-repeat: no-repeat;
   background-size: 100% 100%;
-  background-image: url(../assets/img/beijing.jpg);
   background-position: 100% 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  .el-tabs {
+    width: 400px;
+  }
 
-  > div {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .account,
+  .tel {
+    height: 250px;
+    padding: 0 20px 20px 20px;
+    .el-input + .el-input {
+      margin-top: 20px;
+    }
+    > .el-button {
+      width: calc(100% - 70px);
+      position: absolute;
+      bottom: 35px;
+    }
+    > div {
+      width: 100%;
+    }
 
-    .el-tabs--border-card {
-      opacity: 1;
-      width: 30%;
-      position: relative;
-      top: -30px;
-
-      .el-tabs__header {
-        color: red;
+    .content-code {
+      display: flex;
+      justify-content: space-between;
+      img {
+        width: 35%;
+        height: 37.45px;
       }
-
-      .el-tabs__content {
+      .el-input {
         width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 0px;
-        background-color: indianred !important;
-        .login-content {
-          width: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          flex-direction: column;
-          .login-form {
-            width: 80%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            div {
-              width: 100%;
-              border: 1px solid silver;
-              margin: 5px 0px;
-              display: flex;
-              justify-content: center;
-              i {
-                font-size: 25px;
-                margin: 5px;
-              }
-              input {
-                font-size: 20px;
-                border: 0px;
-                margin: 5px 10px;
-                text-align: center;
-              }
+      }
+    }
+    .content-details {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #999;
+      font-size: 12px;
+    }
+  }
+  .tel {
+    > div:nth-child(2) {
+      display: flex;
+      padding: 20px 0;
+      justify-content: space-between;
+    }
+  }
+}
 
-              input:focus {
-                border-bottom: 1px solid silver;
-                text-align: center;
-                outline: none;
-              }
-            }
-          }
-          .content-code {
-            width: 60%;
-            div {
-              margin: 10px 0px;
-              width: 100%;
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              img {
-                width: 75%;
-              }
-              input {
-                margin-left: 5px;
-                width: 20%;
-                flex: 1;
-                border: 0px;
-                font-size: 25px;
-                border-bottom: 2px solid silver;
-                text-align: center;
-              }
-              input:focus {
-                outline: none;
-                border-bottom: 2px solid silver;
-              }
-            }
-          }
-          .content-details {
-            width: 80%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            span:nth-of-type(1) {
-              width: 75%;
-              font-size: 10px;
-              a {
-                text-decoration: none;
-                font-size: 17px;
-                color: #feba3c;
-              }
-            }
-            span:nth-of-type(2) {
-              width: 25%;
-              a {
-                text-decoration: none;
-                font-size: 15px;
-                color: #5bbf0e;
-              }
-            }
-          }
-          .content-botton {
-            width: 100%;
-            margin: 10px 0px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            .el-button {
-              width: 80%;
-            }
-          }
+/deep/ {
+  .el-tabs {
+    border: 0;
+    border-radius: 5px;
+    .el-tabs__header {
+      border-radius: 5px 5px 0 0;
+    }
+    .el-tabs__nav {
+      width: 100%;
+      .el-tabs__item {
+        width: 50%;
+        text-align: center;
+        margin: 0 !important;
+        padding: 0 !important;
+        border-top: 0 !important;
+        &:nth-child(1) {
+          border-left: 0;
+          border-radius: 5px 0 0 0;
         }
-        .login-sms {
-          width: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          flex-direction: column;
-          position: relative;
-          div:nth-of-type(1) {
-            width: 80%;
-            border: 1px solid silver;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 10px 0px;
-            padding: 5px 0px;
-            i {
-              font-size: 25px;
-            }
-            input {
-              font-size: 20px;
-              border: 0px;
-              margin-left: 5px;
-              text-align: center;
-            }
-            input:focus {
-              outline: none;
-            }
-          }
-          div:nth-of-type(2) {
-            width: 80%;
-            border: 1px solid silver;
-            margin: 10px 0px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 5px 0px;
-            i {
-              font-size: 25px;
-              width: 10%;
-            }
-            input {
-              font-size: 15px;
-              width: 30%;
-              margin-left: 5px;
-              padding: 2px;
-              text-align: center;
-              border: 0px;
-              border-bottom: 1px solid silver;
-            }
-            input:focus {
-              outline: none;
-              border-bottom: 1px solid silver;
-            }
-            button {
-              font-size: 15px;
-              width: 28%;
-              padding: 0px;
-              margin-left: 10px;
-              background-color: #67aea5;
-            }
-          }
-          div:nth-of-type(3) {
-            width: 80%;
-            margin: 30px 0px;
-            .el-button {
-              width: 100%;
-            }
-          }
+        &:nth-child(2) {
+          border-right: 0;
+          border-radius: 0 5px 0 0;
         }
       }
     }
   }
+  .el-form-item__content {
+    margin-left: 0 !important;
+  }
+  a {
+    color: #00bcd4;
+  }
+}
+h1 {
+  color: #fff;
+  display: flex;
+  align-items: center;
+  width: 400px;
+  text-shadow: 1px 0.5px 1px #00bcd3;
+  letter-spacing: 3px;
+  margin-top: -3%;
+  img {
+    border-radius: 50%;
+    width: 37.45px;
+    margin-right: 15px;
+  }
+  sup {
+    font-size: 14px;
+    margin-top: -15px;
+    margin-left: 5px;
+  }
+}
+.bottom-layer {
+  color: #f6f0f0;
+  font-size: 12px;
+  position: absolute;
+  bottom: 15px;
 }
 </style>

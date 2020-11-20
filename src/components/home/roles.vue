@@ -1,40 +1,70 @@
 <template>
-  <div id="roles">
+  <div class="roles">
     <div>
       <div>
         <div>
-          <el-input placeholder="请输入角色名" prefix-icon="el-icon-search" v-model="queryName"></el-input>
-          <el-button type="primary" plain @click="getRoleByName">查询</el-button>
+          <el-input
+            placeholder="请输入角色名"
+            prefix-icon="el-icon-search"
+            v-model="queryName"
+          ></el-input>
+          <el-button type="primary" plain @click="getRoleByName"
+            >查询</el-button
+          >
           <el-button type="primary" plain @click="clearQuery">取消</el-button>
         </div>
-        <el-button type="primary" plain @click="insertDialogFormVisible = true">新增用户</el-button>
+        <el-button type="primary" plain @click="insertDialogFormVisible = true"
+          >新增用户</el-button
+        >
       </div>
       <div>
         <el-table :data="tableData" border style="width: 100%" height="100%">
-          <el-table-column fixed prop="roleId" label="角色id" width="170"></el-table-column>
-          <el-table-column prop="roleName" label="角色名称" width="170"></el-table-column>
-          <el-table-column prop="roleDescription" label="角色简介"></el-table-column>
-          <el-table-column prop="roleCode" label="角色编码" width="180"></el-table-column>
+          <el-table-column
+            fixed
+            prop="roleId"
+            label="角色id"
+            width="170"
+          ></el-table-column>
+          <el-table-column
+            prop="roleName"
+            label="角色名称"
+            width="170"
+          ></el-table-column>
+          <el-table-column
+            prop="roleDescription"
+            label="角色简介"
+          ></el-table-column>
+          <el-table-column
+            prop="roleCode"
+            label="角色编码"
+            width="180"
+          ></el-table-column>
           <el-table-column label="默认角色" width="100" prop="defaultRole">
             <template slot-scope="scope">
-              <el-tag type="success" v-if="scope.row.defaultRole">默认角色</el-tag>
+              <el-tag type="success" v-if="scope.row.defaultRole"
+                >默认角色</el-tag
+              >
             </template>
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="150">
             <template slot-scope="scope">
-              <el-button @click="updateRole(scope.row)" type="text" size="small">编辑</el-button>
+              <el-button @click="updateRole(scope.row)" type="text" size="small"
+                >编辑</el-button
+              >
               <el-button
                 type="text"
                 size="small"
                 @click="delRoleById(scope.row.roleId)"
                 v-if="!scope.row.defaultRole"
-              >删除</el-button>
+                >删除</el-button
+              >
               <el-button
                 @click="updateDefaultRole(scope.row.roleId)"
                 type="text"
                 size="small"
                 v-if="!scope.row.defaultRole"
-              >设为默认</el-button>
+                >设为默认</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -48,7 +78,12 @@
         ></el-pagination>
       </div>
       <div>
-        <el-dialog title="新增角色" :visible.sync="insertDialogFormVisible" :width="dialogWidht" center>
+        <el-dialog
+          title="新增角色"
+          :visible.sync="insertDialogFormVisible"
+          :width="dialogWidht"
+          center
+        >
           <div class="insert-role-from">
             <div>
               <el-input
@@ -85,7 +120,12 @@
         </el-dialog>
       </div>
       <div>
-        <el-dialog title="角色详情" :visible.sync="updateDialogFormVisible" :width="dialogWidht" center>
+        <el-dialog
+          title="角色详情"
+          :visible.sync="updateDialogFormVisible"
+          :width="dialogWidht"
+          center
+        >
           <div class="update-role-from">
             <div>
               <el-input
@@ -119,7 +159,11 @@
           </div>
           <div slot="footer" class="dialog-footer">
             <el-button @click="cancelUpdateDialog">取 消</el-button>
-            <el-button type="primary" @click="updateRoleDetails(roleDetails.roleId)">确 定</el-button>
+            <el-button
+              type="primary"
+              @click="updateRoleDetails(roleDetails.roleId)"
+              >确 定</el-button
+            >
           </div>
         </el-dialog>
       </div>
@@ -437,7 +481,7 @@ body {
   padding: 0px;
 }
 
-#roles {
+.roles {
   width: 100%;
   height: 100%;
   display: flex;
@@ -470,9 +514,9 @@ body {
       width: 94%;
       height: 70%;
       ::-webkit-scrollbar {
-          width: 1px;
-          height: 1px;
-        }
+        width: 1px;
+        height: 1px;
+      }
     }
 
     > div:nth-of-type(3) {

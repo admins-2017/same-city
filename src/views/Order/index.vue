@@ -1,8 +1,12 @@
 <template>
   <div id="orders" class="area">
-    <div class="area-title">资金流查询</div>
+    <div class="area-title">销售订单</div>
     <div class="area-child">
       <div class="area-search">
+        <el-input
+          v-model="search.orderNumber"
+          placeholder="请输入订单号查询"
+        ></el-input>
         <el-select
           v-model="search.state"
           clearable
@@ -16,10 +20,6 @@
           >
           </el-option>
         </el-select>
-        <el-input
-          v-model="search.orderNumber"
-          placeholder="请输入订单号查询"
-        ></el-input>
         <el-date-picker
           v-model="search.date"
           type="datetimerange"

@@ -225,7 +225,7 @@
                   :value="item.classificationId"
                   :disabled="
                     item.classificationName ==
-                    commodityDetail.classificationName
+                      commodityDetail.classificationName
                   "
                 >
                 </el-option>
@@ -346,11 +346,7 @@
         </el-dialog>
       </div>
       <div>
-        <el-dialog
-          title="收货地址"
-          :visible.sync="dialogDetailTableVisible"
-          fullscreen
-        >
+        <el-dialog title="收货地址" :visible.sync="dialogDetailTableVisible">
           <el-table :data="productsUnderCategory">
             <el-table-column
               property="date"
@@ -941,11 +937,12 @@ body {
       }
     }
     .box-card::-webkit-scrollbar {
-     width: 0 !important;
-   }
-   .box-card::-webkit-scrollbar {
-     width: 0 !important;height: 0;
-   }
+      width: 0 !important;
+    }
+    .box-card::-webkit-scrollbar {
+      width: 0 !important;
+      height: 0;
+    }
   }
   > div:nth-of-type(2) {
     width: 78%;
@@ -978,9 +975,9 @@ body {
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
-         .my-collapse {
+        .my-collapse {
           width: 100%;
-          height: 85% ;
+          height: 85%;
           overflow-y: auto;
           .el-collapse {
             width: 100%;
