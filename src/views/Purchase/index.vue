@@ -104,11 +104,11 @@ import {
   getUser,
 } from "@/api/purchase"; // 获取列表
 import { COUNT, ORDER_STATE } from "@/utils/constant"; // 查询条数
-import add from "../Order/modules/add"; // 组件-新增
-import detail from "../Order/modules/detail"; // 组件-详情
+import add from "../Purchase/modules/add"; // 组件-新增
+import detail from "../Purchase/modules/detail"; // 组件-详情
 import pagination from "@/components/pagination"; // 组件-分页
 export default {
-  name: "orders",
+  name: "puchase",
   components: {
     add,
     detail,
