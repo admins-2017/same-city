@@ -1,28 +1,66 @@
 <template>
   <div class="dashboard area">
-    <div class="area-title">首页驾驶舱</div>
-    <div class="area-body">
-      <div id="echart" />
+    <!-- <div class="area-title">首页</div> -->
+    <div class="gather">
+      <div>
+        <div>
+          <div>Total</div>
+          <span>738 K</span>
+        </div>
+        <i class="el-icon-star-on" />
+      </div>
+      <div>
+        <div>
+          <div>Total</div>
+          <span>738 K</span>
+        </div>
+        <i class="el-icon-s-help" />
+      </div>
+      <div>
+        <div>
+          <div>Total</div>
+          <span>738 K</span>
+        </div>
+        <i class="el-icon-s-promotion" />
+      </div>
+      <div>
+        <div>
+          <div>Total</div>
+          <span>738 K</span>
+        </div>
+        <i class="el-icon-s-opportunity" />
+      </div>
+    </div>
+    <!-- 统计图 -->
+    <div class="chart">
+      <!-- 柱状图 -->
+      <bar />
+      <!-- 折线图 -->
+      <brokenLine />
     </div>
   </div>
 </template>
 
 <script>
-import chart from "echarts";
+import bar from "./modules/bar";
+import brokenLine from "./modules/brokenLine";
 export default {
+  components: {
+    bar,
+    brokenLine,
+  },
   data() {
     return {
       info: {},
       dialog: false,
     };
   },
-  created() {
-    // chart
-  },
+  mounted() {},
+  methods: {},
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="scss">
 .dashboard {
   .area-body {
     display: flex;
@@ -35,6 +73,75 @@ export default {
       line-height: 54px;
       margin-bottom: 48px;
     }
+  }
+  .gather {
+    display: flex;
+    flex-wrap: wrap;
+    > div {
+      width: calc(25% - 15px);
+      height: 120px;
+      background-color: #fff;
+      margin-right: 20px;
+      border-radius: 7px;
+      box-shadow: 0 1px 10px #dad6d5;
+      color: #fff;
+      padding: 20px 20px 20px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-sizing: border-box;
+      &:nth-child(1) {
+        background-image: linear-gradient(to right, #fb9899, #f4706c);
+      }
+      &:nth-child(2) {
+        @media screen and (max-width: 1200px) {
+          margin-right: 0;
+          margin-bottom: 20px;
+        }
+        background-image: linear-gradient(to right, #67d885, #3bba5f);
+      }
+      &:nth-child(3) {
+        background-image: linear-gradient(to right, #7bbbd9, #3ea0c6);
+      }
+      &:last-child {
+        background-image: linear-gradient(to right, #c573df, #a337c8);
+        margin-right: 0;
+      }
+      i {
+        border-radius: 50%;
+        border: 1px solid #fff;
+        padding: 12px;
+        font-size: 50px;
+      }
+      > div {
+        > div {
+          font-size: 14px;
+          margin-bottom: 5px;
+        }
+        > span {
+          font-size: 26px;
+        }
+      }
+      @media screen and (max-width: 700px) {
+        width: 100%;
+        margin: 0 0 20px 0;
+      }
+      @media screen and (max-width: 1200px) and (min-width: 700px) {
+        width: calc(50% - 10px);
+      }
+      @media screen and (min-width: 1200px) {
+        width: calc(25% - 15px);
+      }
+    }
+  }
+}
+.chart {
+  margin-top: 20px;
+  > div {
+    display: inline-block;
+  }
+  @media screen and (max-width: 700px) {
+    margin-top: 0;
   }
 }
 </style>

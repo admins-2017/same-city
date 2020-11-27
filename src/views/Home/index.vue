@@ -1,14 +1,14 @@
 <template>
   <div id="home">
-    <top :userDetails="testVuex"></top>
-    <left ref="left" :userMenu="userMenu"></left>
+    <left ref="left" :userMenu="userMenu" />
+    <right />
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import left from "./left.vue";
-import top from "./top.vue";
+import right from "./right.vue";
 export default {
   name: "home",
   data() {
@@ -18,8 +18,8 @@ export default {
     };
   },
   components: {
-    top,
     left,
+    right,
   },
   methods: {
     getMenu() {
@@ -46,7 +46,7 @@ export default {
   },
   created() {
     this.testVuex = JSON.parse(localStorage.getItem("user-information"));
-    this.getMenu();
+    // this.getMenu();
   },
 };
 </script>
@@ -68,13 +68,14 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  display: flex;
 
-  > #hometop {
-    height: 8%;
-  }
+  // > #hometop {
+  //   height: 8%;
+  // }
 
-  > #homeleft {
-    flex: 1;
-  }
+  // > #homeleft {
+  //   flex: 1;
+  // }
 }
 </style>

@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Login from "../views/Login.vue";
 import Home from "../views/Home/index.vue";
+import store from "@/store";
 
 Vue.use(VueRouter);
 
@@ -38,6 +39,9 @@ const routes = [
       {
         path: "/orders",
         component: () => import("../views/Order/index.vue"),
+        meta: {
+          title: "订单",
+        },
       },
       {
         path: "/roles",
@@ -90,6 +94,9 @@ const routes = [
       {
         path: "/dashboard",
         component: () => import("../views/Dashboard/index.vue"),
+        meta: {
+          title: "首页",
+        },
       },
       {
         path: "/detail",
@@ -108,10 +115,18 @@ VueRouter.prototype.replace = function replace(location) {
   return originalReplace.call(this, location).catch((err) => err);
 };
 
-const router = new VueRouter({
+let router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.title) {
+    document.title = to.meta.title; // 路由跳转更新浏览器标题
+    store.state.pageTitle = to.meta.title; // 路由跳转更新页面顶栏标题
+  }
+  next();
 });
 
 export default router;

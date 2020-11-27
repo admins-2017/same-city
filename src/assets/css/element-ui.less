@@ -251,15 +251,13 @@ input:-webkit-autofill {
 /* .el-menu start */
 .el-menu {
   border-right: 0;
-
-  .el-menu-item {
-    background-color: #506583 !important;
-    color: #fff !important;
-
-    i {
-      color: #fff !important;
-      font-size: 14px !important;
+  .el-submenu {
+    .el-menu-item {
+      background-color: #506583 !important;
     }
+  }
+  .el-menu-item {
+    color: #fff !important;
   }
 
   .el-menu-item.is-active {
@@ -269,6 +267,11 @@ input:-webkit-autofill {
 
   .el-menu-item-group__title {
     padding: 0 0 0 20px;
+  }
+  i {
+    color: #fff !important;
+    font-size: 14px !important;
+    margin-top: -4px;
   }
 }
 
