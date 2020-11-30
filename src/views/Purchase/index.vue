@@ -154,7 +154,6 @@ export default {
       this.load.table = true;
       getOrderList(page, count)
         .then((resp) => {
-          console.log(resp.total);
           this.list.order = resp.data.records;
           this.config.total = resp.data.total;
           this.load.table = false;
@@ -182,7 +181,7 @@ export default {
     // 获取销售人员
     getUserList() {
       getUser().then((resp) => {
-        console.log(resp)
+        console.log(resp);
         this.list.users = resp.data;
       });
     },
@@ -202,9 +201,8 @@ export default {
 
     // 详情
     toDetail(obj) {
-      console.log(obj);
-      this.$refs["detail-form"].info = obj;
-      this.$refs["detail-form"].dialog = true;
+      this.$refs["detail-form"].info = obj; // 赋值详情页数据
+      this.$refs["detail-form"].dialog = true; // 详情页弹窗显示
     },
 
     // 作废
@@ -223,5 +221,4 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>

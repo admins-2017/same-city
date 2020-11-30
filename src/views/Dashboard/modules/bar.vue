@@ -118,7 +118,7 @@ export default {
 <style lang="scss" scpoed>
 #mainT {
   width: calc(25% - 15px);
-  height: 500px;
+  height: 400px;
   background-color: #fff;
   border-radius: 5px;
   padding: 20px 0 0 20px;

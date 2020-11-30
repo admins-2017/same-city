@@ -46,7 +46,7 @@ export default {
   },
   created() {
     this.testVuex = JSON.parse(localStorage.getItem("user-information"));
-    // this.getMenu();
+    this.getMenu();
   },
 };
 </script>

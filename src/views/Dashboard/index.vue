@@ -139,6 +139,7 @@ export default {
   margin-top: 20px;
   > div {
     display: inline-block;
+    box-shadow: 0px 12px 33px 0px #3e495414;
   }
   @media screen and (max-width: 700px) {
     margin-top: 0;

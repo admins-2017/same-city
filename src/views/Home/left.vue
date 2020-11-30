@@ -2,11 +2,11 @@
   <div class="left" :style="isCollapse ? 'width:64px' : 'width:200px'">
     <div class="left-content">
       <div class="top-logo">
-        <img src="../../assets/img/logo4.png" />
+        <img src="../../assets/img/logo5.jpg" />
         <span v-show="!isCollapse">巨蜥云</span>
       </div>
       <el-row class="tac">
-        <!-- <el-menu
+        <el-menu
           :default-active="active"
           class="el-menu-vertical-demo"
           background-color="#5d7599"
@@ -32,9 +32,9 @@
               >{{ child.name }}</el-menu-item
             >
           </el-submenu>
-        </el-menu> -->
-        <el-menu
-          default-active="0"
+        </el-menu>
+        <!-- <el-menu
+          default-active="/dashboard"
           class="el-menu-vertical-demo"
           background-color="#5d7599"
           text-color="#fff"
@@ -64,7 +64,7 @@
             <el-menu-item index="2-4-1">报表</el-menu-item>
             <el-menu-item index="3-4-2">数据</el-menu-item>
           </el-submenu>
-        </el-menu>
+        </el-menu> -->
       </el-row>
     </div>
   </div>
@@ -104,10 +104,10 @@ export default {
   transition: width 0.2s ease-in-out;
 
   @media screen and (max-width: 1200px) {
-    width: 64px;
+    width: 64px !important;
   }
   @media screen and (min-width: 1200px) {
-    width: 200px;
+    width: 200px !important;
   }
 
   .left-content {
@@ -120,7 +120,7 @@ export default {
       display: none;
     }
     .top-logo {
-      height: 8%;
+      height: 60px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -135,6 +135,7 @@ export default {
         width: 30px;
         height: 30px;
         // transform: rotate(43deg);
+        border-radius: 50%;
         transition: transform 0.2s ease-in-out;
       }
     }

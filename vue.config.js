@@ -12,7 +12,7 @@ module.exports = {
     hotOnly: false, //是否开启热更新
     proxy: {
       "/api": {
-        target: "http://hh566h.natappfree.cc",
+        target: "http://qmvgxa.natappfree.cc",
         ws: true, //代理websockets
         changeOrigin: true, // 虚拟的站点需要更管origin
         pathRewrite: {

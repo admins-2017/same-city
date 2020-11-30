@@ -52,7 +52,7 @@ export default {
           name: "销量",
           type: "line",
           data: [30, 20, 35, 10, 25, 10],
-          // smooth: true,
+          smooth: true,
           itemStyle: {
             normal: {
               areaStyle: {
@@ -95,7 +95,7 @@ export default {
           name: "销量",
           type: "line",
           data: [10, 30, 25, 20, 15, 5],
-          // smooth: true,
+          smooth: true,
           itemStyle: {
             normal: {
               areaStyle: {
@@ -150,7 +150,7 @@ export default {
 <style lang="scss" scpoed>
 #box {
   width: calc(25% - 15px);
-  height: 500px;
+  height: 400px;
   background-color: #fff;
   border-radius: 5px;
   padding: 20px 0 0 20px;

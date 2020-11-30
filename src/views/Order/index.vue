@@ -145,8 +145,8 @@ export default {
     };
   },
   created() {
-    this.getList(1);
     this.getUserList();
+    this.getList(1);
   },
   methods: {
     // 获取列表
@@ -154,8 +154,9 @@ export default {
       this.load.table = true;
       getOrderList(page, count)
         .then((resp) => {
-          this.list.order = resp.records;
-          this.config.total = resp.total;
+          console.log(resp);
+          this.list.order = resp.data.records;
+          this.config.total = resp.data.total;
           this.load.table = false;
         })
         .catch(() => {
@@ -168,6 +169,7 @@ export default {
       this.load.table = true;
       getOrderListOption(page, count, this.search)
         .then((resp) => {
+          resp = resp.data;
           this.list.order = [];
           this.list.order = resp.records;
           this.config.total = resp.total;
@@ -181,6 +183,7 @@ export default {
     // 获取销售人员
     getUserList() {
       getUser().then((resp) => {
+        console.log(resp);
         this.list.users = resp;
       });
     },
