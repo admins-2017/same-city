@@ -149,7 +149,7 @@ export default {
 
 <style lang="scss" scpoed>
 #box {
-  width: calc(25% - 15px);
+  width: calc(50% - 10px);
   height: 400px;
   background-color: #fff;
   border-radius: 5px;
@@ -163,7 +163,7 @@ export default {
     margin-left: 20px;
   }
   @media screen and (min-width: 1200px) {
-    width: calc(75% - 10px);
+    width: calc(50% - 10px);
     margin-left: 20px;
   }
 }

@@ -1,32 +1,31 @@
 <template>
   <div class="dashboard area">
-    <!-- <div class="area-title">首页</div> -->
     <div class="gather">
       <div>
         <div>
-          <div>Total</div>
-          <span>738 K</span>
+          <div>支出</div>
+          <span>{{ number.amountOfPayout }}</span>
         </div>
         <i class="el-icon-star-on" />
       </div>
       <div>
         <div>
-          <div>Total</div>
-          <span>738 K</span>
+          <div>收入</div>
+          <span>{{ number.saleAmount }}</span>
         </div>
         <i class="el-icon-s-help" />
       </div>
       <div>
         <div>
-          <div>Total</div>
-          <span>738 K</span>
+          <div>进货</div>
+          <span>{{ number.purchaseCount }}</span>
         </div>
         <i class="el-icon-s-promotion" />
       </div>
       <div>
         <div>
-          <div>Total</div>
-          <span>738 K</span>
+          <div>销售</div>
+          <span>{{ number.saleCount }}</span>
         </div>
         <i class="el-icon-s-opportunity" />
       </div>
@@ -34,9 +33,11 @@
     <!-- 统计图 -->
     <div class="chart">
       <!-- 柱状图 -->
-      <bar />
+      <bar ref="barRef" />
       <!-- 折线图 -->
       <brokenLine />
+      <!-- 排行榜 -->
+      <rank ref="rankRef" />
     </div>
   </div>
 </template>
@@ -44,18 +45,62 @@
 <script>
 import bar from "./modules/bar";
 import brokenLine from "./modules/brokenLine";
+import rank from "./modules/rankw";
+import { getIndex } from "@/api/dashboard";
 export default {
   components: {
     bar,
     brokenLine,
+    rank,
   },
   data() {
     return {
       info: {},
       dialog: false,
+      number: {
+        amountOfPayout: "", // 支出金额
+        purchaseCount: "", // 进货次数
+        saleAmount: "", // 收入金额
+        saleCount: "", // 销售次数
+      },
     };
   },
-  mounted() {},
+  mounted() {
+    getIndex().then((resp) => {
+      const { data } = resp;
+      this.number = data.number;
+      // 柱状图数据
+      let bar = {
+        x: [],
+        y1: [],
+        y2: [],
+      };
+      data.statistics.map((s) => {
+        bar.x.push(s.statisticsYear + "-" + s.statisticsMonth);
+        bar.y1.push(s.statisticsSale);
+        bar.y2.push(s.statisticsPurchase);
+      });
+      this.$refs.barRef.bar = bar;
+      this.$refs.barRef.setChart();
+
+      // 排行榜数据
+      // let rank = [["score", "amount", "product"]];
+      // data.commodityList.map((c) => {
+      //   let arr = [];
+      //   arr.push(0, c.score, c.value);
+      //   rank.push(arr);
+      // });
+      let rankArr = [];
+      data.commodityList.map((c) => {
+        let obj = {};
+        obj["name"] = c.score;
+        obj["value"] = c.score;
+        rankArr.push(obj);
+      });
+      this.$refs.rankRef.rank = rankArr;
+      this.$refs.rankRef.setChart();
+    });
+  },
   methods: {},
 };
 </script>
