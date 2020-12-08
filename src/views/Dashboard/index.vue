@@ -35,7 +35,7 @@
       <!-- 柱状图 -->
       <bar ref="barRef" />
       <!-- 折线图 -->
-      <brokenLine />
+      <brokenLine ref="lineRef" />
       <!-- 排行榜 -->
       <rank ref="rankRef" />
     </div>
@@ -82,6 +82,24 @@ export default {
       });
       this.$refs.barRef.bar = bar;
       this.$refs.barRef.setChart();
+
+      // 柱状图数据
+      let line = {
+        x: [],
+        y1: [],
+        y2: [],
+        y3: [],
+        y4: [],
+      };
+      data.lastWeekCounts.map((s) => {
+        line.x.push(s.dayMonth + "-" + s.dayDate);
+        line.y1.push(s.saleNumber);
+        line.y2.push(s.purchaseNumber);
+        line.y3.push(s.returnSaleNumber);
+        line.y4.push(s.returnPurchaseNumber);
+      });
+      this.$refs.lineRef.line = line;
+      this.$refs.lineRef.setChart();
 
       // 排行榜数据
       // let rank = [["score", "amount", "product"]];

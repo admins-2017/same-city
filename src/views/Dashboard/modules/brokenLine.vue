@@ -5,145 +5,241 @@
 import chart from "echarts";
 export default {
   data() {
-    return {};
+    return {
+      line: {
+        x: [],
+        y1: [],
+        y2: [],
+        y3: [],
+        y4: [],
+      },
+    };
   },
-  mounted() {
-    //初始化ehcharts实例
-    var myChart = chart.init(document.getElementById("box"));
-    //指定图表的配置项和数据
-    var option = {
-      //标题
-      title: {
-        text: "生鲜销量统计",
-      },
-      //图例-每一条数据的名字叫销量
-      legend: {
-        data: ["销量"],
-      },
-      //x轴
-      xAxis: {
-        data: ["苹果", "橘子", "橙子", "香蕉", "菠萝", "榴莲"],
-        axisLine: {
-          //y轴
-          show: false,
+  mounted() {},
+  destroyed() {
+    window.removeEventListener("resize", false);
+  },
+  methods: {
+    setChart() {
+      //初始化ehcharts实例
+      var myChart = chart.init(document.getElementById("box"));
+      //指定图表的配置项和数据
+      var option = {
+        //标题
+        title: {
+          text: "上月进销统计",
         },
-      },
-      //y轴没有显式设置，根据值自动生成y轴
-      yAxis: [
-        {
-          type: "value",
+        //图例-每一条数据的名字叫销量
+        legend: {
+          data: ["销售次数", "进货次数", "销售退货", "进货退货"],
+        },
+        //x轴
+        xAxis: {
+          data: this.line.x,
           axisLine: {
             //y轴
             show: false,
           },
-          axisTick: {
-            //刻度线
-            show: false,
-          },
-          splitLine: {
-            //网格线
-            show: true,
-          },
         },
-      ],
-      //数据-data是最终要显示的数据
-      series: [
-        {
-          name: "销量",
-          type: "line",
-          data: [30, 20, 35, 10, 25, 10],
-          smooth: true,
-          itemStyle: {
-            normal: {
-              areaStyle: {
-                type: "default",
-                //渐变色实现
-                color: new chart.graphic.LinearGradient(
-                  0,
-                  0,
-                  0,
-                  1, //变化度
-                  //三种由深及浅的颜色
-                  [
-                    {
-                      offset: 0,
-                      color: "#fcf2f1",
-                    },
-                    {
-                      offset: 1,
-                      color: "#fcf2f1",
-                    },
-                  ]
-                ),
-              },
-              lineStyle: {
-                //线的颜色
-                color: "#f4706c",
-              },
-              //以及在折线图每个日期点顶端显示数字
-              label: {
-                show: true,
-                position: "top",
-                textStyle: {
-                  color: "white",
+        //y轴没有显式设置，根据值自动生成y轴
+        yAxis: [
+          {
+            type: "value",
+            axisLine: {
+              //y轴
+              show: false,
+            },
+            axisTick: {
+              //刻度线
+              show: false,
+            },
+            splitLine: {
+              //网格线
+              show: true,
+            },
+          },
+        ],
+        //数据-data是最终要显示的数据
+        series: [
+          {
+            name: "销售次数",
+            type: "line",
+            data: this.line.y1,
+            smooth: true,
+            itemStyle: {
+              normal: {
+                areaStyle: {
+                  type: "default",
+                  //渐变色实现
+                  color: new chart.graphic.LinearGradient(
+                    0,
+                    0,
+                    0,
+                    1, //变化度
+                    //三种由深及浅的颜色
+                    [
+                      {
+                        offset: 0,
+                        color: "#fcf2f1",
+                      },
+                      {
+                        offset: 1,
+                        color: "#fcf2f1",
+                      },
+                    ]
+                  ),
+                },
+                lineStyle: {
+                  //线的颜色
+                  color: "#f4706c",
+                },
+                //以及在折线图每个日期点顶端显示数字
+                label: {
+                  show: true,
+                  position: "top",
+                  textStyle: {
+                    color: "white",
+                  },
                 },
               },
             },
           },
-        },
-        {
-          name: "销量",
-          type: "line",
-          data: [10, 30, 25, 20, 15, 5],
-          smooth: true,
-          itemStyle: {
-            normal: {
-              areaStyle: {
-                type: "default",
-                //渐变色实现
-                color: new chart.graphic.LinearGradient(
-                  0,
-                  0,
-                  0,
-                  1, //变化度
-                  //三种由深及浅的颜色
-                  [
-                    {
-                      offset: 0,
-                      color: "#f1fcf0",
-                    },
-                    {
-                      offset: 1,
-                      color: "#f1fcf0",
-                    },
-                  ]
-                ),
-              },
-              lineStyle: {
-                //线的颜色
-                color: "#3bba5f",
-              },
-              //以及在折线图每个日期点顶端显示数字
-              label: {
-                show: true,
-                position: "top",
-                textStyle: {
-                  color: "white",
+          {
+            name: "进货次数",
+            type: "line",
+            data: this.line.y2,
+            smooth: true,
+            itemStyle: {
+              normal: {
+                areaStyle: {
+                  type: "default",
+                  //渐变色实现
+                  color: new chart.graphic.LinearGradient(
+                    0,
+                    0,
+                    0,
+                    1, //变化度
+                    //三种由深及浅的颜色
+                    [
+                      {
+                        offset: 0,
+                        color: "#fcf2f1",
+                      },
+                      {
+                        offset: 1,
+                        color: "#fcf2f1",
+                      },
+                    ]
+                  ),
+                },
+                lineStyle: {
+                  //线的颜色
+                  color: "#3bba5f",
+                },
+                //以及在折线图每个日期点顶端显示数字
+                label: {
+                  show: true,
+                  position: "top",
+                  textStyle: {
+                    color: "white",
+                  },
                 },
               },
             },
           },
-        },
-      ],
-    };
-    //使用刚刚指定的配置项和数据项显示图表
-    myChart.setOption(option);
-    window.addEventListener("resize", () => myChart.resize(), false);
+          {
+            name: "销售退货",
+            type: "line",
+            data: this.line.y2,
+            smooth: true,
+            itemStyle: {
+              normal: {
+                areaStyle: {
+                  type: "default",
+                  //渐变色实现
+                  color: new chart.graphic.LinearGradient(
+                    0,
+                    0,
+                    0,
+                    1, //变化度
+                    //三种由深及浅的颜色
+                    [
+                      {
+                        offset: 0,
+                        color: "#fcf2f1",
+                      },
+                      {
+                        offset: 1,
+                        color: "#fcf2f1",
+                      },
+                    ]
+                  ),
+                },
+                lineStyle: {
+                  //线的颜色
+                  color: "#3ea0c6",
+                },
+                //以及在折线图每个日期点顶端显示数字
+                label: {
+                  show: true,
+                  position: "top",
+                  textStyle: {
+                    color: "white",
+                  },
+                },
+              },
+            },
+          },
+          {
+            name: "进货退货",
+            type: "line",
+            data: this.line.y4,
+            smooth: true,
+            itemStyle: {
+              normal: {
+                areaStyle: {
+                  type: "default",
+                  //渐变色实现
+                  color: new chart.graphic.LinearGradient(
+                    0,
+                    0,
+                    0,
+                    1, //变化度
+                    //三种由深及浅的颜色
+                    [
+                      {
+                        offset: 0,
+                        color: "#fcf2f1",
+                      },
+                      {
+                        offset: 1,
+                        color: "#fcf2f1",
+                      },
+                    ]
+                  ),
+                },
+                lineStyle: {
+                  //线的颜色
+                  color: "#a337c8",
+                },
+                //以及在折线图每个日期点顶端显示数字
+                label: {
+                  show: true,
+                  position: "top",
+                  textStyle: {
+                    color: "white",
+                  },
+                },
+              },
+            },
+          },
+        ],
+      };
+      //使用刚刚指定的配置项和数据项显示图表
+      myChart.setOption(option);
+      window.addEventListener("resize", () => myChart.resize(), false);
+    },
   },
-  destroyed() {
-    window.removeEventListener("resize", false);
-  },
-  methods: {},
 };
 </script>
 
