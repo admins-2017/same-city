@@ -64,7 +64,7 @@ export default {
         ],
         series: [
           {
-            name: "销售量",
+            name: "销售收款",
             type: "bar",
             //设置柱状图宽度
             barWidth: "8",
@@ -88,7 +88,7 @@ export default {
             },
           },
           {
-            name: "进货量",
+            name: "进货支出",
             type: "bar",
             //设置柱状图宽度
             barWidth: "8",

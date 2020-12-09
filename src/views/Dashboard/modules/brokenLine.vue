@@ -27,7 +27,7 @@ export default {
       var option = {
         //标题
         title: {
-          text: "上月进销统计",
+          text: "上周进销统计",
         },
         //图例-每一条数据的名字叫销量
         legend: {
