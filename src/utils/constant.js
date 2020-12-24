@@ -48,3 +48,10 @@ export const ORDER_STATE_LIST = [
     value: "退货",
   },
 ];
+// 操作记录-请求方式
+export const REQ_TYPE = {
+  GET: "primary",
+  POST: "success",
+  PUT: "info",
+  DELETE: "danger",
+};

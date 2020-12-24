@@ -110,13 +110,12 @@ export default {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    background-color: #f7fbfa;
+    background-color: #ebeef5;
     > div {
-      width: 100%;
-      height: 100%;
-      overflow-y: auto;
+      margin: 20px;
       padding: 20px;
-      box-sizing: border-box;
+      border-radius: 5px;
+      background-color: #fff;
     }
   }
 }

@@ -1,92 +1,91 @@
 <template>
   <div id="puchase" class="area">
-    <div class="area-title">采购订单</div>
-    <div class="area-child">
-      <div class="area-search">
-        <el-input
-          v-model="search.orderNumber"
-          placeholder="请输入订单号查询"
-        ></el-input>
-        <el-select
-          v-model="search.state"
-          clearable
-          placeholder="请选择订单状态"
+    <div class="head">
+      <el-input
+        v-model="search.orderNumber"
+        placeholder="请输入订单号查询"
+        size="mini"
+      ></el-input>
+      <el-select
+        v-model="search.state"
+        placeholder="请选择订单状态"
+        size="mini"
+        clearable
+      >
+        <el-option
+          v-for="item in list.users"
+          :key="item.userId"
+          :label="item.username"
+          :value="item.userId"
         >
-          <el-option
-            v-for="item in list.users"
-            :key="item.userId"
-            :label="item.username"
-            :value="item.userId"
-          >
-          </el-option>
-        </el-select>
-        <el-date-picker
-          v-model="search.date"
-          type="datetimerange"
-          range-separator="-"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          align="right"
-          value-format="yyyy-MM-dd HH:mm:ss"
+        </el-option>
+      </el-select>
+      <el-date-picker
+        v-model="search.date"
+        type="datetimerange"
+        range-separator="-"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        align="right"
+        value-format="yyyy-MM-dd HH:mm:ss"
+        size="mini"
+      >
+      </el-date-picker>
+      <el-select
+        v-model="search.operatorUser"
+        clearable
+        placeholder="请选择销售人员"
+        size="mini"
+      >
+        <el-option
+          v-for="item in list.users"
+          :key="item.userId"
+          :label="item.username"
+          :value="item.userId"
         >
-        </el-date-picker>
-        <el-select
-          v-model="search.operatorUser"
-          clearable
-          placeholder="请选择销售人员"
-        >
-          <el-option
-            v-for="item in list.users"
-            :key="item.userId"
-            :label="item.username"
-            :value="item.userId"
-          >
-          </el-option>
-        </el-select>
-        <el-button
-          type="primary"
-          @click="query"
-          icon="el-icon-search"
-          size="small"
-          :loading="load.table"
-          >查询</el-button
-        >
-        <el-button
-          type="success"
-          @click="toAdd"
-          icon="el-icon-plus"
-          size="small"
-          :loading="load.add"
-          >添加</el-button
-        >
-      </div>
+        </el-option>
+      </el-select>
+      <el-button
+        type="primary"
+        @click="query"
+        icon="el-icon-search"
+        size="mini"
+        :loading="load.table"
+        >查询</el-button
+      >
+      <el-button
+        type="success"
+        @click="toAdd"
+        icon="el-icon-plus"
+        size="mini"
+        :loading="load.add"
+        >添加</el-button
+      >
     </div>
-    <div class="area-body">
-      <el-table :data="list.order" v-loading="load.table">
-        <el-table-column label="#" type="index" />
-        <el-table-column label="订单号" prop="purchaseNumber" />
-        <el-table-column label="订单状态">
-          <template slot-scope="scope">
-            {{ obj.state[scope.row.purchaseStatus] }}
-          </template>
-        </el-table-column>
-        <el-table-column label="供应商名称" prop="supplierName" />
-        <el-table-column label="总金额" prop="purchaseTotalAmount" />
-        <el-table-column label="折后金额" prop="purchaseAmountAfterDiscount" />
-        <el-table-column label="下单时间" prop="purchaseDate" width="180" />
-        <el-table-column label="操作" width="150">
-          <template slot-scope="scope">
-            <el-button type="text" @click="toDetail(scope.row)">详情</el-button>
-            <el-button
-              type="text"
-              @click="cancellation(scope.row.orderId)"
-              :loading="load.cancel"
-              >作废</el-button
-            >
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
+    <el-table :data="list.order" v-loading="load.table">
+      <el-table-column label="#" type="index" />
+      <el-table-column label="订单号" prop="purchaseNumber" />
+      <el-table-column label="订单状态">
+        <template slot-scope="scope">
+          {{ obj.state[scope.row.purchaseStatus] }}
+        </template>
+      </el-table-column>
+      <el-table-column label="供应商名称" prop="supplierName" />
+      <el-table-column label="总金额" prop="purchaseTotalAmount" />
+      <el-table-column label="折后金额" prop="purchaseAmountAfterDiscount" />
+      <el-table-column label="下单时间" prop="purchaseDate" width="180" />
+      <el-table-column label="操作" width="150">
+        <template slot-scope="scope">
+          <el-button type="text" @click="toDetail(scope.row)">详情</el-button>
+          <el-button
+            type="text"
+            @click="cancellation(scope.row.orderId)"
+            :loading="load.cancel"
+            >作废</el-button
+          >
+        </template>
+      </el-table-column>
+    </el-table>
     <!-- 分页 -->
     <pagination :config="config" @change="getList" />
     <!-- 新增 -->

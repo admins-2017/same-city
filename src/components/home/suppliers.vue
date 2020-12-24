@@ -145,7 +145,7 @@
               title="确定导出当前供应商吗？"
               @onConfirm="exportSupplier"
             >
-              <el-button slot="reference" size="small" >导出当前信息</el-button>
+              <el-button slot="reference" size="small">导出当前信息</el-button>
             </el-popconfirm>
             <el-pagination
               @current-change="handleCurrentChange"
@@ -639,7 +639,7 @@ export default {
         },
       })
         .then((res) => {
-          console.log(res)
+          console.log(res);
           const blob = new Blob([res.data], {
             //取响应回来的数据
             type: "application/vnd.ms-excel;charset=utf-8",
@@ -654,7 +654,7 @@ export default {
           window.URL.revokeObjectURL(href); // 释放掉blob对象
         })
         .catch((fail) => {
-           this.$message.error('导出结果为空，无法导出');
+          this.$message.error("导出结果为空，无法导出");
           console.error(fail);
         });
     },

@@ -7,7 +7,6 @@
     :page-size="config.count"
     layout="total, prev, pager, next, sizes"
     :total="config.total"
-    background
   >
   </el-pagination>
 </template>

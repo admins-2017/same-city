@@ -154,7 +154,7 @@ export default {
                   "user-information",
                   JSON.stringify(resp.data)
                 );
-                this.$router.push("/home");
+                this.$router.push("/dashboard");
               } else {
                 this.$message.error(resp.msg);
               }

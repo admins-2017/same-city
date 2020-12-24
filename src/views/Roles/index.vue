@@ -1,180 +1,160 @@
 <template>
   <div class="roles">
-    <div>
-      <div>
+    <!-- 头部搜索 -->
+    <eheader />
+    <!-- 列表 -->
+    <el-table :data="tableData" size="mini">
+      <el-table-column
+        prop="roleId"
+        label="角色id"
+        show-overflow-tooltip
+      ></el-table-column>
+      <el-table-column
+        prop="roleName"
+        label="角色名称"
+        show-overflow-tooltip
+      ></el-table-column>
+      <el-table-column
+        prop="roleDescription"
+        label="角色简介"
+        show-overflow-tooltip
+      ></el-table-column>
+      <el-table-column
+        prop="roleCode"
+        label="角色编码"
+        show-overflow-tooltip
+      ></el-table-column>
+      <el-table-column label="默认角色" prop="defaultRole">
+        <template slot-scope="scope">
+          <el-tag type="success" size="mini" v-if="scope.row.defaultRole">
+            默认角色
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column fixed="right" label="操作" width="200">
+        <template slot-scope="scope">
+          <el-button @click="updateRole(scope.row)" type="text" size="small"
+            >编辑</el-button
+          >
+          <el-button
+            type="text"
+            size="small"
+            @click="delRoleById(scope.row.roleId)"
+            v-if="!scope.row.defaultRole"
+            >删除</el-button
+          >
+          <el-button
+            @click="updateDefaultRole(scope.row.roleId)"
+            type="text"
+            size="small"
+            v-if="!scope.row.defaultRole"
+            >设为默认</el-button
+          >
+        </template>
+      </el-table-column>
+    </el-table>
+    <!-- 分页 -->
+    <el-pagination
+      @current-change="handleCurrentChange"
+      :page-size="size"
+      layout="total, prev, pager, next, jumper"
+      :total="total"
+    ></el-pagination>
+    <el-dialog
+      title="新增角色"
+      :visible.sync="insertDialogFormVisible"
+      :width="dialogWidht"
+      center
+    >
+      <div class="insert-role-from">
         <div>
           <el-input
-            placeholder="请输入角色名"
-            prefix-icon="el-icon-search"
-            v-model="queryName"
+            v-model="insertForm.roleName"
+            prefix-icon="el-icon-user-solid"
+            placeholder="请输入角色名称"
           ></el-input>
-          <el-button type="primary" plain @click="getRoleByName"
-            >查询</el-button
-          >
-          <el-button type="primary" plain @click="clearQuery">取消</el-button>
+          <el-input
+            v-model="insertForm.roleCode"
+            prefix-icon="el-icon-info"
+            placeholder="请输入角色编码(请勿输入汉字)"
+          ></el-input>
+          <el-input
+            v-model="insertForm.roleDescription"
+            prefix-icon="el-icon-document"
+            placeholder="请输入角色简介"
+          ></el-input>
         </div>
-        <el-button type="primary" plain @click="insertDialogFormVisible = true"
-          >新增用户</el-button
+        <div>
+          <span>权限列表</span>
+          <el-tree
+            :data="insertTreeData"
+            show-checkbox
+            node-key="menuId"
+            ref="insertTree"
+            :props="defaultProps"
+          ></el-tree>
+        </div>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancelInsertDialog">取 消</el-button>
+        <el-button type="primary" @click="insertNewRole">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog
+      title="角色详情"
+      :visible.sync="updateDialogFormVisible"
+      :width="dialogWidht"
+      center
+    >
+      <div class="update-role-from">
+        <div>
+          <el-input
+            v-model="updateForm.roleName"
+            prefix-icon="el-icon-user-solid"
+            :placeholder="roleDetails.roleName"
+          ></el-input>
+          <el-input
+            v-model="updateForm.roleCode"
+            prefix-icon="el-icon-info"
+            :placeholder="roleDetails.roleCode"
+          ></el-input>
+          <el-input
+            v-model="updateForm.roleDescription"
+            prefix-icon="el-icon-document"
+            :placeholder="roleDetails.roleDescription"
+          ></el-input>
+        </div>
+        <div>
+          <span>权限列表</span>
+          <el-tree
+            :data="updateTreeData"
+            show-checkbox
+            node-key="menuId"
+            ref="tree"
+            :default-checked-keys="roleMenuList"
+            :props="defaultProps"
+          ></el-tree>
+          <!-- <el-button @click="getCheckedKeys">通过 key 获取</el-button> -->
+        </div>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancelUpdateDialog">取 消</el-button>
+        <el-button type="primary" @click="updateRoleDetails(roleDetails.roleId)"
+          >确 定</el-button
         >
       </div>
-      <div>
-        <el-table :data="tableData" border style="width: 100%" height="100%">
-          <el-table-column
-            fixed
-            prop="roleId"
-            label="角色id"
-            width="170"
-          ></el-table-column>
-          <el-table-column
-            prop="roleName"
-            label="角色名称"
-            width="170"
-          ></el-table-column>
-          <el-table-column
-            prop="roleDescription"
-            label="角色简介"
-          ></el-table-column>
-          <el-table-column
-            prop="roleCode"
-            label="角色编码"
-            width="180"
-          ></el-table-column>
-          <el-table-column label="默认角色" width="100" prop="defaultRole">
-            <template slot-scope="scope">
-              <el-tag type="success" v-if="scope.row.defaultRole"
-                >默认角色</el-tag
-              >
-            </template>
-          </el-table-column>
-          <el-table-column fixed="right" label="操作" width="150">
-            <template slot-scope="scope">
-              <el-button @click="updateRole(scope.row)" type="text" size="small"
-                >编辑</el-button
-              >
-              <el-button
-                type="text"
-                size="small"
-                @click="delRoleById(scope.row.roleId)"
-                v-if="!scope.row.defaultRole"
-                >删除</el-button
-              >
-              <el-button
-                @click="updateDefaultRole(scope.row.roleId)"
-                type="text"
-                size="small"
-                v-if="!scope.row.defaultRole"
-                >设为默认</el-button
-              >
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-      <div>
-        <el-pagination
-          @current-change="handleCurrentChange"
-          :page-size="size"
-          layout="total, prev, pager, next, jumper"
-          :total="total"
-        ></el-pagination>
-      </div>
-      <div>
-        <el-dialog
-          title="新增角色"
-          :visible.sync="insertDialogFormVisible"
-          :width="dialogWidht"
-          center
-        >
-          <div class="insert-role-from">
-            <div>
-              <el-input
-                v-model="insertForm.roleName"
-                prefix-icon="el-icon-user-solid"
-                placeholder="请输入角色名称"
-              ></el-input>
-              <el-input
-                v-model="insertForm.roleCode"
-                prefix-icon="el-icon-info"
-                placeholder="请输入角色编码(请勿输入汉字)"
-              ></el-input>
-              <el-input
-                v-model="insertForm.roleDescription"
-                prefix-icon="el-icon-document"
-                placeholder="请输入角色简介"
-              ></el-input>
-            </div>
-            <div>
-              <span>权限列表</span>
-              <el-tree
-                :data="insertTreeData"
-                show-checkbox
-                node-key="menuId"
-                ref="insertTree"
-                :props="defaultProps"
-              ></el-tree>
-            </div>
-          </div>
-          <div slot="footer" class="dialog-footer">
-            <el-button @click="cancelInsertDialog">取 消</el-button>
-            <el-button type="primary" @click="insertNewRole">确 定</el-button>
-          </div>
-        </el-dialog>
-      </div>
-      <div>
-        <el-dialog
-          title="角色详情"
-          :visible.sync="updateDialogFormVisible"
-          :width="dialogWidht"
-          center
-        >
-          <div class="update-role-from">
-            <div>
-              <el-input
-                v-model="updateForm.roleName"
-                prefix-icon="el-icon-user-solid"
-                :placeholder="roleDetails.roleName"
-              ></el-input>
-              <el-input
-                v-model="updateForm.roleCode"
-                prefix-icon="el-icon-info"
-                :placeholder="roleDetails.roleCode"
-              ></el-input>
-              <el-input
-                v-model="updateForm.roleDescription"
-                prefix-icon="el-icon-document"
-                :placeholder="roleDetails.roleDescription"
-              ></el-input>
-            </div>
-            <div>
-              <span>权限列表</span>
-              <el-tree
-                :data="updateTreeData"
-                show-checkbox
-                node-key="menuId"
-                ref="tree"
-                :default-checked-keys="roleMenuList"
-                :props="defaultProps"
-              ></el-tree>
-              <!-- <el-button @click="getCheckedKeys">通过 key 获取</el-button> -->
-            </div>
-          </div>
-          <div slot="footer" class="dialog-footer">
-            <el-button @click="cancelUpdateDialog">取 消</el-button>
-            <el-button
-              type="primary"
-              @click="updateRoleDetails(roleDetails.roleId)"
-              >确 定</el-button
-            >
-          </div>
-        </el-dialog>
-      </div>
-    </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import eheader from "./modules/header.vue";
 import axios from "axios";
 export default {
   name: "roles",
+  components: {
+    eheader,
+  },
   data() {
     return {
       tableData: [],
@@ -233,16 +213,10 @@ export default {
           this.$message.error("服务器连接超时 请重试！");
         });
     },
-    getRoleByName() {
+    getRoleByName(queryName) {
       axios({
         method: "get",
-        url:
-          "/api/role/like/" +
-          this.queryName +
-          "/" +
-          this.page +
-          "/" +
-          this.size,
+        url: "/api/role/like/" + queryName + "/" + this.page + "/" + this.size,
         headers: {
           Authorization: this.userDetails.token,
         },
@@ -256,10 +230,6 @@ export default {
           console.log(err);
           this.$message.error("服务器连接超时 请重试！");
         });
-    },
-    clearQuery() {
-      this.queryName = "";
-      this.getAllRole();
     },
     delRoleById(value) {
       console.log(value);
@@ -472,140 +442,85 @@ export default {
 };
 </script>
 
-<style lang="less">
-html,
-body {
-  width: 100%;
-  height: 100%;
-  margin: 0px;
-  padding: 0px;
-}
-
+<style lang="less" scoped>
 .roles {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow-y: hidden;
-  > div {
-    width: 98%;
-    height: 98%;
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  > div:nth-of-type(4) {
+    .el-dialog {
+      .el-dialog__body {
+        .insert-role-from {
+          display: flex;
+          flex-direction: column;
 
-    > div:nth-of-type(1) {
-      width: 94%;
-      margin-top: 10px;
-      display: flex;
-      justify-content: space-between;
-      height: 5%;
-      > div:nth-of-type(1) {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-    }
-
-    > div:nth-of-type(2) {
-      margin-top: 20px;
-      width: 94%;
-      height: 70%;
-      ::-webkit-scrollbar {
-        width: 1px;
-        height: 1px;
-      }
-    }
-
-    > div:nth-of-type(3) {
-      height: 10%;
-      width: 94%;
-      display: flex;
-      align-items: center;
-    }
-
-    > div:nth-of-type(4) {
-      background-color: whitesmoke;
-
-      .el-dialog {
-        .el-dialog__body {
-          .insert-role-from {
+          > div:nth-of-type(1) {
             display: flex;
+            justify-content: center;
             flex-direction: column;
+            align-items: center;
 
-            > div:nth-of-type(1) {
-              display: flex;
-              justify-content: center;
-              flex-direction: column;
-              align-items: center;
+            .el-input {
+              width: 70%;
+              margin: 10px 0px;
+            }
+          }
 
-              .el-input {
-                width: 70%;
-                margin: 10px 0px;
-              }
+          > div:nth-of-type(2) {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+
+            > span {
+              color: rgba(42, 116, 161, 0.493);
+              font-size: 20px;
+              margin-bottom: 10px;
             }
 
-            > div:nth-of-type(2) {
-              margin-top: 10px;
-              display: flex;
-              justify-content: center;
-              flex-direction: column;
-              align-items: center;
-
-              > span {
-                color: rgba(42, 116, 161, 0.493);
-                font-size: 20px;
-                margin-bottom: 10px;
-              }
-
-              .el-tree {
-                width: 70%;
-              }
+            .el-tree {
+              width: 70%;
             }
           }
         }
       }
     }
+  }
 
-    > div:nth-of-type(5) {
-      background-color: whitesmoke;
+  > div:nth-of-type(5) {
+    background-color: whitesmoke;
 
-      .el-dialog {
-        .el-dialog__body {
-          .update-role-from {
+    .el-dialog {
+      .el-dialog__body {
+        .update-role-from {
+          display: flex;
+          flex-direction: column;
+
+          > div:nth-of-type(1) {
             display: flex;
+            justify-content: center;
             flex-direction: column;
+            align-items: center;
 
-            > div:nth-of-type(1) {
-              display: flex;
-              justify-content: center;
-              flex-direction: column;
-              align-items: center;
+            .el-input {
+              width: 70%;
+              margin: 10px 0px;
+            }
+          }
 
-              .el-input {
-                width: 70%;
-                margin: 10px 0px;
-              }
+          > div:nth-of-type(2) {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+
+            > span {
+              color: rgba(42, 116, 161, 0.493);
+              font-size: 20px;
+              margin-bottom: 10px;
             }
 
-            > div:nth-of-type(2) {
-              margin-top: 10px;
-              display: flex;
-              justify-content: center;
-              flex-direction: column;
-              align-items: center;
-
-              > span {
-                color: rgba(42, 116, 161, 0.493);
-                font-size: 20px;
-                margin-bottom: 10px;
-              }
-
-              .el-tree {
-                width: 70%;
-              }
+            .el-tree {
+              width: 70%;
             }
           }
         }

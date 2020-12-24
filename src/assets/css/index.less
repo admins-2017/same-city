@@ -8,7 +8,8 @@ body,
   margin: 0px;
   padding: 0px;
 }
-#app > div {
+
+#app>div {
   width: 100%;
   height: 100%;
 }
@@ -36,7 +37,7 @@ body,
   .area-child {
     background: #fff;
     border-radius: 0 0 5px 5px;
-    padding: 10px 20px 20px 20px;
+    padding: 20px;
     margin-bottom: 20px;
     position: relative;
     display: flex;
@@ -44,7 +45,7 @@ body,
     flex-direction: row;
     flex-wrap: wrap;
 
-    > .el-button {
+    >.el-button {
       position: absolute;
       top: -35px;
       right: 20px;
@@ -58,14 +59,15 @@ body,
       width: 100%;
       display: flex;
 
-      > .el-input {
+      >.el-input {
         width: 15%;
-        + .el-input {
+
+        +.el-input {
           margin-left: 20px;
         }
       }
 
-      > .el-date-editor {
+      >.el-date-editor {
         width: 20%;
         margin-left: 20px;
         font-size: 13px;
@@ -76,7 +78,7 @@ body,
         margin-left: 20px;
       }
 
-      > .el-select {
+      >.el-select {
         width: 15%;
       }
     }
@@ -95,10 +97,12 @@ body,
     .area-title {
       font-size: 16px;
       line-height: 16px;
+
       &:before {
         height: 16px;
       }
     }
+
     .area-child {
       padding-top: 0;
     }
@@ -110,6 +114,27 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
 }
+
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+.head {
+  display: flex;
+  padding-bottom: 20px;
+
+  .el-input,
+  .el-select {
+    min-width: 200px;
+    max-width: 200px;
+    margin-right: 10px;
+  }
+
+  .el-date-editor {
+    margin-right: 10px;
+  }
+
+  .el-button+.el-button {
+    margin-left: 10px;
+  }
 }

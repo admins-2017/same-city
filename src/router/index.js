@@ -31,21 +31,30 @@ const routes = [
       {
         path: "/commoditys",
         component: () => import("../components/home/commoditys.vue"),
+        meta: {
+          title: "商品",
+        },
       },
       {
         path: "/categorys",
         component: () => import("@/views/Categorys"),
+        meta: {
+          title: "商品分类",
+        },
       },
       {
         path: "/orders",
         component: () => import("../views/Order/index.vue"),
         meta: {
-          title: "订单",
+          title: "销售订单",
         },
       },
       {
         path: "/roles",
-        component: () => import("../components/home/roles.vue"),
+        component: () => import("@/views/Roles"),
+        meta: {
+          title: "角色",
+        },
       },
       {
         path: "/menus",
@@ -58,6 +67,9 @@ const routes = [
       {
         path: "/interfaces",
         component: () => import("../components/home/interfaces.vue"),
+        meta: {
+          title: "接口",
+        },
       },
       {
         path: "/datasheets",
@@ -65,7 +77,10 @@ const routes = [
       },
       {
         path: "/records",
-        component: () => import("../components/home/records.vue"),
+        component: () => import("@/views/Records"),
+        meta: {
+          title: "操作记录",
+        },
       },
       {
         path: "/shops",
@@ -74,10 +89,16 @@ const routes = [
       {
         path: "/purchases",
         component: () => import("../views/Purchase/index.vue"),
+        meta: {
+          title: "采购订单",
+        },
       },
       {
         path: "/suppliers",
         component: () => import("../components/home/suppliers.vue"),
+        meta: {
+          title: "供应商",
+        },
       },
       {
         path: "/tasks",

@@ -1,6 +1,5 @@
 <template>
   <div class="categorys area">
-    <div class="area-title">商品分类</div>
     <div class="area-child">
       <div class="area-search">
         <el-input placeholder="请输入内容" v-model="queryName" clearable />
