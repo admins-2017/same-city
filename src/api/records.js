@@ -1,9 +1,14 @@
+/**
+ * 文件名称：操作记录接口文件
+ * 归属菜单：系统管理-操作记录
+ */
 import request from "@/utils/request";
 
-// 查询-无查询条件
-export function getRecords(page, size) {
+// 查询操作记录
+export function getRecords(params) {
   return request({
-    url: `api/record/${page}/${size}`,
+    url: "api/record",
     method: "get",
+    params,
   });
 }

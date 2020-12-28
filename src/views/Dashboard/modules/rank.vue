@@ -13,7 +13,7 @@ export default {
     // this.setChart();
   },
   destroyed() {
-    window.removeEventListener("resize", arguments.callee);
+    window.removeEventListener("resize", arguments);
   },
   methods: {
     setChart() {

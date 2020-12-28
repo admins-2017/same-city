@@ -1,9 +1,17 @@
 import request from "@/utils/request";
 
-// 查询销售订单-无查询条件
-export function getCommodityList(id) {
+// 查询所有商铺
+export function getAllShop() {
   return request({
-    url: `api/inventory/${id}/`,
+    url: "api/shop",
+    method: "get",
+  });
+}
+
+// 根据名称查询商铺
+export function getShop(name) {
+  return request({
+    url: `/api/shop/${name}/`,
     method: "get",
   });
 }

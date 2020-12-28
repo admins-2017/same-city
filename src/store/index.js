@@ -6,7 +6,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    pageTitle: "", // 顶栏页面标题
+    pageInfo: {}, // 顶栏页面信息
     pathName: "",
     currDbSource: {},
     currJobData: {},

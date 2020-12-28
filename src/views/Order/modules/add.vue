@@ -237,10 +237,10 @@
       </el-form>
     </div>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="calcel">取 消</el-button>
-      <el-button type="primary" @click="add" :loading="show.load"
-        >确 定</el-button
-      >
+      <el-button size="small" @click="calcel">取 消</el-button>
+      <el-button type="primary" size="small" @click="add" :loading="show.load">
+        确 定
+      </el-button>
     </span>
     <!-- 商品列表 -->
     <shop ref="shop" />

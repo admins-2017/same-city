@@ -3,7 +3,7 @@
     <!-- 头部搜索 -->
     <eheader />
     <!-- 列表 -->
-    <el-table :data="tableData" size="mini">
+    <el-table :data="tableData" v-loading="load">
       <el-table-column
         prop="roleId"
         label="角色id"
@@ -26,12 +26,12 @@
       ></el-table-column>
       <el-table-column label="默认角色" prop="defaultRole">
         <template slot-scope="scope">
-          <el-tag type="success" size="mini" v-if="scope.row.defaultRole">
+          <el-tag type="success" v-if="scope.row.defaultRole">
             默认角色
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="200">
+      <el-table-column fixed="right" label="操作" width="200" align="right">
         <template slot-scope="scope">
           <el-button @click="updateRole(scope.row)" type="text" size="small"
             >编辑</el-button
@@ -39,6 +39,7 @@
           <el-button
             type="text"
             size="small"
+            class="danger-text-btn"
             @click="delRoleById(scope.row.roleId)"
             v-if="!scope.row.defaultRole"
             >删除</el-button
@@ -63,37 +64,32 @@
     <el-dialog
       title="新增角色"
       :visible.sync="insertDialogFormVisible"
-      :width="dialogWidht"
-      center
+      width="400px"
     >
-      <div class="insert-role-from">
-        <div>
-          <el-input
-            v-model="insertForm.roleName"
-            prefix-icon="el-icon-user-solid"
-            placeholder="请输入角色名称"
-          ></el-input>
-          <el-input
-            v-model="insertForm.roleCode"
-            prefix-icon="el-icon-info"
-            placeholder="请输入角色编码(请勿输入汉字)"
-          ></el-input>
-          <el-input
-            v-model="insertForm.roleDescription"
-            prefix-icon="el-icon-document"
-            placeholder="请输入角色简介"
-          ></el-input>
-        </div>
-        <div>
-          <span>权限列表</span>
-          <el-tree
-            :data="insertTreeData"
-            show-checkbox
-            node-key="menuId"
-            ref="insertTree"
-            :props="defaultProps"
-          ></el-tree>
-        </div>
+      <div class="small-dialog">
+        <el-input
+          v-model="insertForm.roleName"
+          prefix-icon="el-icon-user-solid"
+          placeholder="请输入角色名称"
+        ></el-input>
+        <el-input
+          v-model="insertForm.roleCode"
+          prefix-icon="el-icon-info"
+          placeholder="请输入角色编码(请勿输入汉字)"
+        ></el-input>
+        <el-input
+          v-model="insertForm.roleDescription"
+          prefix-icon="el-icon-document"
+          placeholder="请输入角色简介"
+        ></el-input>
+        <span>权限列表</span>
+        <el-tree
+          :data="insertTreeData"
+          show-checkbox
+          node-key="menuId"
+          ref="insertTree"
+          :props="defaultProps"
+        ></el-tree>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancelInsertDialog">取 消</el-button>
@@ -103,39 +99,34 @@
     <el-dialog
       title="角色详情"
       :visible.sync="updateDialogFormVisible"
-      :width="dialogWidht"
-      center
+      width="400px"
     >
-      <div class="update-role-from">
-        <div>
-          <el-input
-            v-model="updateForm.roleName"
-            prefix-icon="el-icon-user-solid"
-            :placeholder="roleDetails.roleName"
-          ></el-input>
-          <el-input
-            v-model="updateForm.roleCode"
-            prefix-icon="el-icon-info"
-            :placeholder="roleDetails.roleCode"
-          ></el-input>
-          <el-input
-            v-model="updateForm.roleDescription"
-            prefix-icon="el-icon-document"
-            :placeholder="roleDetails.roleDescription"
-          ></el-input>
-        </div>
-        <div>
-          <span>权限列表</span>
-          <el-tree
-            :data="updateTreeData"
-            show-checkbox
-            node-key="menuId"
-            ref="tree"
-            :default-checked-keys="roleMenuList"
-            :props="defaultProps"
-          ></el-tree>
-          <!-- <el-button @click="getCheckedKeys">通过 key 获取</el-button> -->
-        </div>
+      <div class="small-dialog">
+        <el-input
+          v-model="updateForm.roleName"
+          prefix-icon="el-icon-user-solid"
+          :placeholder="roleDetails.roleName"
+        ></el-input>
+        <el-input
+          v-model="updateForm.roleCode"
+          prefix-icon="el-icon-info"
+          :placeholder="roleDetails.roleCode"
+        ></el-input>
+        <el-input
+          v-model="updateForm.roleDescription"
+          prefix-icon="el-icon-document"
+          :placeholder="roleDetails.roleDescription"
+        ></el-input>
+        <span>权限列表</span>
+        <el-tree
+          :data="updateTreeData"
+          show-checkbox
+          node-key="menuId"
+          ref="tree"
+          :default-checked-keys="roleMenuList"
+          :props="defaultProps"
+        ></el-tree>
+        <!-- <el-button @click="getCheckedKeys">通过 key 获取</el-button> -->
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancelUpdateDialog">取 消</el-button>
@@ -166,7 +157,6 @@ export default {
       queryName: "",
       updateDialogFormVisible: false,
       insertDialogFormVisible: false,
-      dialogWidht: "30%",
       formLabelWidth: "100px",
       insertForm: {
         roleName: "",
@@ -187,6 +177,7 @@ export default {
       },
       roleDetails: {},
       roleMenuList: [],
+      load: false,
     };
   },
   methods: {
@@ -196,6 +187,7 @@ export default {
       this.getAllRole();
     },
     getAllRole() {
+      this.load = true;
       axios({
         method: "get",
         url: "/api/role/" + this.page + "/" + this.size,
@@ -207,10 +199,12 @@ export default {
           console.log(res);
           this.total = res.data.data.total;
           this.tableData = res.data.data.records;
+          this.load = false;
         })
         .catch((err) => {
           console.log(err);
           this.$message.error("服务器连接超时 请重试！");
+          this.load = false;
         });
     },
     getRoleByName(queryName) {

@@ -15,7 +15,7 @@ export default {
   },
   mounted() {},
   destroyed() {
-    window.removeEventListener("resize", arguments.callee);
+    window.removeEventListener("resize", arguments);
   },
   methods: {
     setChart() {

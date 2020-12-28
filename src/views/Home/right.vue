@@ -2,15 +2,16 @@
   <div id="hometop" class="right">
     <div class="top-user">
       <div class="title">
-        <i
+        <!-- <i
           :class="
             $parent.$refs.left.isCollapse
               ? 'el-icon-s-unfold'
               : 'el-icon-s-fold'
           "
           @click="handleCollapse"
-        />
-        <h3>{{ $store.state.pageTitle }}</h3>
+        /> -->
+        <i :class="'el-icon-' + $store.state.pageInfo.icon" />
+        <h3>{{ $store.state.pageInfo.title }}</h3>
       </div>
       <!-- <el-dropdown> -->
       <!-- <img :src="userDetails.userDetailsUrl" alt="" /> -->
@@ -28,7 +29,9 @@
       <!-- </el-dropdown> -->
     </div>
     <div class="left-main">
-      <router-view></router-view>
+      <transition name="slide-fade">
+        <router-view></router-view>
+      </transition>
     </div>
   </div>
 </template>
@@ -85,7 +88,7 @@ export default {
     color: #495054;
     i {
       color: #00bcd4;
-      font-size: 24px;
+      font-size: 20px;
       margin-right: 10px;
     }
   }
@@ -118,5 +121,16 @@ export default {
       background-color: #fff;
     }
   }
+}
+.slide-fade-enter-active {
+  transition: all 0.3s ease;
+}
+.slide-fade-leave-active {
+  transition: all 0.3s ease;
+}
+.slide-fade-enter,
+.slide-fade-leave-to {
+  transform: translateX(10px);
+  opacity: 0;
 }
 </style>

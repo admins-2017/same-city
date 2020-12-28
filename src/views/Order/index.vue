@@ -4,12 +4,12 @@
       <el-input
         v-model="search.orderNumber"
         placeholder="请输入订单号查询"
-        size="mini"
+        size="small"
       ></el-input>
       <el-select
         v-model="search.state"
         placeholder="请选择订单状态"
-        size="mini"
+        size="small"
         clearable
       >
         <el-option
@@ -28,14 +28,14 @@
         end-placeholder="结束日期"
         align="right"
         value-format="yyyy-MM-dd HH:mm:ss"
-        size="mini"
+        size="small"
       >
       </el-date-picker>
       <el-select
         v-model="search.operatorUser"
         clearable
         placeholder="请选择销售人员"
-        size="mini"
+        size="small"
       >
         <el-option
           v-for="item in list.users"
@@ -49,7 +49,7 @@
         type="primary"
         @click="query"
         icon="el-icon-search"
-        size="mini"
+        size="small"
         :loading="load.table"
         >查询</el-button
       >
@@ -57,28 +57,37 @@
         type="success"
         @click="toAdd"
         icon="el-icon-plus"
-        size="mini"
+        size="small"
         :loading="load.add"
         >添加</el-button
       >
     </div>
     <el-table :data="list.order" v-loading="load.table">
       <el-table-column label="#" type="index" />
-      <el-table-column label="订单号" prop="orderNumber" />
+      <el-table-column
+        label="订单号"
+        prop="orderNumber"
+        show-overflow-tooltip
+      />
       <el-table-column label="订单状态">
         <template slot-scope="scope">
           {{ obj.state[scope.row.orderStatus] }}
         </template>
       </el-table-column>
-      <el-table-column label="客户名称" prop="clientName" />
+      <el-table-column label="客户名称" prop="clientName" userId />
       <el-table-column label="总金额" prop="orderActualPayment" />
       <el-table-column label="折后金额" prop="orderAmountAfterDiscount" />
       <el-table-column label="下单时间" prop="orderDate" width="180" />
-      <el-table-column label="操作" width="150">
+      <el-table-column label="操作" width="100" align="center">
         <template slot-scope="scope">
-          <el-button type="text" @click="toDetail(scope.row)">详情</el-button>
+          <el-button type="text" size="small" @click="toDetail(scope.row)">
+            详情
+          </el-button>
+          <el-divider direction="vertical" />
           <el-button
             type="text"
+            size="small"
+            class="danger-text-btn"
             @click="cancellation(scope.row.orderId)"
             :loading="load.cancel"
             >作废</el-button
@@ -153,7 +162,6 @@ export default {
       this.load.table = true;
       getOrderList(page, count)
         .then((resp) => {
-          console.log(resp);
           this.list.order = resp.data.records;
           this.config.total = resp.data.total;
           this.load.table = false;
@@ -182,8 +190,7 @@ export default {
     // 获取销售人员
     getUserList() {
       getUser().then((resp) => {
-        console.log(resp);
-        this.list.users = resp;
+        this.list.users = resp.data;
       });
     },
 
@@ -202,7 +209,6 @@ export default {
 
     // 详情
     toDetail(obj) {
-      console.log(obj);
       this.$refs["detail-form"].info = obj;
       this.$refs["detail-form"].dialog = true;
     },

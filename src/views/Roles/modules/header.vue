@@ -3,14 +3,14 @@
     <el-input
       placeholder="请输入角色名"
       prefix-icon="el-icon-search"
-      size="mini"
+      size="small"
       v-model="queryName"
       clearable
     ></el-input>
-    <el-button type="primary" size="mini" @click="query">
+    <el-button type="primary" size="small" icon="el-icon-search" @click="query">
       查询
     </el-button>
-    <el-button type="primary" size="mini" @click="add">
+    <el-button type="primary" size="small" icon="el-icon-plus" @click="add">
       新增用户
     </el-button>
   </div>

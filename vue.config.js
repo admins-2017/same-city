@@ -12,7 +12,7 @@ module.exports = {
     hotOnly: false, //是否开启热更新
     proxy: {
       "/api": {
-        target: "http://123.206.195.122:8080/",
+        target: "http://www.kangdongwei.cn:8080",
         ws: true, //代理websockets
         changeOrigin: true, // 虚拟的站点需要更管origin
         pathRewrite: {

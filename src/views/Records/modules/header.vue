@@ -4,7 +4,7 @@
       placeholder="根据用户名过滤"
       prefix-icon="el-icon-search"
       v-model="config.requestUser"
-      size="mini"
+      size="small"
     ></el-input>
     <el-date-picker
       v-model="recordTime"
@@ -17,13 +17,13 @@
       :picker-options="pickerOptions"
       format="yyyy 年 MM 月 dd 日"
       value-format="yyyy-MM-dd"
-      size="mini"
+      size="small"
     ></el-date-picker>
     <el-select
       v-model="config.requestType"
       clearable
       placeholder="请选择类型"
-      size="mini"
+      size="small"
     >
       <el-option
         v-for="item in options"
@@ -32,7 +32,7 @@
         :value="item.value"
       ></el-option>
     </el-select>
-    <el-button type="primary" size="mini" @click="toQuery">查询</el-button>
+    <el-button type="primary" size="small" @click="toQuery">查 询</el-button>
   </div>
 </template>
 <script>
@@ -40,6 +40,7 @@ export default {
   props: ["config"],
   data() {
     return {
+      recordTime: [],
       options: [
         {
           value: "get",
@@ -94,7 +95,8 @@ export default {
   methods: {
     // 查询
     toQuery() {
-      this.$parent.getRecordByCondition();
+      this.$parent.config.page = 0;
+      this.$parent.getRecordByPage();
     },
   },
 };

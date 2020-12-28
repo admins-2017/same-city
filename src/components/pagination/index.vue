@@ -4,7 +4,7 @@
     @current-change="handleCurrentChange"
     :current-page="config.page"
     :page-sizes="[5, 10, 20]"
-    :page-size="config.count"
+    :page-size="config.size"
     layout="total, prev, pager, next, sizes"
     :total="config.total"
   >
@@ -17,7 +17,7 @@ export default {
   methods: {
     handleSizeChange(val) {
       this.config.page = 1;
-      this.config.count = val;
+      this.config.size = val;
       this.query();
     },
     handleCurrentChange(val) {
@@ -25,7 +25,7 @@ export default {
       this.query();
     },
     query() {
-      this.$emit("change", this.config.page, this.config.count);
+      this.$emit("change", this.config.page, this.config.size);
     },
   },
 };

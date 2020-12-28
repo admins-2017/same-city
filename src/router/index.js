@@ -33,6 +33,7 @@ const routes = [
         component: () => import("../components/home/commoditys.vue"),
         meta: {
           title: "商品",
+          icon: "user-solid",
         },
       },
       {
@@ -40,6 +41,7 @@ const routes = [
         component: () => import("@/views/Categorys"),
         meta: {
           title: "商品分类",
+          icon: "s-promotion",
         },
       },
       {
@@ -47,6 +49,7 @@ const routes = [
         component: () => import("../views/Order/index.vue"),
         meta: {
           title: "销售订单",
+          icon: "s-order",
         },
       },
       {
@@ -54,21 +57,31 @@ const routes = [
         component: () => import("@/views/Roles"),
         meta: {
           title: "角色",
+          icon: "s-custom",
         },
       },
       {
         path: "/menus",
         component: () => import("../components/home/menus.vue"),
+        meta: {
+          title: "菜单",
+          icon: "menu",
+        },
       },
       {
         path: "/users",
-        component: () => import("../components/home/users.vue"),
+        component: () => import("@/views/Users"),
+        meta: {
+          title: "用户管理",
+          icon: "user-solid",
+        },
       },
       {
         path: "/interfaces",
         component: () => import("../components/home/interfaces.vue"),
         meta: {
           title: "接口",
+          icon: "user-solid",
         },
       },
       {
@@ -80,17 +93,23 @@ const routes = [
         component: () => import("@/views/Records"),
         meta: {
           title: "操作记录",
+          icon: "s-open",
         },
       },
       {
         path: "/shops",
         component: () => import("@/views/Shops"),
+        meta: {
+          title: "商铺",
+          icon: "s-shop",
+        },
       },
       {
         path: "/purchases",
         component: () => import("../views/Purchase/index.vue"),
         meta: {
           title: "采购订单",
+          icon: "s-order",
         },
       },
       {
@@ -98,25 +117,39 @@ const routes = [
         component: () => import("../components/home/suppliers.vue"),
         meta: {
           title: "供应商",
+          icon: "user-solid",
         },
       },
       {
         path: "/tasks",
         component: () => import("../components/home/tasks.vue"),
+        meta: {
+          title: "定时任务",
+          icon: "s-flag",
+        },
       },
       {
         path: "/inventory",
         component: () => import("../components/home/inventory.vue"),
+        meta: {
+          title: "库存",
+          icon: "s-goods",
+        },
       },
       {
         path: "/client",
         component: () => import("../components/home/client.vue"),
+        meta: {
+          title: "客户详情",
+          icon: "user-solid",
+        },
       },
       {
         path: "/dashboard",
         component: () => import("../views/Dashboard/index.vue"),
         meta: {
           title: "首页",
+          icon: "s-home",
         },
       },
       {
@@ -145,7 +178,7 @@ let router = new VueRouter({
 router.beforeEach((to, from, next) => {
   if (to.meta.title) {
     document.title = to.meta.title; // 路由跳转更新浏览器标题
-    store.state.pageTitle = to.meta.title; // 路由跳转更新页面顶栏标题
+    store.state.pageInfo = to.meta; // 路由跳转更新页面顶栏标题
   }
   next();
 });

@@ -28,7 +28,7 @@
             <el-button icon="el-icon-search" @click="dialogTableVisible = true"
               >查询</el-button
             >
-            <el-button icon="el-icon-circle-plus-outline" @click="addCommodity"
+            <el-button icon="el-icon-plus" @click="addCommodity"
               >新增</el-button
             >
             <el-button icon="el-icon-error" @click="cancelAll">取消</el-button>
@@ -345,23 +345,6 @@
           </div>
         </el-dialog>
       </div>
-      <div>
-        <el-dialog title="收货地址" :visible.sync="dialogDetailTableVisible">
-          <el-table :data="productsUnderCategory">
-            <el-table-column
-              property="date"
-              label="日期"
-              width="150"
-            ></el-table-column>
-            <el-table-column
-              property="name"
-              label="姓名"
-              width="200"
-            ></el-table-column>
-            <el-table-column property="address" label="地址"></el-table-column>
-          </el-table>
-        </el-dialog>
-      </div>
       <div class="add-commodity">
         <el-drawer
           title="我是标题"
@@ -534,30 +517,7 @@ export default {
       updateHeader: {
         Authorization: "",
       },
-      productsUnderCategory: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-      ],
       dialogTableVisible: false,
-      dialogDetailTableVisible: false,
       commodityDetailsByClassification: [],
       findCommodityForm: {
         commodityName: "",
@@ -659,10 +619,6 @@ export default {
       } else {
         this.getAllCommodity();
       }
-    },
-    handleNodeClick(val) {
-      console.log(val);
-      this.dialogDetailTableVisible = true;
     },
     filterNode(value, data) {
       if (!value) return true;
@@ -1001,11 +957,6 @@ export default {
               }
             }
           }
-        }
-        .el-pagination {
-          display: flex;
-          justify-content: flex-start;
-          width: 100%;
         }
       }
     }

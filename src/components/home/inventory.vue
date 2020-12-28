@@ -1,105 +1,202 @@
 <template>
-  <div id="inventorys">
-    <div>
-      <el-card class="box-card">
-        <div slot="header" class="clearfix">
-          <span>所有商铺</span>
+  <div class="inventorys">
+    <el-card shadow="never">
+      <div slot="header" class="card-head">
+        <el-input
+          placeholder="输入关键字进行过滤"
+          size="small"
+          v-model="filterText"
+        />
+      </div>
+
+      <el-tree
+        class="filter-tree"
+        :data="shopList"
+        :props="defaultProps"
+        default-expand-all
+        :filter-node-method="filterNode"
+        @node-click="handleNodeClick"
+        highlight-current
+        ref="tree"
+      />
+    </el-card>
+
+    <el-card shadow="never">
+      <div slot="header" class="card-head">
+        <span>{{ shopName }}</span>
+        <div>
+          <el-button
+            type="primary"
+            size="small"
+            icon="el-icon-download"
+            @click="exportDetails(0)"
+          >
+            导出所有
+          </el-button>
+          <el-button
+            type="primary"
+            size="small"
+            v-if="shopId != ''"
+            @click="changeQuery"
+            >取消查询
+          </el-button>
         </div>
-        <el-input placeholder="输入关键字进行过滤" v-model="filterText">
-        </el-input>
-        <el-tree
-          class="filter-tree"
-          :data="shopList"
-          :props="defaultProps"
-          default-expand-all
-          :filter-node-method="filterNode"
-          @node-click="handleNodeClick"
-          highlight-current
-          ref="tree"
+      </div>
+      <div class="button-area">
+        <el-card shadow="never" @click.native="getCommodity">
+          <span>商品总量</span>
+          <span>{{ commodityNumber }}</span>
+        </el-card>
+        <el-card shadow="never" @click.native="getZero">
+          <span>缺货商品</span>
+          <span>{{ stockNumber }}</span>
+        </el-card>
+        <el-card shadow="never" @click.native="getWarn">
+          <span>存量不足</span>
+          <span>{{ warnNumber }}</span>
+        </el-card>
+        <el-card shadow="never" @click.native="getAmple">
+          <span>存量充足</span>
+          <span>{{ inventoryNumber }}</span>
+        </el-card>
+      </div>
+      <el-table
+        :data="tableData"
+        :row-class-name="tableRowClassName"
+        v-loading="load.table"
+      >
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form label-position="top" inline class="row-form">
+              <el-form-item label="商品名称">
+                <span>{{ props.row.commodityName }}</span>
+              </el-form-item>
+              <el-form-item label="所属店铺">
+                <span>{{ props.row.shopName }}</span>
+              </el-form-item>
+              <el-form-item label="所属分类">
+                <span>{{ props.row.classificationName }}</span>
+              </el-form-item>
+              <el-form-item label="商品简介">
+                <span>{{ props.row.commodityDescription }}</span>
+              </el-form-item>
+              <el-form-item label="商品售价">
+                <span>{{ props.row.commoditySellingPrice }}</span>
+              </el-form-item>
+              <el-form-item label="商品规格">
+                <span>{{ props.row.commodityUnit }}</span>
+              </el-form-item>
+              <el-form-item label="库存数量">
+                <span style="color: SaddleBrown; font-weight: 600">{{
+                  props.row.inventoryNumber
+                }}</span>
+              </el-form-item>
+              <el-form-item label="商铺地址">
+                <span>{{ props.row.shopAddress }}</span>
+              </el-form-item>
+            </el-form>
+          </template>
+        </el-table-column>
+        <el-table-column label="商铺名称" prop="shopName" />
+        <el-table-column label="商品名称" prop="commodityName" />
+        <el-table-column
+          label="库存数量"
+          prop="inventoryNumber"
+          align="right"
+        />
+      </el-table>
+      <el-pagination
+        @current-change="handleCurrentChange"
+        :page-size="size"
+        layout="total, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
+      <div>
+        <el-dialog
+          width="70%"
+          :visible.sync="CommodityTableVisible"
+          :close="closeCommodityDialog"
+          :show-close="false"
         >
-        </el-tree>
-      </el-card>
-    </div>
-    <div>
-      <el-card class="box-card">
-        <div slot="header" class="clearfix">
-          <span>{{ shopName }}</span>
-          <div>
+          <template slot="title">
+            <div class="dialog-header">
+              <span>{{ dialogTitle }}</span>
+              <el-button
+                v-if="commodityData.length != 0"
+                type="primary"
+                icon="el-icon-download"
+                size="small"
+                @click="exportDetails(1)"
+                >导出信息
+              </el-button>
+            </div>
+          </template>
+          <el-table :data="commodityData" v-loading="load.dialog">
+            <el-table-column label="商品ID" prop="commodityId" width="80">
+            </el-table-column>
+            <el-table-column
+              label="商品名称"
+              prop="commodityName"
+              show-overflow-tooltip
+            />
+            <el-table-column
+              label="商品编码"
+              prop="commodityNumber"
+              show-overflow-tooltip
+            />
+            <el-table-column
+              label="建议售价"
+              prop="commoditySellingPrice"
+              show-overflow-tooltip
+            />
+            <el-table-column
+              label="商品规格"
+              prop="commodityUnit"
+              show-overflow-tooltip
+            />
+            <el-table-column
+              label="商品描述"
+              prop="commodityDescription"
+              show-overflow-tooltip
+            />
+            <el-table-column
+              label="所属分类"
+              prop="classificationName"
+              align="right"
+              show-overflow-tooltip
+            />
+          </el-table>
+          <div slot="footer">
             <el-button
-              style="float: right; padding: 3px 0"
-              type="text"
-              @click="exportDetails(0)"
-              >导出所有</el-button
-            >
-            <el-button
-              style="float: right; padding: 3px 0"
-              type="text"
-              v-if="shopId != ''"
-              @click="changeQuery"
-              >取消查询</el-button
-            >
+              type="primary"
+              size="small"
+              @click="CommodityTableVisible = false"
+              >关 闭
+            </el-button>
           </div>
-        </div>
-        <div>
-          <div>
-            <el-row :gutter="20">
-              <el-col :span="6">
-                <el-card :body-style="{ padding: '0px' }" shadow="hover">
-                  <div class="my-card-context" @click="getCommodity">
-                    <div>
-                      <span>商品总量</span>
-                    </div>
-                    <div>
-                      <span>{{ commodityNumber }}</span>
-                    </div>
-                  </div>
-                </el-card>
-              </el-col>
-              <el-col :span="6">
-                <el-card :body-style="{ padding: '0px' }" shadow="hover">
-                  <div class="my-card-context" @click="getZero">
-                    <div>
-                      <span>缺货商品</span>
-                    </div>
-                    <div>
-                      <span>{{ stockNumber }}</span>
-                    </div>
-                  </div>
-                </el-card>
-              </el-col>
-              <el-col :span="6">
-                <el-card :body-style="{ padding: '0px' }" shadow="hover">
-                  <div class="my-card-context" @click="getWarn">
-                    <div>
-                      <span>存量不足</span>
-                    </div>
-                    <div>
-                      <span>{{ warnNumber }}</span>
-                    </div>
-                  </div>
-                </el-card>
-              </el-col>
-              <el-col :span="6">
-                <el-card :body-style="{ padding: '0px' }" shadow="hover">
-                  <div class="my-card-context" @click="getAmple">
-                    <div>
-                      <span>存量充足</span>
-                    </div>
-                    <div>
-                      <span>{{ inventoryNumber }}</span>
-                    </div>
-                  </div>
-                </el-card>
-              </el-col>
-            </el-row>
-          </div>
-        </div>
-        <div>
+        </el-dialog>
+        <el-dialog
+          width="40%"
+          :visible.sync="dialogTableVisible"
+          :show-close="false"
+        >
+          <template slot="title">
+            <div class="dialog-header">
+              <span>{{ dialogTitle }}</span>
+              <el-button
+                v-if="gridData.length != 0"
+                type="primary"
+                icon="el-icon-download"
+                size="small"
+                @click="exportDetails(dialogStatus)"
+                >导出结果
+              </el-button>
+            </div>
+          </template>
           <el-table
-            :data="tableData"
-            style="width: 100%"
-            background
+            :data="gridData"
             :row-class-name="tableRowClassName"
+            v-loading="load.dialog"
           >
             <el-table-column type="expand">
               <template slot-scope="props">
@@ -123,9 +220,7 @@
                     <span>{{ props.row.commodityUnit }}</span>
                   </el-form-item>
                   <el-form-item label="库存数量">
-                    <span style="color: SaddleBrown; font-weight: 600">{{
-                      props.row.inventoryNumber
-                    }}</span>
+                    <span>{{ props.row.inventoryNumber }}</span>
                   </el-form-item>
                   <el-form-item label="商铺地址">
                     <span>{{ props.row.shopAddress }}</span>
@@ -137,136 +232,24 @@
             </el-table-column>
             <el-table-column label="商品名称" prop="commodityName">
             </el-table-column>
-            <el-table-column label="库存数量" prop="inventoryNumber">
+            <el-table-column
+              label="库存数量"
+              prop="inventoryNumber"
+              align="right"
+            >
             </el-table-column>
           </el-table>
-        </div>
-        <div>
-          <el-pagination
-            @current-change="handleCurrentChange"
-            :page-size="size"
-            layout="total, prev, pager, next, jumper"
-            :total="total"
-          ></el-pagination>
-        </div>
-        <div>
-          <el-dialog
-            :title="dialogTitle"
-            :width="commodityDialog"
-            :visible.sync="CommodityTableVisible"
-            :close="closeCommodityDialog"
-          >
-            <el-table :data="commodityData" style="width: 100%" background>
-              <el-table-column label="商品ID" align="center" prop="commodityId">
-              </el-table-column>
-              <el-table-column
-                label="商品名称"
-                show-overflow-tooltip
-                prop="commodityName"
-              >
-              </el-table-column>
-              <el-table-column
-                label="商品编码"
-                align="center"
-                prop="commodityNumber"
-              >
-              </el-table-column>
-              <el-table-column
-                label="建议售价"
-                align="center"
-                prop="commoditySellingPrice"
-              >
-              </el-table-column>
-              <el-table-column
-                label="商品规格"
-                align="center"
-                prop="commodityUnit"
-              >
-              </el-table-column>
-              <el-table-column
-                label="商品描述"
-                show-overflow-tooltip
-                prop="commodityDescription"
-              >
-              </el-table-column>
-              <el-table-column
-                label="所属分类"
-                align="center"
-                prop="classificationName"
-              >
-              </el-table-column>
-            </el-table>
+          <div slot="footer">
             <el-button
-              v-if="commodityData.length != 0"
-              type="text"
-              @click="exportDetails(1)"
-              >导出信息</el-button
-            >
-          </el-dialog>
-          <el-dialog
-            :title="dialogTitle"
-            :width="detailsDialog"
-            :visible.sync="dialogTableVisible"
-          >
-            <el-table
-              :data="gridData"
-              style="width: 100%"
-              background
-              :row-class-name="tableRowClassName"
-            >
-              <el-table-column type="expand">
-                <template slot-scope="props">
-                  <el-form
-                    label-position="left"
-                    inline
-                    class="demo-table-expand"
-                  >
-                    <el-form-item label="商品名称">
-                      <span>{{ props.row.commodityName }}</span>
-                    </el-form-item>
-                    <el-form-item label="所属店铺">
-                      <span>{{ props.row.shopName }}</span>
-                    </el-form-item>
-                    <el-form-item label="所属分类">
-                      <span>{{ props.row.classificationName }}</span>
-                    </el-form-item>
-                    <el-form-item label="商品简介">
-                      <span>{{ props.row.commodityDescription }}</span>
-                    </el-form-item>
-                    <el-form-item label="商品售价">
-                      <span>{{ props.row.commoditySellingPrice }}</span>
-                    </el-form-item>
-                    <el-form-item label="商品规格">
-                      <span>{{ props.row.commodityUnit }}</span>
-                    </el-form-item>
-                    <el-form-item label="库存数量">
-                      <span style="color: SaddleBrown; font-weight: 600">{{
-                        props.row.inventoryNumber
-                      }}</span>
-                    </el-form-item>
-                    <el-form-item label="商铺地址">
-                      <span>{{ props.row.shopAddress }}</span>
-                    </el-form-item>
-                  </el-form>
-                </template>
-              </el-table-column>
-              <el-table-column label="商铺名称" prop="shopName">
-              </el-table-column>
-              <el-table-column label="商品名称" prop="commodityName">
-              </el-table-column>
-              <el-table-column label="库存数量" prop="inventoryNumber">
-              </el-table-column>
-            </el-table>
-            <el-button
-              v-if="gridData.length != 0"
-              type="text"
-              @click="exportDetails(dialogStatus)"
-              >导出结果</el-button
-            >
-          </el-dialog>
-        </div>
-      </el-card>
-    </div>
+              type="primary"
+              size="small"
+              @click="dialogTableVisible = false"
+              >关 闭
+            </el-button>
+          </div>
+        </el-dialog>
+      </div>
+    </el-card>
   </div>
 </template>
 
@@ -297,9 +280,30 @@ export default {
       commodityData: [],
       dialogTableVisible: false,
       CommodityTableVisible: false,
-      commodityDialog: "70%",
-      detailsDialog: "70%",
       dialogStatus: null,
+
+      cardArr: [
+        {
+          label: "商品总量",
+          detail: 1,
+        },
+        {
+          label: "缺货商品",
+          detail: 2,
+        },
+        {
+          label: "存量不足",
+          detail: 3,
+        },
+        {
+          label: "存量充足",
+          detail: 4,
+        },
+      ],
+      load: {
+        table: false,
+        dialog: false,
+      },
     };
   },
   methods: {
@@ -324,6 +328,7 @@ export default {
         });
     },
     getCommodityByShop() {
+      this.load.table = true;
       let getUrl = "/api/inventory?page=" + this.page + "&size=" + this.size;
       if (this.shopId != "") {
         getUrl = getUrl + "&shopId=" + this.shopId;
@@ -343,10 +348,12 @@ export default {
           this.inventoryNumber = res.data.data.inventoryNumber;
           this.total = res.data.data.vos.total;
           this.tableData = res.data.data.vos.records;
+          this.load.table = false;
         })
         .catch((err) => {
           console.log(err);
           this.$message.error("服务器连接超时 请重试！");
+          this.load.table = false;
         });
     },
     handleNodeClick(val) {
@@ -361,20 +368,20 @@ export default {
       this.shopName = "库存明细";
       this.getCommodityByShop();
     },
-    tableRowClassName({ row, rowIndex }) {
-      rowIndex;
+    tableRowClassName({ row }) {
       if (row.inventoryNumber < 10 && row.inventoryNumber > 0) {
         return "warning-row";
       } else if (row.inventoryNumber === 0) {
         return "error-row";
       }
-      return "success-row";
+      return "";
     },
     handleCurrentChange(val) {
       this.page = val;
       this.getCommodityByShop();
     },
     getDetails(val) {
+      this.load.dialog = true;
       let getUrl = "/api/inventory/status/" + val;
       if (this.shopId != "") {
         getUrl = getUrl + "?shopId=" + this.shopId;
@@ -394,10 +401,12 @@ export default {
           } else {
             this.gridData = res.data.data;
           }
+          this.load.dialog = false;
         })
         .catch((err) => {
           console.log(err);
           this.$message.error("服务器连接超时 请重试！");
+          this.load.dialog = false;
         });
     },
     getCommodity() {
@@ -494,177 +503,57 @@ export default {
 };
 </script>
 
-<style lang="less">
-html,
-body {
-  width: 100%;
-  height: 100%;
-  margin: 0px;
-  padding: 0px;
-  overflow-y: hidden;
-}
-#inventorys {
-  width: 100%;
-  height: 100%;
+<style lang="scss" scoped>
+.inventorys {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  overflow-y: hidden;
-
-  > div:nth-of-type(1) {
-    width: 22%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    .box-card {
-      width: 95%;
-      height: 100%;
-      position: relative;
-      .el-card__header {
-        padding: 10px;
-        height: 10%;
-        .clearfix {
-          padding: 10px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          span {
-            padding: 8px;
-          }
-          .el-button {
-            padding: 8px;
-            font-size: 13px;
-          }
-        }
-      }
-
-      .el-card__body {
-        > .el-tree {
-          margin: 10px -10px;
-        }
-      }
+  padding: 0 !important;
+  background: unset !important;
+  > .el-card {
+    &:nth-child(1) {
+      width: 16%;
+      margin-right: 10px;
+    }
+    &:nth-child(2) {
+      width: 84%;
+    }
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
   }
-  > div:nth-of-type(2) {
-    width: 78%;
-    height: 100%;
+  .button-area {
     display: flex;
-    justify-content: center;
-    background-color: white;
-    .box-card {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      overflow-y: hidden;
-      .el-card__header {
-        height: 10%;
-        width: 100%;
-        padding: 10px;
-        .clearfix {
-          padding: 10px;
+    > .el-card {
+      width: 25%;
+      margin-right: 10px;
+      color: #fff;
+      cursor: pointer;
+      /deep/ {
+        .el-card__body {
           display: flex;
           justify-content: space-between;
-          align-items: center;
-          span {
-            padding: 8px;
-          }
-          .el-button {
-            padding: 8px;
-            font-size: 13px;
+          > span:nth-child(2) {
+            font-weight: 900;
           }
         }
       }
-
-      .el-card__body {
-        widows: 100%;
-        height: 80%;
-        > div:nth-of-type(1) {
-          widows: 100%;
-          height: 10%;
-          > div {
-            .my-card-context {
-              display: flex;
-              flex-direction: column;
-              justify-content: center;
-              align-items: center;
-              background-color: #f8f8ff;
-              > div:nth-of-type(1) {
-                margin-top: 10px;
-                font-weight: 600;
-              }
-              > div:nth-of-type(2) {
-                margin: 10px 0px;
-                font-size: 15px;
-              }
-            }
-          }
-        }
-        > div:nth-of-type(2) {
-          widows: 100%;
-          height: 68%;
-          .el-table {
-            height: 100%;
-            overflow-y: scroll;
-          }
-          .el-table::-webkit-scrollbar {
-            width: 0 !important;
-          }
-          .el-table::-webkit-scrollbar {
-            width: 0 !important;
-            height: 0;
-          }
-          .el-table .success-row {
-            background: white;
-          }
-          .el-table .warning-row {
-            background: rgb(255 239 219);
-          }
-
-          .el-table .error-row {
-            background: rgb(255 106 106);
-          }
-          margin-top: 10px;
-          .demo-table-expand {
-            font-size: 0;
-          }
-          .demo-table-expand label {
-            width: 90px;
-            color: #99a9bf;
-          }
-          .demo-table-expand .el-form-item {
-            margin-right: 0;
-            margin-bottom: 0;
-            width: 50%;
-          }
-        }
-        > div:nth-of-type(3) {
-          widows: 100%;
-          height: 10%;
-          margin-top: 10px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-        > div:nth-of-type(4) {
-          .el-table {
-            height: 100%;
-            overflow-y: auto;
-          }
-          margin-top: 10px;
-          .demo-table-expand {
-            font-size: 0;
-          }
-          .demo-table-expand label {
-            width: 90px;
-            color: #99a9bf;
-          }
-          .demo-table-expand .el-form-item {
-            margin-right: 0;
-            margin-bottom: 0;
-            width: 50%;
-          }
-        }
+      &:nth-child(1) {
+        background-image: linear-gradient(to right, #409eff, #409eff);
       }
+      &:nth-child(2) {
+        background-image: linear-gradient(to right, #f5ba07, #f5ba07);
+      }
+      &:nth-child(3) {
+        background-image: linear-gradient(to right, #f59292, #f59292);
+      }
+      &:nth-child(4) {
+        background-image: linear-gradient(to right, #67c23a, #67c23a);
+        margin-right: 0;
+      }
+    }
+    + .el-table {
+      margin-top: 15px;
     }
   }
 }

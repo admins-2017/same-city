@@ -1,13 +1,21 @@
 <template>
-  <div class="categorys area">
-    <div class="area-child">
-      <div class="area-search">
-        <el-input placeholder="请输入内容" v-model="queryName" clearable />
-        <el-button type="primary" size="small" @click="findClassification">
-          查询
-        </el-button>
-        <!-- <el-button type="primary" size="small">新增</el-button> -->
-      </div>
+  <div class="categorys">
+    <div class="head">
+      <el-input
+        size="small"
+        placeholder="请输入内容"
+        v-model="queryName"
+        clearable
+      />
+      <el-button
+        type="primary"
+        size="small"
+        icon="el-icon-search"
+        @click="findClassification"
+      >
+        查询
+      </el-button>
+      <!-- <el-button type="primary" size="small">新增</el-button> -->
     </div>
     <div class="area-body">
       <el-table

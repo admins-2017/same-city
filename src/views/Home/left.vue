@@ -91,7 +91,7 @@ export default {
     });
   },
   destroyed() {
-    window.removeEventListener("resize", arguments.callee);
+    window.removeEventListener("resize", arguments);
   },
 };
 </script>
