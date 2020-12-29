@@ -1,6 +1,6 @@
 <template>
   <div class="left" :style="isCollapse ? 'width:64px' : 'width:200px'">
-    <div class="left-content">
+    <div class="left-content" v-loading="load">
       <div class="top-logo">
         <img src="../../assets/img/logo5.jpg" />
         <span v-show="!isCollapse">巨蜥云</span>
@@ -78,6 +78,7 @@ export default {
     return {
       isCollapse: document.body.clientWidth < 1200,
       active: this.$route.path.split("/")[1] || "commoditys",
+      load: false,
     };
   },
   mounted() {

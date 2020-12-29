@@ -64,6 +64,7 @@
         :data="tableData"
         :row-class-name="tableRowClassName"
         v-loading="load.table"
+        size="small"
       >
         <el-table-column type="expand">
           <template slot-scope="props">

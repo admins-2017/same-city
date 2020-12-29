@@ -12,26 +12,20 @@
         size="small"
         icon="el-icon-search"
         @click="findShopName"
-      >
-        查询
+        >查 询
       </el-button>
       <el-button
         type="primary"
         size="small"
         icon="el-icon-plus"
         @click="insertDialogFormVisible = true"
-        >新增商铺</el-button
+        >新 增</el-button
       >
     </div>
-    <el-table :data="tableData">
+    <el-table :data="tableData" v-loading="load" size="small">
       <el-table-column type="expand">
         <template slot-scope="props">
-          <el-table
-            :data="props.row.children"
-            style="width: 100%"
-            ref="singleTable"
-            border
-          >
+          <el-table :data="props.row.children" ref="singleTable" border>
             <el-table-column
               prop="username"
               label="店员名"
@@ -63,12 +57,7 @@
         label="商铺地址"
         show-overflow-tooltip
       ></el-table-column>
-      <el-table-column
-        prop="shopStatus"
-        label="状态"
-        width="100"
-        align="center"
-      >
+      <el-table-column prop="shopStatus" label="状态" width="100">
         <template slot-scope="scope">
           <el-tag type="success" v-if="scope.row.shopStatus == 1">营业</el-tag>
           <el-tag type="info" v-else-if="scope.row.shopStatus == 2"
@@ -102,12 +91,9 @@
       ></el-table-column>
       <el-table-column label="操作" width="50" align="center">
         <template slot-scope="scope">
-          <el-button
-            type="text"
-            size="small"
-            @click="updateShop(scope.row)"
-            icon="el-icon-edit"
-          ></el-button>
+          <el-button type="text" size="small" @click="updateShop(scope.row)">
+            编辑
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -153,7 +139,7 @@
       :visible.sync="updateDialogFormVisible"
       width="400px"
     >
-      <div class="update-shop-from">
+      <div class="small-dialog">
         <el-input
           v-model="updateFrom.shopName"
           prefix-icon="el-icon-s-shop"
@@ -242,11 +228,11 @@ export default {
       },
       shopDetails: {},
       userDetails: {},
+      load: false,
     };
   },
   methods: {
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
       this.page = val;
       this.getAllShop(1);
     },
@@ -264,6 +250,7 @@ export default {
         });
     },
     findShopName() {
+      this.load = true;
       axios({
         method: "get",
         url: "/api/shop/" + this.page + "/" + this.size + "/" + this.queryName,
@@ -275,10 +262,12 @@ export default {
           console.log(res);
           this.total = res.data.data.total;
           this.tableData = res.data.data.records;
+          this.load = false;
         })
         .catch((err) => {
           console.log(err);
           this.$message.error("服务器连接超时 请重试！");
+          this.load = false;
         });
     },
     updateShop(val) {
@@ -392,7 +381,7 @@ export default {
   },
   created() {
     this.userDetails = JSON.parse(localStorage.getItem("user-information"));
-    this.getAllShop(1);
+    this.findShopName();
   },
 };
 </script>

@@ -23,6 +23,7 @@ export default {
   },
   methods: {
     getMenu() {
+      this.$refs.left.load = true;
       axios({
         method: "get",
         url: "/api/menu/basisTree",
@@ -31,20 +32,20 @@ export default {
         },
       })
         .then((res) => {
-          console.log(res);
           if (res.data.status) {
             this.userMenu = res.data.data;
           } else {
             this.$message.error(res.data.msg);
           }
+          this.$refs.left.load = false;
         })
-        .catch((err) => {
-          console.log(err);
+        .catch(() => {
           this.$message.error("服务器连接超时 请重试！");
+          this.$refs.left.load = false;
         });
     },
   },
-  created() {
+  mounted() {
     this.testVuex = JSON.parse(localStorage.getItem("user-information"));
     this.getMenu();
   },

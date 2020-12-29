@@ -54,7 +54,7 @@
         >查询</el-button
       >
       <el-button
-        type="success"
+        type="primary"
         @click="toAdd"
         icon="el-icon-plus"
         size="small"
@@ -62,7 +62,7 @@
         >添加</el-button
       >
     </div>
-    <el-table :data="list.order" v-loading="load.table">
+    <el-table :data="list.order" v-loading="load.table" size="small">
       <el-table-column label="#" type="index" />
       <el-table-column
         label="订单号"
@@ -134,7 +134,7 @@ export default {
       config: {
         total: 0, // 总数
         page: 1, // 页数
-        count: COUNT, // 条数
+        size: COUNT, // 条数
       },
       text: {
         query: "", // 查询内容
@@ -158,9 +158,9 @@ export default {
   },
   methods: {
     // 获取列表
-    getList(page, count = this.config.count) {
+    getList(page, size = this.config.size) {
       this.load.table = true;
-      getOrderList(page, count)
+      getOrderList(page, size)
         .then((resp) => {
           this.list.order = resp.data.records;
           this.config.total = resp.data.total;
@@ -172,9 +172,9 @@ export default {
     },
 
     // 获取列表
-    getListOption(page, count = this.config.count) {
+    getListOption(page, size = this.config.size) {
       this.load.table = true;
-      getOrderListOption(page, count, this.search)
+      getOrderListOption(page, size, this.search)
         .then((resp) => {
           resp = resp.data;
           this.list.order = [];

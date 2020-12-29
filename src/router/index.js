@@ -30,7 +30,7 @@ const routes = [
       },
       {
         path: "/commoditys",
-        component: () => import("../components/home/commoditys.vue"),
+        component: () => import("@/views/Commoditys"),
         meta: {
           title: "商品",
           icon: "user-solid",
@@ -62,9 +62,9 @@ const routes = [
       },
       {
         path: "/menus",
-        component: () => import("../components/home/menus.vue"),
+        component: () => import("@/views/Menu"),
         meta: {
-          title: "菜单",
+          title: "权限",
           icon: "menu",
         },
       },
@@ -78,7 +78,7 @@ const routes = [
       },
       {
         path: "/interfaces",
-        component: () => import("../components/home/interfaces.vue"),
+        component: () => import("@/views/Interfaces"),
         meta: {
           title: "接口",
           icon: "user-solid",
@@ -86,7 +86,7 @@ const routes = [
       },
       {
         path: "/datasheets",
-        component: () => import("../components/home/datasheets.vue"),
+        component: () => import("@/views/Datasheets"),
       },
       {
         path: "/records",
@@ -106,7 +106,7 @@ const routes = [
       },
       {
         path: "/purchases",
-        component: () => import("../views/Purchase/index.vue"),
+        component: () => import("@/views/Purchase"),
         meta: {
           title: "采购订单",
           icon: "s-order",
@@ -114,7 +114,7 @@ const routes = [
       },
       {
         path: "/suppliers",
-        component: () => import("../components/home/suppliers.vue"),
+        component: () => import("@/views/Suppliers"),
         meta: {
           title: "供应商",
           icon: "user-solid",
@@ -122,7 +122,7 @@ const routes = [
       },
       {
         path: "/tasks",
-        component: () => import("../components/home/tasks.vue"),
+        component: () => import("@/views/Tasks"),
         meta: {
           title: "定时任务",
           icon: "s-flag",
@@ -130,7 +130,7 @@ const routes = [
       },
       {
         path: "/inventory",
-        component: () => import("../components/home/inventory.vue"),
+        component: () => import("@/views/Inventory"),
         meta: {
           title: "库存",
           icon: "s-goods",
@@ -138,7 +138,7 @@ const routes = [
       },
       {
         path: "/client",
-        component: () => import("../components/home/client.vue"),
+        component: () => import("@/views/Client"),
         meta: {
           title: "客户详情",
           icon: "user-solid",
@@ -146,7 +146,7 @@ const routes = [
       },
       {
         path: "/dashboard",
-        component: () => import("../views/Dashboard/index.vue"),
+        component: () => import("@/views/Dashboard"),
         meta: {
           title: "首页",
           icon: "s-home",
@@ -154,14 +154,14 @@ const routes = [
       },
       {
         path: "/detail",
-        component: () => import("../views/Detail/index.vue"),
+        component: () => import("@/views/Detail"),
       },
     ],
   },
   {
     path: "/find",
     name: "Find",
-    component: () => import("../views/Find.vue"),
+    component: () => import("@/views/Find"),
   },
 ];
 const originalReplace = VueRouter.prototype.replace;

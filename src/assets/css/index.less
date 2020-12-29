@@ -123,7 +123,7 @@ input[type="number"] {
 
   >div,
   >button {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
   }
 
   .el-input,
@@ -169,7 +169,7 @@ input[type="number"] {
 }
 
 .danger-text-btn {
-  color: @danger-color;
+  color: @danger-color !important;
 
   &:hover {
     color: @danger-color;
@@ -178,10 +178,19 @@ input[type="number"] {
 }
 
 .success-text-btn {
-  color: @success-color;
+  color: @success-color !important;
 
   &:hover {
     color: @success-color;
+    opacity: 0.8;
+  }
+}
+
+.warning-text-btn {
+  color: @warning-color !important;
+
+  &:hover {
+    color: @warning-color;
     opacity: 0.8;
   }
 }

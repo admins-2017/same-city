@@ -114,9 +114,9 @@ export default {
   methods: {
     // 查询所有角色
     getAllRole() {
-      getAllRole()
+      getAllRole({ page: 0, size: 100 })
         .then((resp) => {
-          this.roles = resp.data;
+          this.roles = resp.data.records;
         })
         .catch(() => {
           this.$message.error("服务器连接超时 请重试！");

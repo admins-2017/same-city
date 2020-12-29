@@ -68,13 +68,8 @@
         >
       </el-popconfirm>
     </div>
-    <el-table :data="supplierData" v-loading="load">
-      <el-table-column
-        fixed
-        prop="supplierId"
-        label="ID"
-        show-overflow-tooltip
-      />
+    <el-table :data="supplierData" v-loading="load" size="small">
+      <el-table-column prop="supplierId" label="ID" show-overflow-tooltip />
       <el-table-column prop="supplierName" show-overflow-tooltip label="名称" />
       <el-table-column
         prop="supplierAddress"
@@ -99,11 +94,12 @@
           <el-tag type="danger" v-else>删除</el-tag>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" align="center" width="100">
+      <el-table-column label="操作" align="center" width="100">
         <template slot-scope="scope">
           <el-button @click="handleClick(scope.row)" type="text" size="small"
             >编辑</el-button
           >
+          <el-divider direction="vertical" />
           <el-button
             type="text"
             size="small"
@@ -149,6 +145,7 @@
           <el-input
             v-model="addSupplierForm.supplierName"
             placeholder="供应商名称"
+            size="small"
           ></el-input>
         </el-form-item>
         <el-form-item label="供应商注册资金" prop="supplierCapital">

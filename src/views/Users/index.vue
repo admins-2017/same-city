@@ -12,14 +12,22 @@
           v-model="queryName"
           clearable
         ></el-input>
-        <el-button type="primary" size="small" @click="getUserByName">
-          查询
+        <el-button
+          type="primary"
+          size="small"
+          icon="el-icon-search"
+          @click="getUserByName"
+          >查 询
         </el-button>
-        <el-button type="primary" size="small" @click="toAdd">
-          新增用户
+        <el-button
+          type="primary"
+          size="small"
+          icon="el-icon-plus"
+          @click="toAdd"
+          >新 增
         </el-button>
       </div>
-      <el-table :data="tableData" v-loading="load.table">
+      <el-table :data="tableData" v-loading="load.table" size="small">
         <el-table-column
           prop="userId"
           sortable
@@ -110,6 +118,7 @@
             <el-button type="text" @click="toEdit(scope.row)" size="small"
               >编辑</el-button
             >
+            <el-divider direction="vertical" />
             <el-button
               type="text"
               size="small"
@@ -132,8 +141,10 @@
       <!-- 分页 -->
       <pagination :config="config" @change="getUserList" />
     </div>
+
     <!-- 编辑 -->
     <edit ref="editRef" />
+
     <!-- 新增 -->
     <add ref="addRef" />
   </div>

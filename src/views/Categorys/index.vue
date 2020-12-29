@@ -43,6 +43,7 @@
                   <div class="three-div">
                     <el-tag
                       type="warning"
+                      size="small"
                       v-for="tagClassification in scope.row.children"
                       :key="tagClassification.classificationId"
                       >{{ tagClassification.classificationId }} &nbsp;&nbsp;
@@ -53,7 +54,7 @@
               </el-table-column>
               <el-table-column>
                 <template slot-scope="two">
-                  <el-tag type="success">{{
+                  <el-tag type="success" size="small">{{
                     two.row.classificationName
                   }}</el-tag>
                 </template>
@@ -63,7 +64,7 @@
         </el-table-column>
         <el-table-column>
           <template slot-scope="one">
-            <el-tag>{{ one.row.classificationName }}</el-tag>
+            <el-tag size="small">{{ one.row.classificationName }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column width="50">
@@ -246,9 +247,6 @@ export default {
       td:nth-child(1) {
         border: 0;
       }
-    }
-    .row-expand-cover .cell .el-table__expand-icon {
-      display: none;
     }
   }
   .cell {

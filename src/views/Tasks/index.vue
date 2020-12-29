@@ -7,14 +7,19 @@
         size="small"
         v-model="queryName"
       ></el-input>
-      <el-button type="primary" size="small" @click="findTaskByQueryName">
-        查询
+      <el-button
+        type="primary"
+        size="small"
+        icon="el-icon-search"
+        @click="findTaskByQueryName"
+        >查 询
       </el-button>
       <el-button
         type="primary"
         size="small"
+        icon="el-icon-plus"
         @click="insertDialogFormVisible = true"
-        >新增任务
+        >新 增
       </el-button>
     </div>
     <el-table :data="tableData">

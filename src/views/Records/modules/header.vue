@@ -32,7 +32,13 @@
         :value="item.value"
       ></el-option>
     </el-select>
-    <el-button type="primary" size="small" @click="toQuery">查 询</el-button>
+    <el-button
+      type="primary"
+      size="small"
+      icon="el-icon-search"
+      @click="toQuery"
+      >查 询
+    </el-button>
   </div>
 </template>
 <script>

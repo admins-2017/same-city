@@ -1,7 +1,7 @@
 <template>
   <div class="records">
     <pageHead ref="header" :config="config" />
-    <el-table :data="tableData" v-loading="load">
+    <el-table :data="tableData" v-loading="load" size="small">
       <el-table-column prop="description" label="操作描述" />
       <el-table-column
         prop="requestUser"

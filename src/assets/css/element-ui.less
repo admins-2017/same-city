@@ -44,6 +44,10 @@
       text-align: center;
     }
   }
+
+  .row-expand-cover .cell .el-table__expand-icon {
+    display: none;
+  }
 }
 
 .area-child {
@@ -384,3 +388,21 @@ input:-webkit-autofill {
 }
 
 /* .el-tree end */
+
+/* .el-collapse start */
+.el-collapse {
+  .el-collapse-item__header {
+    position: relative;
+
+    .collapse-title {
+      margin-left: 30px;
+    }
+
+    .el-collapse-item__arrow {
+      position: absolute;
+      left: 0;
+    }
+  }
+}
+
+/* .el-collapse end */

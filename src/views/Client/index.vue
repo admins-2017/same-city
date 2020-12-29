@@ -68,8 +68,8 @@
         >
       </el-popconfirm>
     </div>
-    <el-table :data="clientData" v-loading="load">
-      <el-table-column fixed prop="clientId" label="ID" show-overflow-tooltip />
+    <el-table :data="clientData" v-loading="load" size="small">
+      <el-table-column prop="clientId" label="ID" show-overflow-tooltip />
       <el-table-column prop="clientName" label="名称" show-overflow-tooltip />
       <el-table-column
         prop="clientAddress"
@@ -154,12 +154,7 @@
       layout="total, prev, pager, next, jumper"
       :total="total"
     ></el-pagination>
-    <el-dialog
-      title="新增客户"
-      :visible.sync="addClientVisible"
-      width="50%"
-      :before-close="handleAddClose"
-    >
+    <el-dialog title="新增客户" :visible.sync="addClientVisible" width="50%">
       <el-form
         :model="addClientForm"
         :rules="rules"
@@ -168,16 +163,32 @@
         class="row-form"
       >
         <el-form-item label="客户名称" prop="clientName">
-          <el-input v-model="addClientForm.clientName"></el-input>
+          <el-input
+            size="small"
+            placeholder="请输入客户名称"
+            v-model="addClientForm.clientName"
+          ></el-input>
         </el-form-item>
         <el-form-item label="联系方式" prop="clientPhone">
-          <el-input v-model="addClientForm.clientPhone"></el-input>
+          <el-input
+            size="small"
+            placeholder="请输入联系方式"
+            v-model="addClientForm.clientPhone"
+          ></el-input>
         </el-form-item>
         <el-form-item label="联系地址" prop="clientAddress">
-          <el-input v-model="addClientForm.clientAddress"></el-input>
+          <el-input
+            size="small"
+            placeholder="请输入联系地址"
+            v-model="addClientForm.clientAddress"
+          ></el-input>
         </el-form-item>
         <el-form-item label="客户性别" prop="clientGender">
-          <el-select v-model="addClientForm.clientGender" placeholder="请选择">
+          <el-select
+            size="small"
+            v-model="addClientForm.clientGender"
+            placeholder="请选择客户性别"
+          >
             <el-option label="女" value="false"></el-option>
             <el-option label="男" value="true"></el-option>
           </el-select>
@@ -189,25 +200,37 @@
             placeholder="选择日期"
             format="yyyy-MM-dd"
             value-format="yyyy-MM-dd"
+            size="small"
           >
           </el-date-picker>
         </el-form-item>
         <el-form-item label="客户邮箱" prop="clientEmail">
-          <el-input v-model="addClientForm.clientEmail">
+          <el-input
+            size="small"
+            placeholder="请输入客户邮箱"
+            v-model="addClientForm.clientEmail"
+          >
             <template slot="append">.com</template>
           </el-input>
         </el-form-item>
         <el-form-item label="客户简介" prop="clientDesc">
           <el-input
             type="textarea"
+            size="small"
+            placeholder="请输入客户简介"
             v-model="addClientForm.clientDesc"
           ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="resetForm('addClientForm')">重置</el-button>
-        <el-button type="primary" @click="submitForm('addClientForm')">
-          添加
+        <el-button size="small" @click="resetForm('addClientForm')">
+          重置
+        </el-button>
+        <el-button
+          size="small"
+          type="primary"
+          @click="submitForm('addClientForm')"
+          >添加
         </el-button>
       </div>
     </el-dialog>
@@ -215,7 +238,6 @@
       title="修改供应商"
       :visible.sync="updateClientVisible"
       width="50%"
-      :before-close="handleUpdateClose"
     >
       <el-form
         :model="updateForm"
@@ -225,12 +247,14 @@
       >
         <el-form-item label="客户名称" prop="clientName">
           <el-input
+            size="small"
             v-model="updateForm.clientName"
             :placeholder="updateClientForm.clientName"
           ></el-input>
         </el-form-item>
         <el-form-item label="联系方式" prop="clientPhone">
           <el-input
+            size="small"
             v-model="updateForm.clientPhone"
             :placeholder="updateClientForm.clientPhone"
           ></el-input>
@@ -243,6 +267,7 @@
         </el-form-item>
         <el-form-item label="客户性别" prop="clientGender">
           <el-select
+            size="small"
             v-model="updateForm.clientGender"
             :placeholder="updateClientForm.clientGender ? '男' : '女'"
           >
@@ -265,11 +290,13 @@
             :placeholder="updateClientForm.clientBirthday"
             format="yyyy-MM-dd"
             value-format="yyyy-MM-dd"
+            size="small"
           >
           </el-date-picker>
         </el-form-item>
         <el-form-item label="客户邮箱" prop="clientEmail">
           <el-input
+            size="small"
             v-model="updateForm.clientEmail"
             :placeholder="updateClientForm.clientEmail"
           >
@@ -278,6 +305,7 @@
         </el-form-item>
         <el-form-item label="客户简介" prop="clientDesc">
           <el-input
+            size="small"
             type="textarea"
             v-model="updateForm.clientDesc"
             :placeholder="updateClientForm.clientDesc"
@@ -285,8 +313,12 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="resetUpdateForm('updateForm')">重置</el-button>
-        <el-button type="primary" @click="submitUpdateForm()">修改</el-button>
+        <el-button size="small" @click="resetUpdateForm('updateForm')">
+          重置
+        </el-button>
+        <el-button size="small" type="primary" @click="submitUpdateForm()">
+          修改
+        </el-button>
       </div>
     </el-dialog>
   </div>
@@ -397,28 +429,6 @@ export default {
         this.getClient();
       }
     },
-    handleAddClose(done) {
-      this.$confirm("确认关闭？")
-        .then((_) => {
-          console.log(_);
-          this.clearAddClientFormByClose();
-          done();
-        })
-        .catch((_) => {
-          console.log(_);
-        });
-    },
-    handleUpdateClose(done) {
-      this.$confirm("确认关闭？")
-        .then((_) => {
-          console.log(_);
-          this.clearUpdateClientFormByClose();
-          done();
-        })
-        .catch((_) => {
-          console.log(_);
-        });
-    },
     getClient() {
       this.load = true;
       axios({
@@ -495,10 +505,6 @@ export default {
     },
     resetUpdateForm(formName) {
       this.$refs[formName].resetFields();
-    },
-    clearUpdateClientFormByClose() {
-      this.$refs["updateForm"].resetFields();
-      this.updateClientForm = {};
     },
     addClient() {
       let formData = new FormData();

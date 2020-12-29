@@ -54,7 +54,7 @@
         >查询</el-button
       >
       <el-button
-        type="success"
+        type="primary"
         @click="toAdd"
         icon="el-icon-plus"
         size="small"
@@ -62,7 +62,7 @@
         >添加</el-button
       >
     </div>
-    <el-table :data="list.order" v-loading="load.table">
+    <el-table :data="list.order" v-loading="load.table" size="small">
       <el-table-column label="#" type="index" />
       <el-table-column label="订单号" prop="purchaseNumber" />
       <el-table-column label="订单状态">
