@@ -15,3 +15,11 @@ export function getShop(name) {
     method: "get",
   });
 }
+
+// 根据名称查询商铺
+export function getShopByName(params) {
+  return request({
+    url: `/api/shop/${params.page}/${params.size}/${params.name}`,
+    method: "get",
+  });
+}
