@@ -356,7 +356,7 @@ export default {
     getAllJob() {
       axios({
         method: "get",
-        url: "/api/job/" + this.page + "/" + this.size,
+        url: "/api/job?page=" + this.page + "&size=" + this.size,
         headers: {
           Authorization: this.userDetails.token,
         },

@@ -337,7 +337,7 @@ export default {
             });
             this.updateSupplierVisible = false;
             this.updateForm = {};
-            this.handleCurrentChange(1);
+            this.getSupplierByQuery();
           } else {
             this.$message.error("删除失败 请重试！");
           }
