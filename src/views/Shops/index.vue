@@ -153,7 +153,7 @@ export default {
     toUpdate(val) {
       const form = this.$refs.form;
       form.isAdd = false;
-      form.form = val;
+      form.form = JSON.parse(JSON.stringify(val));
       form.show.dialog = true;
     },
   },
